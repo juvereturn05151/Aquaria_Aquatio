@@ -4,6 +4,7 @@ using UnityEngine;
 public class GPSWorldMovement : MonoBehaviour
 {
     [Header("References")]
+    [SerializeField] private Transform worldRoot;
     [SerializeField] private Transform playerMarker;
     [SerializeField] private TextMeshProUGUI debugText;
 
@@ -11,6 +12,7 @@ public class GPSWorldMovement : MonoBehaviour
     [SerializeField] private float movementScale = 1f;
     [SerializeField] private float smoothingSpeed = 5f;
     [SerializeField] private float minimumMovementDistance = 1.5f;
+    [SerializeField] private float maximumHorizontalAccuracy = 25f;
 
     [Header("Debug Runtime")]
     [SerializeField] private bool hasOrigin;
@@ -21,13 +23,18 @@ public class GPSWorldMovement : MonoBehaviour
     [SerializeField] private float eastMeters;
     [SerializeField] private float northMeters;
     [SerializeField] private float totalDistanceFromOrigin;
-    [SerializeField] private Vector3 resultingUnityPosition;
+    [SerializeField] private Vector3 gpsDisplacement;
+    [SerializeField] private Vector3 worldRootTargetPosition;
+    [SerializeField] private Vector3 worldRootCurrentPosition;
+    [SerializeField] private int acceptedSamples;
+    [SerializeField] private int rejectedSamples;
+    [SerializeField] private string lastSampleResult;
 
     private GPSManager gpsManager;
     private bool hasAcceptedGpsPosition;
     private double previousAcceptedLatitude;
     private double previousAcceptedLongitude;
-    private Vector3 targetUnityPosition;
+    private double lastProcessedTimestamp = -1.0;
 
     public bool HasOrigin => hasOrigin;
     public double OriginLatitude => originLatitude;
@@ -37,7 +44,11 @@ public class GPSWorldMovement : MonoBehaviour
     public float EastMeters => eastMeters;
     public float NorthMeters => northMeters;
     public float TotalDistanceFromOrigin => totalDistanceFromOrigin;
-    public Vector3 ResultingUnityPosition => resultingUnityPosition;
+    public Vector3 GPSDisplacement => gpsDisplacement;
+    public Vector3 WorldRootTargetPosition => worldRootTargetPosition;
+    public Vector3 WorldRootCurrentPosition => worldRootCurrentPosition;
+    public int AcceptedSamples => acceptedSamples;
+    public int RejectedSamples => rejectedSamples;
 
     public void SetGPSManager(GPSManager manager)
     {
@@ -46,18 +57,34 @@ public class GPSWorldMovement : MonoBehaviour
 
     private void Update()
     {
-        if (gpsManager == null || playerMarker == null || !gpsManager.HasValidLocation)
+        KeepPlayerMarkerCentered();
+
+        if (gpsManager == null || worldRoot == null || !gpsManager.HasValidLocation)
         {
             UpdateDebugText();
             return;
         }
 
+        if (gpsManager.CurrentTimestamp != lastProcessedTimestamp)
+        {
+            ProcessGpsSample();
+        }
+
+        SmoothWorldRoot();
+        UpdateDebugText();
+    }
+
+    private void ProcessGpsSample()
+    {
+        lastProcessedTimestamp = gpsManager.CurrentTimestamp;
         currentLatitude = gpsManager.CurrentLatitude;
         currentLongitude = gpsManager.CurrentLongitude;
 
         if (!hasOrigin)
         {
             SetOrigin(currentLatitude, currentLongitude);
+            lastSampleResult = "Accepted origin";
+            return;
         }
 
         Vector2 displacementFromOrigin = CalculateDisplacementMeters(
@@ -70,29 +97,43 @@ public class GPSWorldMovement : MonoBehaviour
         eastMeters = displacementFromOrigin.x;
         northMeters = displacementFromOrigin.y;
         totalDistanceFromOrigin = displacementFromOrigin.magnitude;
+        gpsDisplacement = new Vector3(
+            eastMeters * movementScale,
+            0f,
+            northMeters * movementScale
+        );
 
-        if (ShouldAcceptCurrentGpsPosition())
+        if (ShouldAcceptCurrentGpsPosition(out string rejectionReason))
         {
-            targetUnityPosition = new Vector3(
-                eastMeters * movementScale,
-                playerMarker.position.y,
-                northMeters * movementScale
+            worldRootTargetPosition = new Vector3(
+                -gpsDisplacement.x,
+                worldRoot.position.y,
+                -gpsDisplacement.z
             );
 
             previousAcceptedLatitude = currentLatitude;
             previousAcceptedLongitude = currentLongitude;
             hasAcceptedGpsPosition = true;
+            acceptedSamples++;
+            lastSampleResult = "Accepted";
         }
+        else
+        {
+            rejectedSamples++;
+            lastSampleResult = $"Rejected: {rejectionReason}";
+        }
+    }
 
+    private void SmoothWorldRoot()
+    {
         float lerpAmount = Mathf.Clamp01(smoothingSpeed * Time.deltaTime);
-        playerMarker.position = Vector3.Lerp(
-            playerMarker.position,
-            targetUnityPosition,
+        worldRoot.position = Vector3.Lerp(
+            worldRoot.position,
+            worldRootTargetPosition,
             lerpAmount
         );
 
-        resultingUnityPosition = playerMarker.position;
-        UpdateDebugText();
+        worldRootCurrentPosition = worldRoot.position;
     }
 
     private void SetOrigin(double latitude, double longitude)
@@ -101,14 +142,27 @@ public class GPSWorldMovement : MonoBehaviour
         originLongitude = longitude;
         previousAcceptedLatitude = latitude;
         previousAcceptedLongitude = longitude;
-        targetUnityPosition = new Vector3(0f, playerMarker.position.y, 0f);
-        resultingUnityPosition = playerMarker.position;
+        gpsDisplacement = Vector3.zero;
+        worldRootTargetPosition = new Vector3(0f, worldRoot.position.y, 0f);
+        worldRootCurrentPosition = worldRoot.position;
         hasAcceptedGpsPosition = true;
         hasOrigin = true;
+        acceptedSamples++;
     }
 
-    private bool ShouldAcceptCurrentGpsPosition()
+    private bool ShouldAcceptCurrentGpsPosition(out string rejectionReason)
     {
+        rejectionReason = string.Empty;
+
+        if (
+            maximumHorizontalAccuracy > 0f &&
+            gpsManager.CurrentHorizontalAccuracy > maximumHorizontalAccuracy
+        )
+        {
+            rejectionReason = "Horizontal accuracy too low";
+            return false;
+        }
+
         if (!hasAcceptedGpsPosition)
         {
             return true;
@@ -121,7 +175,13 @@ public class GPSWorldMovement : MonoBehaviour
             currentLongitude
         );
 
-        return movementFromPreviousAccepted.magnitude >= minimumMovementDistance;
+        if (movementFromPreviousAccepted.magnitude < minimumMovementDistance)
+        {
+            rejectionReason = "Movement below minimum distance";
+            return false;
+        }
+
+        return true;
     }
 
     private Vector2 CalculateDisplacementMeters(
@@ -142,6 +202,16 @@ public class GPSWorldMovement : MonoBehaviour
         return new Vector2((float)east, (float)north);
     }
 
+    private void KeepPlayerMarkerCentered()
+    {
+        if (playerMarker == null)
+        {
+            return;
+        }
+
+        playerMarker.position = new Vector3(0f, playerMarker.position.y, 0f);
+    }
+
     private void UpdateDebugText()
     {
         if (debugText == null)
@@ -157,9 +227,14 @@ public class GPSWorldMovement : MonoBehaviour
             $"GPS Status: {status}\n" +
             $"Origin Lat/Lon: {originLatitude:F6}, {originLongitude:F6}\n" +
             $"Current Lat/Lon: {currentLatitude:F6}, {currentLongitude:F6}\n" +
+            $"Accuracy: {(gpsManager != null ? gpsManager.CurrentHorizontalAccuracy : 0f):F1} m\n" +
             $"East: {eastMeters:F2} m\n" +
             $"North: {northMeters:F2} m\n" +
             $"Distance From Origin: {totalDistanceFromOrigin:F2} m\n" +
-            $"Unity Position: {resultingUnityPosition}";
+            $"GPS Displacement: {gpsDisplacement}\n" +
+            $"WorldRoot Target: {worldRootTargetPosition}\n" +
+            $"WorldRoot Current: {worldRootCurrentPosition}\n" +
+            $"Accepted/Rejected: {acceptedSamples}/{rejectedSamples}\n" +
+            $"Last Sample: {lastSampleResult}";
     }
 }

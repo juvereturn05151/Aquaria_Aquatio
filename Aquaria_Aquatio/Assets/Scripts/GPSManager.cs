@@ -12,6 +12,7 @@ public class GPSManager : MonoBehaviour
     public double CurrentLatitude { get; private set; }
     public double CurrentLongitude { get; private set; }
     public float CurrentHorizontalAccuracy { get; private set; }
+    public double CurrentTimestamp { get; private set; }
     public LocationServiceStatus CurrentStatus => Input.location.status;
 
     private void Awake()
@@ -81,6 +82,7 @@ public class GPSManager : MonoBehaviour
         CurrentLatitude = location.latitude;
         CurrentLongitude = location.longitude;
         CurrentHorizontalAccuracy = location.horizontalAccuracy;
+        CurrentTimestamp = location.timestamp;
         HasValidLocation = true;
     }
 
