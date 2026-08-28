@@ -27,7 +27,7 @@ public class CreaturePresentation : MonoBehaviour
     [SerializeField] private float minimumPulseScale = 1.25f;
     [SerializeField] private float maximumPulseScale = 5.5f;
     [SerializeField] private float pulseSpeed = 4f;
-    [SerializeField, Range(0f, 1f)] private float weakSignalPulseIntensity = 0.55f;
+    [SerializeField, Range(0f, 1f)] private float weakSignalPulseIntensity = 0.2f;
     [SerializeField] private float encounterPulseBoost = 0.85f;
 
     private Vector3 visualBaseScale = Vector3.one;
@@ -199,15 +199,15 @@ public class CreaturePresentation : MonoBehaviour
 
         pulseRoot.gameObject.SetActive(true);
 
-        float intensity = state switch
+        float distanceIntensity = state switch
         {
             CreatureProximityState.EncounterReady => Mathf.Clamp01(signalStrength + encounterPulseBoost),
-            CreatureProximityState.StrongSignal => Mathf.Clamp01(signalStrength + 0.25f),
-            CreatureProximityState.WeakSignal => weakSignalPulseIntensity,
+            CreatureProximityState.StrongSignal => signalStrength,
+            CreatureProximityState.WeakSignal => Mathf.Max(signalStrength, weakSignalPulseIntensity),
             _ => 0f,
         };
 
-        bool showPulse = intensity > 0.01f;
+        bool showPulse = distanceIntensity > 0.01f;
 
         if (signalEffectRoot != null)
         {
@@ -224,24 +224,20 @@ public class CreaturePresentation : MonoBehaviour
         SetPulseRenderersEnabled(true);
 
         float pulse = 0.5f + 0.5f * Mathf.Sin(Time.time * pulseSpeed);
-        float minimumStateScale = state switch
-        {
-            CreatureProximityState.EncounterReady => 2.8f,
-            CreatureProximityState.StrongSignal => 1.8f,
-            CreatureProximityState.WeakSignal => 1.1f,
-            _ => minimumPulseScale,
-        };
-        float maximumStateScale = state switch
-        {
-            CreatureProximityState.EncounterReady => maximumPulseScale,
-            CreatureProximityState.StrongSignal => Mathf.Lerp(3.2f, maximumPulseScale, signalStrength),
-            CreatureProximityState.WeakSignal => 2.8f,
-            _ => minimumPulseScale,
-        };
+        float baselineScale = Mathf.Lerp(
+            minimumPulseScale,
+            maximumPulseScale * 0.45f,
+            distanceIntensity
+        );
+        float peakScale = Mathf.Lerp(
+            minimumPulseScale,
+            maximumPulseScale,
+            distanceIntensity
+        );
         float pulseScale = Mathf.Lerp(
-            minimumStateScale,
-            maximumStateScale,
-            Mathf.Clamp01(intensity * pulse)
+            baselineScale,
+            peakScale,
+            pulse
         );
         pulseRoot.localScale = pulseBaseScale * pulseScale;
     }

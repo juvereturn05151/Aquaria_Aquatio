@@ -82,10 +82,10 @@ MonoBehaviour:
   visibleRendererThreshold: 0.5
   bobHeight: 0.35
   bobSpeed: 2.4
-  minimumPulseScale: 1.25
-  maximumPulseScale: 5.5
+  minimumPulseScale: 0.68
+  maximumPulseScale: 3.93
   pulseSpeed: 4
-  weakSignalPulseIntensity: 0.55
+  weakSignalPulseIntensity: 0.2
   encounterPulseBoost: 0.85
 --- !u!1 &1044491398356029207
 GameObject:

@@ -66,7 +66,7 @@ public static class ExplorationCreatureFeedbackSceneBuilder
         SetFloat(presentation, "minimumPulseScale", 1.25f);
         SetFloat(presentation, "maximumPulseScale", 5.5f);
         SetFloat(presentation, "pulseSpeed", 4f);
-        SetFloat(presentation, "weakSignalPulseIntensity", 0.55f);
+        SetFloat(presentation, "weakSignalPulseIntensity", 0.2f);
         SetFloat(presentation, "encounterPulseBoost", 0.85f);
 
         EditorSceneManager.SaveScene(scene, FeedbackScenePath);
@@ -105,7 +105,7 @@ public static class ExplorationCreatureFeedbackSceneBuilder
             SetFloat(presentation, "minimumPulseScale", 1.25f);
             SetFloat(presentation, "maximumPulseScale", 5.5f);
             SetFloat(presentation, "pulseSpeed", 4f);
-            SetFloat(presentation, "weakSignalPulseIntensity", 0.55f);
+            SetFloat(presentation, "weakSignalPulseIntensity", 0.2f);
             SetFloat(presentation, "encounterPulseBoost", 0.85f);
 
             PrefabUtility.SaveAsPrefabAsset(prefabRoot, AquariaCreaturePrefabPath);
