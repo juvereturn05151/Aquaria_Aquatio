@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CreaturePresentation : MonoBehaviour
 {
+    private const bool SignalOnlyMode = true;
+
     [Header("State Source")]
     [SerializeField] private CreatureExplorationTarget target;
     [SerializeField] private CreatureProximitySystem proximitySystem;
@@ -144,7 +146,8 @@ public class CreaturePresentation : MonoBehaviour
 
     private void ApplyCreatureVisibility(float visibility, bool force)
     {
-        bool renderCreature = visibility >= visibleRendererThreshold || force;
+        bool renderCreature =
+            !SignalOnlyMode && (visibility >= visibleRendererThreshold || force);
 
         if (visualRoot != null)
         {
@@ -181,8 +184,11 @@ public class CreaturePresentation : MonoBehaviour
         }
 
         bool shouldBob =
-            state == CreatureProximityState.StrongSignal ||
-            state == CreatureProximityState.EncounterReady;
+            !SignalOnlyMode &&
+            (
+                state == CreatureProximityState.StrongSignal ||
+                state == CreatureProximityState.EncounterReady
+            );
         float bobAmount = shouldBob
             ? Mathf.Sin(Time.time * bobSpeed) * bobHeight * Mathf.Max(0.25f, signalStrength)
             : 0f;
@@ -269,7 +275,8 @@ public class CreaturePresentation : MonoBehaviour
             return;
         }
 
-        bool ready = state == CreatureProximityState.EncounterReady;
+        bool ready = !SignalOnlyMode &&
+            state == CreatureProximityState.EncounterReady;
         encounterPrompt.alpha = ready ? 1f : 0f;
         encounterPrompt.interactable = ready;
         encounterPrompt.blocksRaycasts = ready;
