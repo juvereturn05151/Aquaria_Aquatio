@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 219738205}
   - component: {fileID: 219738204}
   m_Layer: 0
-  m_Name: werw
+  m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -767,7 +767,7 @@ GameObject:
   - component: {fileID: 1374349450}
   - component: {fileID: 1374349449}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Cube2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1151,27 +1151,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f130f1f88794c04eaa643f182c91e6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GPSWorldMovement
+  positionSource: {fileID: 0}
   worldRoot: {fileID: 1598195619}
   playerMarker: {fileID: 2145918106}
-  debugText: {fileID: 1286192977}
   movementScale: 1
   smoothingSpeed: 5
-  minimumMovementDistance: 1.5
-  maximumHorizontalAccuracy: 25
-  hasOrigin: 0
-  originLatitude: 0
-  originLongitude: 0
-  currentLatitude: 0
-  currentLongitude: 0
-  eastMeters: 0
-  northMeters: 0
-  totalDistanceFromOrigin: 0
+  keepPlayerMarkerCentered: 1
   gpsDisplacement: {x: 0, y: 0, z: 0}
   worldRootTargetPosition: {x: 0, y: 0, z: 0}
   worldRootCurrentPosition: {x: 0, y: 0, z: 0}
-  acceptedSamples: 0
-  rejectedSamples: 0
-  lastSampleResult: 
 --- !u!1 &1779848738
 GameObject:
   m_ObjectHideFlags: 0
@@ -1217,7 +1205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2963d5de6c26140489bbee15346d427e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GPSManager
-  gpsWorldMovement: {fileID: 1622205288}
+  gpsPositionSource: {fileID: 0}
 --- !u!1 &2038730008
 GameObject:
   m_ObjectHideFlags: 0

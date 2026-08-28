@@ -6,7 +6,7 @@ using UnityEngine.Android;
 
 public class GPSManager : MonoBehaviour
 {
-    [SerializeField] private GPSWorldMovement gpsWorldMovement;
+    [SerializeField] private GPSPositionSource gpsPositionSource;
 
     public bool HasValidLocation { get; private set; }
     public double CurrentLatitude { get; private set; }
@@ -22,7 +22,7 @@ public class GPSManager : MonoBehaviour
 
     private void Reset()
     {
-        gpsWorldMovement = FindAnyObjectByType<GPSWorldMovement>();
+        gpsPositionSource = FindAnyObjectByType<GPSPositionSource>();
     }
 
     private IEnumerator Start()
@@ -88,9 +88,9 @@ public class GPSManager : MonoBehaviour
 
     private void InjectIntoMovement()
     {
-        if (gpsWorldMovement != null)
+        if (gpsPositionSource != null)
         {
-            gpsWorldMovement.SetGPSManager(this);
+            gpsPositionSource.SetGPSManager(this);
         }
     }
 
