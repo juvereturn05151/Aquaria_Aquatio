@@ -9,6 +9,8 @@ using UnityEngine.UI;
 public static class ExplorationPrototypeSceneBuilder
 {
     private const string ScenePath = "Assets/Scenes/ExplorationPrototype_Setup.unity";
+    private const string CreatureDetectionScenePath = "Assets/Scenes/Exploration_02_CreatureDetection.unity";
+    private const string AquariaCreaturePrefabPath = "Assets/Prefabs/AquariaCreature.prefab";
 
     [MenuItem("Aquaria/Build Exploration Prototype Setup Scene")]
     public static void BuildScene()
@@ -311,15 +313,301 @@ public static class ExplorationPrototypeSceneBuilder
         SetFloat(explorationController, "smoothingSpeed", 3f);
         SetBool(headingController, "editorSimulationEnabled", true);
         SetFloat(headingController, "simulationTurnSpeed", 90f);
-        SetFloat(aquariaTarget, "discoveryRadius", 30f);
-        SetFloat(aquariaTarget, "encounterRadius", 3f);
-        SetFloat(aquarioTarget, "discoveryRadius", 30f);
-        SetFloat(aquarioTarget, "encounterRadius", 3f);
+        SetFloat(proximitySystem, "detectionRange", 30f);
+        SetFloat(proximitySystem, "strongSignalRange", 12f);
+        SetFloat(proximitySystem, "encounterRange", 3f);
+        SetBool(aquariaTarget, "useDebugPosition", false);
+        SetBool(aquarioTarget, "useDebugPosition", false);
 
         spawnManager.CollectTargets();
 
         EditorSceneManager.SaveScene(scene, ScenePath);
         AddSceneToBuildSettings(ScenePath);
+        AssetDatabase.SaveAssets();
+    }
+
+    [MenuItem("Aquaria/Build Exploration 02 Creature Detection Scene")]
+    public static void BuildCreatureDetectionScene()
+    {
+        Scene scene = EditorSceneManager.NewScene(
+            NewSceneSetup.EmptyScene,
+            NewSceneMode.Single
+        );
+
+        Material groundMaterial = CreateMaterial(
+            "Assets/Resources/Exploration_Ground.mat",
+            new Color(0.16f, 0.38f, 0.28f)
+        );
+        Material roadMaterial = CreateMaterial(
+            "Assets/Resources/Exploration_Road.mat",
+            new Color(0.22f, 0.22f, 0.24f)
+        );
+        Material landmarkMaterial = CreateMaterial(
+            "Assets/Resources/Exploration_Landmark.mat",
+            new Color(0.1f, 0.45f, 0.9f)
+        );
+        Material aquariaMaterial = CreateMaterial(
+            "Assets/Resources/Aquaria_Target.mat",
+            new Color(0.0f, 0.75f, 0.95f)
+        );
+
+        GameObject aquariaPrefab = CreateAquariaCreaturePrefab(aquariaMaterial);
+
+        GameObject cameraObject = new GameObject("Main Camera");
+        Camera camera = cameraObject.AddComponent<Camera>();
+        cameraObject.tag = "MainCamera";
+        cameraObject.transform.position = new Vector3(0f, 14f, -10f);
+        cameraObject.transform.rotation = Quaternion.Euler(52f, 0f, 0f);
+        camera.clearFlags = CameraClearFlags.Skybox;
+
+        GameObject lightObject = new GameObject("Directional Light");
+        Light light = lightObject.AddComponent<Light>();
+        light.type = LightType.Directional;
+        light.intensity = 1.25f;
+        lightObject.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+
+        GameObject systems = new GameObject("Systems");
+        GameObject gpsSystem = CreateChild(systems, "GPSManager");
+        GPSManager gpsManager = gpsSystem.AddComponent<GPSManager>();
+        GPSPositionSource gpsPositionSource = gpsSystem.AddComponent<GPSPositionSource>();
+        EditorKeyboardPositionSource editorPositionSource =
+            gpsSystem.AddComponent<EditorKeyboardPositionSource>();
+        ExplorationPositionSourceSelector sourceSelector =
+            gpsSystem.AddComponent<ExplorationPositionSourceSelector>();
+
+        GameObject explorationSystem = CreateChild(systems, "ExplorationController");
+        ExplorationController explorationController =
+            explorationSystem.AddComponent<ExplorationController>();
+
+        GameObject headingSystem = CreateChild(systems, "DeviceHeadingController");
+        DeviceHeadingController headingController =
+            headingSystem.AddComponent<DeviceHeadingController>();
+
+        GameObject spawnSystem = CreateChild(systems, "CreatureSpawnManager");
+        CreatureSpawnManager spawnManager = spawnSystem.AddComponent<CreatureSpawnManager>();
+
+        GameObject proximitySystemObject = CreateChild(systems, "CreatureProximitySystem");
+        CreatureProximitySystem proximitySystem =
+            proximitySystemObject.AddComponent<CreatureProximitySystem>();
+
+        GameObject debugSystem = CreateChild(systems, "DebugManager");
+        ExplorationDebugPanel debugPanel = debugSystem.AddComponent<ExplorationDebugPanel>();
+
+        GameObject playerMarker = new GameObject("PlayerMarker");
+        playerMarker.transform.position = new Vector3(0f, 1f, 0f);
+
+        GameObject playerVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+        playerVisual.name = "PlayerVisual";
+        playerVisual.transform.SetParent(playerMarker.transform);
+        playerVisual.transform.localPosition = Vector3.zero;
+        playerVisual.transform.localRotation = Quaternion.identity;
+        playerVisual.transform.localScale = new Vector3(0.7f, 1f, 0.7f);
+        Object.DestroyImmediate(playerVisual.GetComponent<Collider>());
+
+        GameObject forwardNose = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        forwardNose.name = "ForwardNose";
+        forwardNose.transform.SetParent(playerVisual.transform);
+        forwardNose.transform.localPosition = new Vector3(0f, 0.25f, 0.65f);
+        forwardNose.transform.localScale = new Vector3(0.25f, 0.2f, 0.6f);
+        Object.DestroyImmediate(forwardNose.GetComponent<Collider>());
+
+        GameObject worldRoot = new GameObject("WorldRoot");
+        GameObject ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        ground.name = "Ground";
+        ground.transform.SetParent(worldRoot.transform);
+        ground.transform.localPosition = Vector3.zero;
+        ground.transform.localScale = new Vector3(7f, 1f, 7f);
+        SetMaterial(ground, groundMaterial);
+
+        CreateCube(
+            "NorthRoad",
+            worldRoot.transform,
+            new Vector3(0f, 0.03f, 0f),
+            new Vector3(3f, 0.08f, 70f),
+            roadMaterial
+        );
+        CreateCube(
+            "EastRoad",
+            worldRoot.transform,
+            new Vector3(0f, 0.04f, 0f),
+            new Vector3(70f, 0.08f, 3f),
+            roadMaterial
+        );
+        CreateCube(
+            "NorthTwelveMeterMarker",
+            worldRoot.transform,
+            new Vector3(0f, 0.35f, 12f),
+            new Vector3(2f, 0.7f, 0.2f),
+            landmarkMaterial
+        );
+
+        GameObject creatureTargets = CreateChild(worldRoot, "CreatureTargets");
+        GameObject aquariaInstance = (GameObject)PrefabUtility.InstantiatePrefab(aquariaPrefab);
+        aquariaInstance.name = "Aquaria_DebugTarget";
+        aquariaInstance.transform.SetParent(creatureTargets.transform);
+        CreatureExplorationTarget aquariaTarget =
+            aquariaInstance.GetComponent<CreatureExplorationTarget>();
+        SetEnum(aquariaTarget, "creatureType", (int)CreatureType.Aquaria);
+        SetBool(aquariaTarget, "useDebugPosition", true);
+        SetFloat(aquariaTarget, "debugEast", 0f);
+        SetFloat(aquariaTarget, "debugNorth", 12f);
+        SetFloat(aquariaTarget, "height", 0.6f);
+        aquariaTarget.ApplyDebugPositionIfEnabled();
+
+        GameObject canvasObject = new GameObject("Canvas");
+        Canvas canvas = canvasObject.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1080f, 1920f);
+        canvasObject.AddComponent<GraphicRaycaster>();
+
+        GameObject feedbackGroup = CreatePanel(
+            "CreatureDetectionFeedback",
+            canvasObject.transform,
+            new Vector2(0f, 1f),
+            new Vector2(0f, 1f),
+            new Vector2(24f, -24f),
+            new Vector2(560f, 170f)
+        );
+        TextMeshProUGUI feedbackText = CreateText(
+            "FeedbackText",
+            feedbackGroup.transform,
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(16f, -16f),
+            new Vector2(-32f, 42f),
+            28f,
+            "Creature Signal: Out of Range"
+        );
+        TextMeshProUGUI signalText = CreateText(
+            "SignalText",
+            feedbackGroup.transform,
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(16f, -66f),
+            new Vector2(-32f, 36f),
+            24f,
+            "Signal: Out of Range"
+        );
+        TextMeshProUGUI creatureNearbyText = CreateText(
+            "CreatureNearbyText",
+            feedbackGroup.transform,
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(16f, -108f),
+            new Vector2(-32f, 36f),
+            24f,
+            "No Creature Nearby"
+        );
+
+        GameObject debugPanelRoot = CreatePanel(
+            "DebugPanel",
+            canvasObject.transform,
+            new Vector2(0f, 0f),
+            new Vector2(0f, 1f),
+            new Vector2(24f, -220f),
+            new Vector2(620f, -260f)
+        );
+        TextMeshProUGUI debugText = CreateText(
+            "DebugText",
+            debugPanelRoot.transform,
+            new Vector2(0f, 0f),
+            new Vector2(1f, 1f),
+            new Vector2(16f, -16f),
+            new Vector2(-32f, -292f),
+            20f,
+            "Debug ready"
+        );
+
+        TextMeshProUGUI gpsStatusText = CreateDebugField(debugPanelRoot.transform, "GPSSimulationStatus", 12f, "GPS/simulation status: Waiting");
+        TextMeshProUGUI currentDisplacementText = CreateDebugField(debugPanelRoot.transform, "CurrentDisplacement", 42f, "Current displacement: (0, 0, 0)");
+        TextMeshProUGUI eastDisplacementText = CreateDebugField(debugPanelRoot.transform, "EastDisplacement", 72f, "East displacement: 0.00 m");
+        TextMeshProUGUI northDisplacementText = CreateDebugField(debugPanelRoot.transform, "NorthDisplacement", 102f, "North displacement: 0.00 m");
+        TextMeshProUGUI headingText = CreateDebugField(debugPanelRoot.transform, "Heading", 132f, "Heading: 0.0");
+        TextMeshProUGUI nearestCreatureText = CreateDebugField(debugPanelRoot.transform, "NearestCreature", 162f, "Nearest creature: None");
+        TextMeshProUGUI distanceText = CreateDebugField(debugPanelRoot.transform, "DistanceToNearestCreature", 192f, "Distance to nearest creature: 0.0 m");
+        TextMeshProUGUI proximityStateText = CreateDebugField(debugPanelRoot.transform, "ProximityState", 222f, "Proximity state: OutOfRange");
+        TextMeshProUGUI signalStrengthText = CreateDebugField(debugPanelRoot.transform, "SignalStrength", 252f, "Signal strength: 0.00");
+        TextMeshProUGUI encounterStateText = CreateDebugField(debugPanelRoot.transform, "EncounterState", 282f, "Encounter state: None");
+
+        GameObject encounterGroup = CreatePanel(
+            "EncounterReadyStatus",
+            canvasObject.transform,
+            new Vector2(1f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(-24f, -24f),
+            new Vector2(460f, 96f)
+        );
+        RectTransform encounterRect = encounterGroup.GetComponent<RectTransform>();
+        encounterRect.pivot = new Vector2(1f, 1f);
+        TextMeshProUGUI encounterStatusText = CreateText(
+            "EncounterStatusText",
+            encounterGroup.transform,
+            new Vector2(0f, 0f),
+            new Vector2(1f, 1f),
+            new Vector2(16f, -16f),
+            new Vector2(-32f, -32f),
+            28f,
+            "No Encounter"
+        );
+
+        GameObject eventSystem = new GameObject("EventSystem");
+        eventSystem.AddComponent<EventSystem>();
+        eventSystem.AddComponent<StandaloneInputModule>();
+
+        SetObjectReference(gpsManager, "gpsPositionSource", gpsPositionSource);
+        SetObjectReference(sourceSelector, "gpsPositionSource", gpsPositionSource);
+        SetObjectReference(sourceSelector, "editorPositionSource", editorPositionSource);
+        SetObjectReference(sourceSelector, "explorationController", explorationController);
+        SetObjectReference(sourceSelector, "proximitySystem", proximitySystem);
+        SetObjectReference(explorationController, "positionSource", editorPositionSource);
+        SetObjectReference(explorationController, "worldRoot", worldRoot.transform);
+        SetObjectReference(explorationController, "playerMarker", playerMarker.transform);
+        SetObjectReference(headingController, "playerVisual", playerVisual.transform);
+        SetObjectReference(spawnManager, "targetsRoot", creatureTargets.transform);
+        SetObjectReference(proximitySystem, "positionSource", editorPositionSource);
+        SetObjectReference(proximitySystem, "spawnManager", spawnManager);
+        SetObjectReference(proximitySystem, "feedbackText", feedbackText);
+        SetObjectReference(proximitySystem, "signalText", signalText);
+        SetObjectReference(proximitySystem, "creatureNearbyText", creatureNearbyText);
+        SetObjectReference(proximitySystem, "encounterStatusText", encounterStatusText);
+        SetObjectReference(debugPanel, "debugPanelRoot", debugPanelRoot);
+        SetObjectReference(debugPanel, "debugText", debugText);
+        SetObjectReference(debugPanel, "positionSourceSelector", sourceSelector);
+        SetObjectReference(debugPanel, "positionSource", editorPositionSource);
+        SetObjectReference(debugPanel, "explorationController", explorationController);
+        SetObjectReference(debugPanel, "headingController", headingController);
+        SetObjectReference(debugPanel, "proximitySystem", proximitySystem);
+        SetObjectReference(debugPanel, "gpsSimulationStatusText", gpsStatusText);
+        SetObjectReference(debugPanel, "currentDisplacementText", currentDisplacementText);
+        SetObjectReference(debugPanel, "eastDisplacementText", eastDisplacementText);
+        SetObjectReference(debugPanel, "northDisplacementText", northDisplacementText);
+        SetObjectReference(debugPanel, "headingText", headingText);
+        SetObjectReference(debugPanel, "nearestCreatureText", nearestCreatureText);
+        SetObjectReference(debugPanel, "nearestCreatureDistanceText", distanceText);
+        SetObjectReference(debugPanel, "proximityStateText", proximityStateText);
+        SetObjectReference(debugPanel, "signalStrengthText", signalStrengthText);
+        SetObjectReference(debugPanel, "encounterStateText", encounterStateText);
+
+        SetFloat(gpsPositionSource, "maximumHorizontalAccuracy", 20f);
+        SetFloat(gpsPositionSource, "minimumMovementDistance", 2.5f);
+        SetFloat(gpsPositionSource, "gpsSmoothingSpeed", 2f);
+        SetBool(gpsPositionSource, "useAccuracyWeightedSmoothing", true);
+        SetFloat(gpsPositionSource, "poorAccuracySmoothingMultiplier", 0.35f);
+        SetBool(editorPositionSource, "simulationEnabled", true);
+        SetFloat(editorPositionSource, "simulationSpeed", 3f);
+        SetFloat(explorationController, "smoothingSpeed", 3f);
+        SetBool(headingController, "editorSimulationEnabled", true);
+        SetFloat(headingController, "simulationTurnSpeed", 90f);
+        SetFloat(proximitySystem, "detectionRange", 30f);
+        SetFloat(proximitySystem, "strongSignalRange", 12f);
+        SetFloat(proximitySystem, "encounterRange", 3f);
+
+        spawnManager.CollectTargets();
+
+        EditorSceneManager.SaveScene(scene, CreatureDetectionScenePath);
+        AddSceneToBuildSettings(CreatureDetectionScenePath);
         AssetDatabase.SaveAssets();
     }
 
@@ -365,6 +653,77 @@ public static class ExplorationPrototypeSceneBuilder
             target.AddComponent<CreatureExplorationTarget>();
         SetEnum(creatureTarget, "creatureType", (int)creatureType);
         return creatureTarget;
+    }
+
+    private static GameObject CreateAquariaCreaturePrefab(Material material)
+    {
+        EnsureFolder("Assets/Prefabs");
+
+        GameObject existingPrefab =
+            AssetDatabase.LoadAssetAtPath<GameObject>(AquariaCreaturePrefabPath);
+
+        if (existingPrefab != null)
+        {
+            return existingPrefab;
+        }
+
+        GameObject root = new GameObject("AquariaCreature");
+        CreatureExplorationTarget target = root.AddComponent<CreatureExplorationTarget>();
+        SetEnum(target, "creatureType", (int)CreatureType.Aquaria);
+        SetBool(target, "useDebugPosition", true);
+        SetFloat(target, "debugEast", 0f);
+        SetFloat(target, "debugNorth", 12f);
+        SetFloat(target, "height", 0.6f);
+
+        GameObject visualRoot = CreateChild(root, "VisualRoot");
+        visualRoot.transform.localPosition = Vector3.zero;
+
+        GameObject body = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        body.name = "Body";
+        body.transform.SetParent(visualRoot.transform);
+        body.transform.localPosition = Vector3.zero;
+        body.transform.localScale = new Vector3(1.15f, 0.8f, 1.15f);
+        SetMaterial(body, material);
+        Object.DestroyImmediate(body.GetComponent<Collider>());
+
+        GameObject crest = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        crest.name = "Crest";
+        crest.transform.SetParent(visualRoot.transform);
+        crest.transform.localPosition = new Vector3(0f, 0.45f, 0.1f);
+        crest.transform.localScale = new Vector3(0.45f, 0.3f, 0.45f);
+        SetMaterial(crest, material);
+        Object.DestroyImmediate(crest.GetComponent<Collider>());
+
+        GameObject leftFin = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        leftFin.name = "LeftFin";
+        leftFin.transform.SetParent(visualRoot.transform);
+        leftFin.transform.localPosition = new Vector3(-0.65f, 0f, 0f);
+        leftFin.transform.localRotation = Quaternion.Euler(0f, 0f, -28f);
+        leftFin.transform.localScale = new Vector3(0.12f, 0.5f, 0.65f);
+        SetMaterial(leftFin, material);
+        Object.DestroyImmediate(leftFin.GetComponent<Collider>());
+
+        GameObject rightFin = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        rightFin.name = "RightFin";
+        rightFin.transform.SetParent(visualRoot.transform);
+        rightFin.transform.localPosition = new Vector3(0.65f, 0f, 0f);
+        rightFin.transform.localRotation = Quaternion.Euler(0f, 0f, 28f);
+        rightFin.transform.localScale = new Vector3(0.12f, 0.5f, 0.65f);
+        SetMaterial(rightFin, material);
+        Object.DestroyImmediate(rightFin.GetComponent<Collider>());
+
+        GameObject signalRing = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        signalRing.name = "SignalRing";
+        signalRing.transform.SetParent(visualRoot.transform);
+        signalRing.transform.localPosition = new Vector3(0f, -0.48f, 0f);
+        signalRing.transform.localScale = new Vector3(1.8f, 0.03f, 1.8f);
+        SetMaterial(signalRing, material);
+        Object.DestroyImmediate(signalRing.GetComponent<Collider>());
+
+        GameObject savedPrefab =
+            PrefabUtility.SaveAsPrefabAsset(root, AquariaCreaturePrefabPath);
+        Object.DestroyImmediate(root);
+        return savedPrefab;
     }
 
     private static GameObject CreatePanel(
@@ -454,6 +813,24 @@ public static class ExplorationPrototypeSceneBuilder
         return material;
     }
 
+    private static void EnsureFolder(string folderPath)
+    {
+        if (AssetDatabase.IsValidFolder(folderPath))
+        {
+            return;
+        }
+
+        string parent = System.IO.Path.GetDirectoryName(folderPath)?.Replace("\\", "/");
+        string folder = System.IO.Path.GetFileName(folderPath);
+
+        if (!string.IsNullOrEmpty(parent) && !AssetDatabase.IsValidFolder(parent))
+        {
+            EnsureFolder(parent);
+        }
+
+        AssetDatabase.CreateFolder(parent, folder);
+    }
+
     private static void SetMaterial(GameObject gameObject, Material material)
     {
         Renderer renderer = gameObject.GetComponent<Renderer>();
@@ -468,6 +845,11 @@ public static class ExplorationPrototypeSceneBuilder
     {
         SerializedObject serializedObject = new SerializedObject(target);
         SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+        {
+            Debug.LogWarning($"Missing serialized property {propertyName} on {target.name}");
+            return;
+        }
         property.objectReferenceValue = value;
         serializedObject.ApplyModifiedPropertiesWithoutUndo();
     }
@@ -476,6 +858,11 @@ public static class ExplorationPrototypeSceneBuilder
     {
         SerializedObject serializedObject = new SerializedObject(target);
         SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+        {
+            Debug.LogWarning($"Missing serialized property {propertyName} on {target.name}");
+            return;
+        }
         property.boolValue = value;
         serializedObject.ApplyModifiedPropertiesWithoutUndo();
     }
@@ -484,6 +871,11 @@ public static class ExplorationPrototypeSceneBuilder
     {
         SerializedObject serializedObject = new SerializedObject(target);
         SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+        {
+            Debug.LogWarning($"Missing serialized property {propertyName} on {target.name}");
+            return;
+        }
         property.floatValue = value;
         serializedObject.ApplyModifiedPropertiesWithoutUndo();
     }
@@ -492,6 +884,11 @@ public static class ExplorationPrototypeSceneBuilder
     {
         SerializedObject serializedObject = new SerializedObject(target);
         SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+        {
+            Debug.LogWarning($"Missing serialized property {propertyName} on {target.name}");
+            return;
+        }
         property.enumValueIndex = value;
         serializedObject.ApplyModifiedPropertiesWithoutUndo();
     }

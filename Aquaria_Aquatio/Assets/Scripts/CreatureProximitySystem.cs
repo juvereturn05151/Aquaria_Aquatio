@@ -11,19 +11,23 @@ public class CreatureProximitySystem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI creatureNearbyText;
     [SerializeField] private TextMeshProUGUI encounterStatusText;
 
-    [Header("Distance Bands")]
-    [SerializeField] private float encounterDistance = 3f;
-    [SerializeField] private float veryCloseDistance = 7f;
-    [SerializeField] private float closeDistance = 15f;
-    [SerializeField] private float mediumDistance = 30f;
+    [Header("Proximity Thresholds")]
+    [SerializeField] private float detectionRange = 30f;
+    [SerializeField] private float strongSignalRange = 12f;
+    [SerializeField] private float encounterRange = 3f;
 
     [Header("Debug Runtime")]
     [SerializeField] private CreatureExplorationTarget nearestCreature;
     [SerializeField] private float nearestCreatureDistance;
-    [SerializeField] private CreatureProximityState proximityState;
+    [SerializeField] private CreatureProximityState proximityState = CreatureProximityState.OutOfRange;
     [SerializeField] private float signalStrength;
     [SerializeField] private string encounterState = "None";
 
+    private CreatureExplorationTarget lastEncounterReadyTarget;
+
+    public float DetectionRange => detectionRange;
+    public float StrongSignalRange => strongSignalRange;
+    public float EncounterRange => encounterRange;
     public CreatureExplorationTarget NearestCreature => nearestCreature;
     public float NearestCreatureDistance => nearestCreatureDistance;
     public CreatureProximityState ProximityState => proximityState;
@@ -39,7 +43,11 @@ public class CreatureProximitySystem : MonoBehaviour
     {
         if (positionSource == null || spawnManager == null || !positionSource.IsReady)
         {
-            proximityState = CreatureProximityState.None;
+            nearestCreature = null;
+            nearestCreatureDistance = 0f;
+            proximityState = CreatureProximityState.OutOfRange;
+            signalStrength = 0f;
+            encounterState = "Waiting for player position";
             UpdateFeedbackText();
             return;
         }
@@ -84,47 +92,51 @@ public class CreatureProximitySystem : MonoBehaviour
     {
         if (nearestCreature == null)
         {
-            proximityState = CreatureProximityState.None;
+            proximityState = CreatureProximityState.OutOfRange;
             signalStrength = 0f;
+            encounterState = "No creature target";
             return;
         }
 
-        float discoveryRadius = Mathf.Max(nearestCreature.DiscoveryRadius, veryCloseDistance);
-        signalStrength = Mathf.Clamp01(1f - nearestCreatureDistance / mediumDistance);
+        float safeDetectionRange = Mathf.Max(0.01f, detectionRange);
+        float safeEncounterRange = Mathf.Clamp(encounterRange, 0f, safeDetectionRange);
+        float safeStrongSignalRange = Mathf.Clamp(
+            strongSignalRange,
+            safeEncounterRange,
+            safeDetectionRange
+        );
 
-        if (nearestCreatureDistance <= discoveryRadius)
+        signalStrength = Mathf.Clamp01(1f - nearestCreatureDistance / safeDetectionRange);
+
+        if (nearestCreatureDistance <= safeEncounterRange)
         {
-            nearestCreature.MarkDiscovered();
-        }
+            proximityState = CreatureProximityState.EncounterReady;
+            encounterState = $"{nearestCreature.CreatureType} Encounter Ready";
 
-        if (nearestCreatureDistance <= Mathf.Min(encounterDistance, nearestCreature.EncounterRadius))
-        {
-            proximityState = CreatureProximityState.Encounter;
-
-            if (nearestCreature.TryStartEncounter())
+            if (lastEncounterReadyTarget != nearestCreature)
             {
-                encounterState = $"{nearestCreature.CreatureType} Encounter Ready";
-                spawnManager.NotifyEncounterStarted(nearestCreature);
+                lastEncounterReadyTarget = nearestCreature;
+                spawnManager.NotifyEncounterReady(nearestCreature);
             }
 
             return;
         }
 
-        if (nearestCreatureDistance <= veryCloseDistance)
+        encounterState = "No Encounter";
+        lastEncounterReadyTarget = null;
+
+        if (nearestCreatureDistance <= safeStrongSignalRange)
         {
-            proximityState = CreatureProximityState.VeryClose;
+            proximityState = CreatureProximityState.StrongSignal;
         }
-        else if (nearestCreatureDistance <= closeDistance)
+        else if (nearestCreatureDistance <= safeDetectionRange)
         {
-            proximityState = CreatureProximityState.Close;
-        }
-        else if (nearestCreatureDistance <= mediumDistance)
-        {
-            proximityState = CreatureProximityState.Medium;
+            proximityState = CreatureProximityState.WeakSignal;
         }
         else
         {
-            proximityState = CreatureProximityState.Far;
+            proximityState = CreatureProximityState.OutOfRange;
+            signalStrength = 0f;
         }
     }
 
@@ -148,11 +160,10 @@ public class CreatureProximitySystem : MonoBehaviour
                 ? "Signal: None"
                 : proximityState switch
                 {
-                    CreatureProximityState.Encounter => "Signal: Encounter",
-                    CreatureProximityState.VeryClose => "Signal: Very Strong",
-                    CreatureProximityState.Close => "Signal: Strong",
-                    CreatureProximityState.Medium => "Signal: Medium",
-                    CreatureProximityState.Far => "Signal: Weak",
+                    CreatureProximityState.EncounterReady => "Signal: Encounter Ready",
+                    CreatureProximityState.StrongSignal => "Signal: Strong",
+                    CreatureProximityState.WeakSignal => "Signal: Weak",
+                    CreatureProximityState.OutOfRange => "Signal: Out of Range",
                     _ => "Signal: None",
                 };
         }
@@ -160,14 +171,14 @@ public class CreatureProximitySystem : MonoBehaviour
         if (creatureNearbyText != null)
         {
             creatureNearbyText.text =
-                nearestCreature != null && proximityState != CreatureProximityState.Far
+                nearestCreature != null && proximityState != CreatureProximityState.OutOfRange
                     ? "Creature Nearby"
                     : "No Creature Nearby";
         }
 
         if (encounterStatusText != null)
         {
-            encounterStatusText.text = proximityState == CreatureProximityState.Encounter
+            encounterStatusText.text = proximityState == CreatureProximityState.EncounterReady
                 ? $"{nearestCreature.CreatureType} Encounter Ready"
                 : "No Encounter";
         }
@@ -182,11 +193,10 @@ public class CreatureProximitySystem : MonoBehaviour
 
         return proximityState switch
         {
-            CreatureProximityState.Encounter => $"{nearestCreature.CreatureType} Encounter Ready",
-            CreatureProximityState.VeryClose => "Creature Signal: Very Strong",
-            CreatureProximityState.Close => "Creature Signal: Strong",
-            CreatureProximityState.Medium => "Creature Signal: Medium",
-            CreatureProximityState.Far => "Creature Signal: Weak",
+            CreatureProximityState.EncounterReady => $"{nearestCreature.CreatureType} Encounter Ready",
+            CreatureProximityState.StrongSignal => "Creature Signal: Strong",
+            CreatureProximityState.WeakSignal => "Creature Signal: Weak",
+            CreatureProximityState.OutOfRange => "Creature Signal: Out of Range",
             _ => "Creature Signal: None",
         };
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CreatureSpawnManager : MonoBehaviour
 {
-    public event Action<CreatureExplorationTarget> OnCreatureEncounterStarted;
+    public event Action<CreatureExplorationTarget> OnCreatureEncounterReady;
 
     [SerializeField] private Transform targetsRoot;
     [SerializeField] private bool collectTargetsOnAwake = true;
@@ -29,7 +29,7 @@ public class CreatureSpawnManager : MonoBehaviour
         searchRoot.GetComponentsInChildren(true, targets);
     }
 
-    public void NotifyEncounterStarted(CreatureExplorationTarget target)
+    public void NotifyEncounterReady(CreatureExplorationTarget target)
     {
         if (target == null)
         {
@@ -37,6 +37,6 @@ public class CreatureSpawnManager : MonoBehaviour
         }
 
         Debug.Log($"{target.CreatureType} Encounter Ready");
-        OnCreatureEncounterStarted?.Invoke(target);
+        OnCreatureEncounterReady?.Invoke(target);
     }
 }

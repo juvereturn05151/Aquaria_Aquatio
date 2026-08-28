@@ -2,33 +2,45 @@ using UnityEngine;
 
 public class CreatureExplorationTarget : MonoBehaviour
 {
+    [Header("Identity")]
     [SerializeField] private CreatureType creatureType;
-    [SerializeField] private float discoveryRadius = 15f;
-    [SerializeField] private float encounterRadius = 3f;
-    [SerializeField] private bool discovered;
-    [SerializeField] private bool encounterStarted;
+
+    [Header("Position")]
+    [SerializeField] private bool useDebugPosition = true;
+    [SerializeField] private float debugEast;
+    [SerializeField] private float debugNorth = 12f;
+    [SerializeField] private float height = 0.6f;
+
+    [Header("Debug Runtime")]
+    [SerializeField] private Vector2 localEastNorthMeters;
 
     public CreatureType CreatureType => creatureType;
-    public float DiscoveryRadius => discoveryRadius;
-    public float EncounterRadius => encounterRadius;
-    public bool Discovered => discovered;
-    public bool EncounterStarted => encounterStarted;
+    public bool UseDebugPosition => useDebugPosition;
+    public float DebugEast => debugEast;
+    public float DebugNorth => debugNorth;
+    public Vector2 LocalEastNorthMeters => localEastNorthMeters;
     public Vector3 LocalWorldPosition => transform.localPosition;
 
-    public void MarkDiscovered()
+    private void Awake()
     {
-        discovered = true;
+        ApplyDebugPositionIfEnabled();
     }
 
-    public bool TryStartEncounter()
+    private void OnValidate()
     {
-        if (encounterStarted)
+        ApplyDebugPositionIfEnabled();
+    }
+
+    public void ApplyDebugPositionIfEnabled()
+    {
+        if (useDebugPosition)
         {
-            return false;
+            transform.localPosition = new Vector3(debugEast, height, debugNorth);
         }
 
-        encounterStarted = true;
-        discovered = true;
-        return true;
+        localEastNorthMeters = new Vector2(
+            transform.localPosition.x,
+            transform.localPosition.z
+        );
     }
 }

@@ -75,7 +75,7 @@ public class ExplorationDebugPanel : MonoBehaviour
             "[Exploration]\n" +
             $"Nearest: {nearestCreature}\n" +
             $"Distance: {(proximitySystem != null ? proximitySystem.NearestCreatureDistance : 0f):F1} m\n" +
-            $"State: {(proximitySystem != null ? proximitySystem.ProximityState : CreatureProximityState.None)}\n" +
+            $"State: {(proximitySystem != null ? proximitySystem.ProximityState : CreatureProximityState.OutOfRange)}\n" +
             $"Signal: {(proximitySystem != null ? proximitySystem.SignalStrength : 0f):F2}\n" +
             $"Encounter: {(proximitySystem != null ? proximitySystem.EncounterState : "None")}";
     }
@@ -127,7 +127,7 @@ public class ExplorationDebugPanel : MonoBehaviour
         );
         SetText(
             proximityStateText,
-            $"Proximity state: {(proximitySystem != null ? proximitySystem.ProximityState : CreatureProximityState.None)}"
+            $"Proximity state: {(proximitySystem != null ? proximitySystem.ProximityState : CreatureProximityState.OutOfRange)}"
         );
         SetText(
             signalStrengthText,
