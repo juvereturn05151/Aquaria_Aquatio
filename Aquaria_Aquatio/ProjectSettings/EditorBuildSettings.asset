@@ -5,18 +5,24 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/ExplorationPrototype.unity
     guid: a8f65e3dd1900ca4eb70c79278a5478d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Exploration_02_CreatureDetection.unity
     guid: 84a23ca477f5a3d439eb17de4c88b9ec
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Exploration_03_CreatureFeedback.unity
     guid: 9bd5a2258c111ee44995abc563d15498
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Exploration_04_SearchForCreature.unity
     guid: 77ce11cba224ed74e9f4ec46971d4f6c
+  - enabled: 0
+    path: Assets/Scenes/Exploration_04_EncounterEntry.unity
+    guid: e7c5fe58d76134f4980f3776179e41c0
+  - enabled: 1
+    path: Assets/Scenes/Encounter_01_ARSearch.unity
+    guid: 02890608d09fea448932314cbe155535
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 6ee72d15cf39dd748a13eac57397b9af, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 0465d33c6aee55f44b0237db8b0e0259, type: 2}

@@ -1,3 +1,5 @@
+// Used by Unity Editor menu items to build Assets/Scenes/Exploration_04_EncounterEntry.unity
+// and Assets/Scenes/Encounter_01_ARSearch.unity.
 using System;
 using TMPro;
 using UnityEditor;
@@ -16,12 +18,19 @@ public static class EncounterEntrySceneBuilder
     private const string SourceExplorationScenePath = "Assets/Scenes/Exploration_03_CreatureFeedback.unity";
     private const string EncounterEntryScenePath = "Assets/Scenes/Exploration_04_EncounterEntry.unity";
     private const string ARSearchScenePath = "Assets/Scenes/Encounter_01_ARSearch.unity";
-    private const string AquariaCreaturePrefabPath = "Assets/Prefabs/AquariaCreature.prefab";
+    private const string ARLookAroundCreaturePrefabPath = "Assets/Prefabs/ARLookAroundCreature.prefab";
 
     [MenuItem("Aquaria/Build Exploration 04 Encounter Entry And AR Search")]
     public static void BuildScenes()
     {
         BuildEncounterEntryScene();
+        BuildARSearchScene();
+        AssetDatabase.SaveAssets();
+    }
+
+    [MenuItem("Aquaria/Build AR Search Scene Only")]
+    public static void BuildARSearchSceneOnly()
+    {
         BuildARSearchScene();
         AssetDatabase.SaveAssets();
     }
@@ -84,6 +93,8 @@ public static class EncounterEntrySceneBuilder
         cameraOffset.transform.SetParent(xrOriginObject.transform);
         cameraOffset.transform.localPosition = Vector3.zero;
         cameraOffset.transform.localRotation = Quaternion.identity;
+        AREditorCameraInputController editorCameraInput =
+            cameraOffset.AddComponent<AREditorCameraInputController>();
 
         GameObject cameraObject = new GameObject("AR Camera");
         cameraObject.tag = "MainCamera";
@@ -107,29 +118,83 @@ public static class EncounterEntrySceneBuilder
 
         GameObject creatureParent = new GameObject("AR Creature Root");
         GameObject systems = new GameObject("Systems");
-        AREncounterPlacementController placementController =
-            systems.AddComponent<AREncounterPlacementController>();
+        ARCreatureSearchController searchController =
+            systems.AddComponent<ARCreatureSearchController>();
+        ARCreatureSpawner creatureSpawner = systems.AddComponent<ARCreatureSpawner>();
+        ARCreatureVisibilityDetector visibilityDetector =
+            systems.AddComponent<ARCreatureVisibilityDetector>();
+        ARSearchUIController uiController = systems.AddComponent<ARSearchUIController>();
+
+        GameObject guidanceRoot = new GameObject("ARSearchGuidance");
+        GameObject directionArrowObject = CreateDirectionArrow(
+            guidanceRoot.transform,
+            CreateMaterial(
+                "Assets/Resources/ARSearch_DirectionArrow.mat",
+                new Color(0f, 0.85f, 1f, 0.95f)
+            )
+        );
+        ARDirectionArrow directionArrow = guidanceRoot.AddComponent<ARDirectionArrow>();
 
         Canvas canvas = CreateCanvas();
-        TextMeshProUGUI instructionText = CreateText(
-            "ScanInstructionText",
+        GameObject searchInstruction = CreatePanel(
+            "SearchInstruction",
             canvas.transform,
             new Vector2(0f, 1f),
             new Vector2(1f, 1f),
             new Vector2(0f, -48f),
-            new Vector2(-64f, 80f),
+            new Vector2(-64f, 96f)
+        );
+        TextMeshProUGUI instructionText = CreateText(
+            "InstructionText",
+            searchInstruction.transform,
+            Vector2.zero,
+            Vector2.one,
+            Vector2.zero,
+            new Vector2(-32f, -20f),
             32f,
-            "Move phone to scan the area",
+            "Find the creature",
             TextAlignmentOptions.Center
         );
-        TextMeshProUGUI debugText = CreateText(
-            "ARDebugText",
+        GameObject foundPanel = CreatePanel(
+            "FoundPanel",
+            canvas.transform,
+            new Vector2(0.5f, 0.5f),
+            new Vector2(0.5f, 0.5f),
+            Vector2.zero,
+            new Vector2(620f, 180f)
+        );
+        RectTransform foundRect = foundPanel.GetComponent<RectTransform>();
+        foundRect.pivot = new Vector2(0.5f, 0.5f);
+        foundPanel.SetActive(false);
+        TextMeshProUGUI foundText = CreateText(
+            "FoundText",
+            foundPanel.transform,
+            Vector2.zero,
+            Vector2.one,
+            Vector2.zero,
+            new Vector2(-40f, -28f),
+            44f,
+            "Creature Found!",
+            TextAlignmentOptions.Center
+        );
+        GameObject debugPanel = CreatePanel(
+            "DebugPanel",
             canvas.transform,
             new Vector2(0f, 0f),
             new Vector2(0f, 0f),
             new Vector2(24f, 24f),
-            new Vector2(560f, 180f),
-            20f,
+            new Vector2(640f, 300f)
+        );
+        RectTransform debugPanelRect = debugPanel.GetComponent<RectTransform>();
+        debugPanelRect.pivot = new Vector2(0f, 0f);
+        TextMeshProUGUI debugText = CreateText(
+            "DebugText",
+            debugPanel.transform,
+            Vector2.zero,
+            Vector2.one,
+            new Vector2(16f, 16f),
+            new Vector2(-32f, -32f),
+            19f,
             "AR debug ready",
             TextAlignmentOptions.BottomLeft
         );
@@ -144,29 +209,51 @@ public static class EncounterEntrySceneBuilder
         );
 
         GameObject creaturePrefab =
-            AssetDatabase.LoadAssetAtPath<GameObject>(AquariaCreaturePrefabPath);
+            AssetDatabase.LoadAssetAtPath<GameObject>(ARLookAroundCreaturePrefabPath);
 
-        SetObjectReference(placementController, "arSession", arSession);
-        SetObjectReference(placementController, "planeManager", planeManager);
-        SetObjectReference(placementController, "raycastManager", raycastManager);
-        SetObjectReference(placementController, "arCamera", arCamera);
-        SetObjectReference(placementController, "creaturePrefab", creaturePrefab);
-        SetObjectReference(placementController, "creatureParent", creatureParent.transform);
-        SetObjectReference(placementController, "instructionText", instructionText);
-        SetObjectReference(placementController, "debugText", debugText);
-        SetBool(placementController, "useDebugPlacement", true);
-        SetFloat(placementController, "debugSpawnYaw", 120f);
-        SetFloat(placementController, "debugSpawnDistance", 3f);
-        SetFloat(placementController, "minSpawnDistance", 2f);
-        SetFloat(placementController, "maxSpawnDistance", 4f);
-        SetFloat(placementController, "minSpawnYawOffset", 70f);
-        SetFloat(placementController, "maxSpawnYawOffset", 160f);
-        SetFloat(placementController, "heightOffset", 0f);
-        SetBool(placementController, "allowFallbackPlacementWithoutPlane", true);
-        SetString(placementController, "returnSceneName", "Exploration_04_EncounterEntry");
+        SetObjectReference(searchController, "arSession", arSession);
+        SetObjectReference(searchController, "arCamera", arCamera);
+        SetObjectReference(searchController, "creatureSpawner", creatureSpawner);
+        SetObjectReference(searchController, "visibilityDetector", visibilityDetector);
+        SetObjectReference(searchController, "directionArrow", directionArrow);
+        SetObjectReference(searchController, "uiController", uiController);
+        SetString(searchController, "returnSceneName", "Exploration_04_EncounterEntry");
+
+        SetObjectReference(editorCameraInput, "moveRoot", cameraOffset.transform);
+        SetObjectReference(editorCameraInput, "yawRoot", cameraOffset.transform);
+        SetObjectReference(editorCameraInput, "pitchRoot", cameraObject.transform);
+        SetFloat(editorCameraInput, "moveSpeed", 4f);
+        SetFloat(editorCameraInput, "sprintMultiplier", 3f);
+        SetFloat(editorCameraInput, "verticalMoveSpeed", 3f);
+        SetFloat(editorCameraInput, "mouseSensitivity", 2.5f);
+
+        SetObjectReference(creatureSpawner, "planeManager", planeManager);
+        SetObjectReference(creatureSpawner, "raycastManager", raycastManager);
+        SetObjectReference(creatureSpawner, "creaturePrefab", creaturePrefab);
+        SetObjectReference(creatureSpawner, "creatureParent", creatureParent.transform);
+        SetString(creatureSpawner, "spawnedCreatureName", "ARLookAroundCreature");
+        SetFloat(creatureSpawner, "minimumSpawnDistance", 18f);
+        SetFloat(creatureSpawner, "maximumSpawnDistance", 30f);
+        SetFloat(creatureSpawner, "minimumSpawnAngleFromForward", 60f);
+        SetFloat(creatureSpawner, "maximumSpawnAngleFromForward", 160f);
+        SetFloat(creatureSpawner, "creatureHeightOffset", 0.5f);
+        SetBool(creatureSpawner, "useDetectedPlaneHeight", false);
+        SetBool(creatureSpawner, "allowFallbackPlacementWithoutPlane", true);
+
+        SetObjectReference(visibilityDetector, "arCamera", arCamera);
+        SetFloat(visibilityDetector, "requiredVisibleTime", 0.75f);
+
+        SetObjectReference(directionArrow, "arCamera", arCamera);
+        SetObjectReference(directionArrow, "arrowTransform", directionArrowObject.transform);
+
+        SetObjectReference(uiController, "instructionText", instructionText);
+        SetObjectReference(uiController, "foundPanel", foundPanel);
+        SetObjectReference(uiController, "foundText", foundText);
+        SetObjectReference(uiController, "debugPanel", debugPanel);
+        SetObjectReference(uiController, "debugText", debugText);
 
         returnButton.onClick.RemoveAllListeners();
-        UnityEventTools.AddPersistentListener(returnButton.onClick, placementController.ReturnToExploration);
+        UnityEventTools.AddPersistentListener(returnButton.onClick, searchController.ReturnToPreviousScene);
 
         GameObject eventSystem = new GameObject("EventSystem");
         eventSystem.AddComponent<EventSystem>();
@@ -174,6 +261,35 @@ public static class EncounterEntrySceneBuilder
 
         EditorSceneManager.SaveScene(scene, ARSearchScenePath);
         AddSceneToBuildSettings(ARSearchScenePath);
+    }
+
+    private static GameObject CreateDirectionArrow(Transform parent, Material material)
+    {
+        GameObject arrowRoot = new GameObject("DirectionArrow");
+        arrowRoot.transform.SetParent(parent);
+        arrowRoot.transform.localPosition = Vector3.zero;
+        arrowRoot.transform.localRotation = Quaternion.identity;
+        arrowRoot.transform.localScale = new Vector3(0.25f, 0.25f, 0.55f);
+
+        GameObject shaft = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        shaft.name = "ArrowShaft";
+        shaft.transform.SetParent(arrowRoot.transform);
+        shaft.transform.localPosition = new Vector3(0f, 0f, 0.18f);
+        shaft.transform.localRotation = Quaternion.identity;
+        shaft.transform.localScale = new Vector3(0.26f, 0.12f, 0.58f);
+        SetMaterial(shaft, material);
+        UnityEngine.Object.DestroyImmediate(shaft.GetComponent<Collider>());
+
+        GameObject head = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        head.name = "ArrowHead";
+        head.transform.SetParent(arrowRoot.transform);
+        head.transform.localPosition = new Vector3(0f, 0f, 0.55f);
+        head.transform.localRotation = Quaternion.Euler(0f, 45f, 0f);
+        head.transform.localScale = new Vector3(0.38f, 0.14f, 0.38f);
+        SetMaterial(head, material);
+        UnityEngine.Object.DestroyImmediate(head.GetComponent<Collider>());
+
+        return arrowRoot;
     }
 
     private static CanvasGroup CreateEncounterPrompt(Transform canvas)
@@ -230,6 +346,32 @@ public static class EncounterEntrySceneBuilder
         scaler.referenceResolution = new Vector2(1080f, 1920f);
         canvasObject.AddComponent<GraphicRaycaster>();
         return canvas;
+    }
+
+    private static GameObject CreatePanel(
+        string name,
+        Transform parent,
+        Vector2 anchorMin,
+        Vector2 anchorMax,
+        Vector2 anchoredPosition,
+        Vector2 size
+    )
+    {
+        GameObject panel = new GameObject(name);
+        panel.transform.SetParent(parent);
+        RectTransform rectTransform = panel.AddComponent<RectTransform>();
+        rectTransform.anchorMin = anchorMin;
+        rectTransform.anchorMax = anchorMax;
+        rectTransform.pivot = new Vector2(
+            Mathf.Lerp(anchorMin.x, anchorMax.x, 0.5f),
+            Mathf.Lerp(anchorMin.y, anchorMax.y, 0.5f)
+        );
+        rectTransform.anchoredPosition = anchoredPosition;
+        rectTransform.sizeDelta = size;
+
+        Image image = panel.AddComponent<Image>();
+        image.color = new Color(0f, 0.22f, 0.28f, 0.72f);
+        return panel;
     }
 
     private static TextMeshProUGUI CreateText(
@@ -302,6 +444,56 @@ public static class EncounterEntrySceneBuilder
         );
 
         return button;
+    }
+
+    private static Material CreateMaterial(string path, Color color)
+    {
+        string folder = System.IO.Path.GetDirectoryName(path)?.Replace("\\", "/");
+
+        if (!string.IsNullOrEmpty(folder) && !AssetDatabase.IsValidFolder(folder))
+        {
+            EnsureFolder(folder);
+        }
+
+        Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
+
+        if (material == null)
+        {
+            material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            AssetDatabase.CreateAsset(material, path);
+        }
+
+        material.color = color;
+        EditorUtility.SetDirty(material);
+        return material;
+    }
+
+    private static void EnsureFolder(string folderPath)
+    {
+        if (AssetDatabase.IsValidFolder(folderPath))
+        {
+            return;
+        }
+
+        string parent = System.IO.Path.GetDirectoryName(folderPath)?.Replace("\\", "/");
+        string folder = System.IO.Path.GetFileName(folderPath);
+
+        if (!string.IsNullOrEmpty(parent) && !AssetDatabase.IsValidFolder(parent))
+        {
+            EnsureFolder(parent);
+        }
+
+        AssetDatabase.CreateFolder(parent, folder);
+    }
+
+    private static void SetMaterial(GameObject gameObject, Material material)
+    {
+        Renderer renderer = gameObject.GetComponent<Renderer>();
+
+        if (renderer != null)
+        {
+            renderer.sharedMaterial = material;
+        }
     }
 
     private static void ReplaceCopiedAsset(string sourcePath, string destinationPath)
