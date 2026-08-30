@@ -11,11 +11,13 @@ public static class ExplorationCreatureFeedbackSceneBuilder
     private const string SourceScenePath = "Assets/Scenes/Exploration_02_CreatureDetection.unity";
     private const string FeedbackScenePath = "Assets/Scenes/Exploration_03_CreatureFeedback.unity";
     private const string AquariaCreaturePrefabPath = "Assets/Prefabs/AquariaCreature.prefab";
+    private const string AquarioCreaturePrefabPath = "Assets/Prefabs/AquarioCreature.prefab";
 
     [MenuItem("Aquaria/Build Exploration 03 Creature Feedback Scene")]
     public static void BuildScene()
     {
-        UpdateAquariaCreaturePrefab();
+        UpdateCreaturePrefab(AquariaCreaturePrefabPath);
+        UpdateCreaturePrefab(AquarioCreaturePrefabPath);
 
         if (!AssetDatabase.CopyAsset(SourceScenePath, FeedbackScenePath))
         {
@@ -26,23 +28,73 @@ public static class ExplorationCreatureFeedbackSceneBuilder
 
         CreatureProximitySystem proximitySystem =
             UnityEngine.Object.FindAnyObjectByType<CreatureProximitySystem>();
-        CreatureExplorationTarget creatureTarget =
-            UnityEngine.Object.FindAnyObjectByType<CreatureExplorationTarget>();
+        CreatureExplorationTarget[] creatureTargets =
+            UnityEngine.Object.FindObjectsByType<CreatureExplorationTarget>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None
+            );
 
-        if (proximitySystem == null || creatureTarget == null)
+        if (proximitySystem == null || creatureTargets.Length == 0)
         {
             throw new InvalidOperationException(
                 "Exploration_03_CreatureFeedback requires the duplicated creature detection systems."
             );
         }
 
-        CreaturePresentation presentation =
-            creatureTarget.GetComponent<CreaturePresentation>() ??
-            creatureTarget.gameObject.AddComponent<CreaturePresentation>();
-
         Canvas canvas = UnityEngine.Object.FindAnyObjectByType<Canvas>();
         CanvasGroup encounterPrompt = CreateEncounterPrompt(canvas);
 
+        foreach (CreatureExplorationTarget creatureTarget in creatureTargets)
+        {
+            ConfigurePresentation(
+                creatureTarget,
+                proximitySystem,
+                encounterPrompt
+            );
+        }
+
+        EditorSceneManager.SaveScene(scene, FeedbackScenePath);
+        AddSceneToBuildSettings(FeedbackScenePath);
+        AssetDatabase.SaveAssets();
+    }
+
+    private static void UpdateCreaturePrefab(string prefabPath)
+    {
+        GameObject prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+
+        if (prefabAsset == null)
+        {
+            return;
+        }
+
+        GameObject prefabRoot = PrefabUtility.LoadPrefabContents(prefabPath);
+
+        try
+        {
+            CreatureExplorationTarget target = prefabRoot.GetComponent<CreatureExplorationTarget>();
+
+            if (target != null)
+            {
+                ConfigurePresentation(target, null, null);
+            }
+
+            PrefabUtility.SaveAsPrefabAsset(prefabRoot, prefabPath);
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(prefabRoot);
+        }
+    }
+
+    private static void ConfigurePresentation(
+        CreatureExplorationTarget creatureTarget,
+        CreatureProximitySystem proximitySystem,
+        CanvasGroup encounterPrompt
+    )
+    {
+        CreaturePresentation presentation =
+            creatureTarget.GetComponent<CreaturePresentation>() ??
+            creatureTarget.gameObject.AddComponent<CreaturePresentation>();
         Transform visualRoot = creatureTarget.transform.Find("VisualRoot");
         Transform pulseRoot = creatureTarget.transform.Find("VisualRoot/SignalRing");
 
@@ -68,52 +120,6 @@ public static class ExplorationCreatureFeedbackSceneBuilder
         SetFloat(presentation, "pulseSpeed", 4f);
         SetFloat(presentation, "weakSignalPulseIntensity", 0.2f);
         SetFloat(presentation, "encounterPulseBoost", 0.85f);
-
-        EditorSceneManager.SaveScene(scene, FeedbackScenePath);
-        AddSceneToBuildSettings(FeedbackScenePath);
-        AssetDatabase.SaveAssets();
-    }
-
-    private static void UpdateAquariaCreaturePrefab()
-    {
-        GameObject prefabRoot = PrefabUtility.LoadPrefabContents(AquariaCreaturePrefabPath);
-
-        try
-        {
-            CreaturePresentation presentation =
-                prefabRoot.GetComponent<CreaturePresentation>() ??
-                prefabRoot.AddComponent<CreaturePresentation>();
-            CreatureExplorationTarget target = prefabRoot.GetComponent<CreatureExplorationTarget>();
-            Transform visualRoot = prefabRoot.transform.Find("VisualRoot");
-            Transform pulseRoot = prefabRoot.transform.Find("VisualRoot/SignalRing");
-
-            SetObjectReference(presentation, "target", target);
-            SetObjectReference(presentation, "visualRoot", visualRoot);
-            SetObjectReference(presentation, "bobRoot", visualRoot);
-            SetObjectReference(presentation, "pulseRoot", pulseRoot);
-            SetObjectReference(
-                presentation,
-                "signalEffectRoot",
-                pulseRoot != null ? pulseRoot.gameObject : null
-            );
-            SetRendererArray(presentation, "fadeRenderers", prefabRoot.GetComponentsInChildren<Renderer>(true));
-            SetFloat(presentation, "fadeDuration", 0.35f);
-            SetFloat(presentation, "weakSignalVisibility", 0f);
-            SetFloat(presentation, "visibleRendererThreshold", 0.5f);
-            SetFloat(presentation, "bobHeight", 0.35f);
-            SetFloat(presentation, "bobSpeed", 2.4f);
-            SetFloat(presentation, "minimumPulseScale", 1.25f);
-            SetFloat(presentation, "maximumPulseScale", 5.5f);
-            SetFloat(presentation, "pulseSpeed", 4f);
-            SetFloat(presentation, "weakSignalPulseIntensity", 0.2f);
-            SetFloat(presentation, "encounterPulseBoost", 0.85f);
-
-            PrefabUtility.SaveAsPrefabAsset(prefabRoot, AquariaCreaturePrefabPath);
-        }
-        finally
-        {
-            PrefabUtility.UnloadPrefabContents(prefabRoot);
-        }
     }
 
     private static CanvasGroup CreateEncounterPrompt(Canvas canvas)

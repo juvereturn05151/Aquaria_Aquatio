@@ -4168,6 +4168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2047575131}
+  - component: {fileID: 2047575132}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -4196,6 +4197,32 @@ Transform:
   - {fileID: 309822727}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2047575132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2047575130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f7f0342e0a4f6ca9d36cb915e7f074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EncounterEntryVirtualController
+  positionSource: {fileID: 2139008985}
+  headingController: {fileID: 268786600}
+  showController: 1
+  buttonSize: 82
+  buttonGap: 10
+  edgePadding: 28
+  forwardLabel: Forward
+  backLabel: Back
+  leftLabel: Left
+  rightLabel: Right
+  rotateLeftLabel: Rotate Left
+  rotateRightLabel: Rotate Right
+  moveInput: {x: 0, y: 0}
+  turnInput: 0
 --- !u!1 &2055008581
 GameObject:
   m_ObjectHideFlags: 0

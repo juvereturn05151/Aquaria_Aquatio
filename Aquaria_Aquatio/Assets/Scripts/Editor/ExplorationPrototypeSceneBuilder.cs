@@ -11,6 +11,7 @@ public static class ExplorationPrototypeSceneBuilder
     private const string ScenePath = "Assets/Scenes/ExplorationPrototype_Setup.unity";
     private const string CreatureDetectionScenePath = "Assets/Scenes/Exploration_02_CreatureDetection.unity";
     private const string AquariaCreaturePrefabPath = "Assets/Prefabs/AquariaCreature.prefab";
+    private const string AquarioCreaturePrefabPath = "Assets/Prefabs/AquarioCreature.prefab";
 
     [MenuItem("Aquaria/Build Exploration Prototype Setup Scene")]
     public static void BuildScene()
@@ -350,8 +351,20 @@ public static class ExplorationPrototypeSceneBuilder
             "Assets/Resources/Aquaria_Target.mat",
             new Color(0.0f, 0.75f, 0.95f)
         );
+        Material aquarioMaterial = CreateMaterial(
+            "Assets/Resources/Aquario_Target.mat",
+            new Color(0.95f, 0.56f, 0.18f)
+        );
 
         GameObject aquariaPrefab = CreateAquariaCreaturePrefab(aquariaMaterial);
+        GameObject aquarioPrefab = CreateCreaturePrefab(
+            AquarioCreaturePrefabPath,
+            "AquarioCreature",
+            CreatureType.Aquario,
+            aquarioMaterial,
+            18f,
+            0f
+        );
 
         GameObject cameraObject = new GameObject("Main Camera");
         Camera camera = cameraObject.AddComponent<Camera>();
@@ -453,6 +466,18 @@ public static class ExplorationPrototypeSceneBuilder
         SetFloat(aquariaTarget, "debugNorth", 12f);
         SetFloat(aquariaTarget, "height", 0.6f);
         aquariaTarget.ApplyDebugPositionIfEnabled();
+
+        GameObject aquarioInstance = (GameObject)PrefabUtility.InstantiatePrefab(aquarioPrefab);
+        aquarioInstance.name = "Aquario_DebugTarget";
+        aquarioInstance.transform.SetParent(creatureTargets.transform);
+        CreatureExplorationTarget aquarioTarget =
+            aquarioInstance.GetComponent<CreatureExplorationTarget>();
+        SetEnum(aquarioTarget, "creatureType", (int)CreatureType.Aquario);
+        SetBool(aquarioTarget, "useDebugPosition", true);
+        SetFloat(aquarioTarget, "debugEast", 18f);
+        SetFloat(aquarioTarget, "debugNorth", 0f);
+        SetFloat(aquarioTarget, "height", 0.6f);
+        aquarioTarget.ApplyDebugPositionIfEnabled();
 
         GameObject canvasObject = new GameObject("Canvas");
         Canvas canvas = canvasObject.AddComponent<Canvas>();
@@ -657,22 +682,41 @@ public static class ExplorationPrototypeSceneBuilder
 
     private static GameObject CreateAquariaCreaturePrefab(Material material)
     {
+        return CreateCreaturePrefab(
+            AquariaCreaturePrefabPath,
+            "AquariaCreature",
+            CreatureType.Aquaria,
+            material,
+            0f,
+            12f
+        );
+    }
+
+    private static GameObject CreateCreaturePrefab(
+        string prefabPath,
+        string prefabName,
+        CreatureType creatureType,
+        Material material,
+        float debugEast,
+        float debugNorth
+    )
+    {
         EnsureFolder("Assets/Prefabs");
 
         GameObject existingPrefab =
-            AssetDatabase.LoadAssetAtPath<GameObject>(AquariaCreaturePrefabPath);
+            AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
 
         if (existingPrefab != null)
         {
             return existingPrefab;
         }
 
-        GameObject root = new GameObject("AquariaCreature");
+        GameObject root = new GameObject(prefabName);
         CreatureExplorationTarget target = root.AddComponent<CreatureExplorationTarget>();
-        SetEnum(target, "creatureType", (int)CreatureType.Aquaria);
+        SetEnum(target, "creatureType", (int)creatureType);
         SetBool(target, "useDebugPosition", true);
-        SetFloat(target, "debugEast", 0f);
-        SetFloat(target, "debugNorth", 12f);
+        SetFloat(target, "debugEast", debugEast);
+        SetFloat(target, "debugNorth", debugNorth);
         SetFloat(target, "height", 0.6f);
 
         GameObject visualRoot = CreateChild(root, "VisualRoot");
@@ -720,8 +764,26 @@ public static class ExplorationPrototypeSceneBuilder
         SetMaterial(signalRing, material);
         Object.DestroyImmediate(signalRing.GetComponent<Collider>());
 
+        CreaturePresentation presentation = root.AddComponent<CreaturePresentation>();
+        SetObjectReference(presentation, "target", target);
+        SetObjectReference(presentation, "visualRoot", visualRoot.transform);
+        SetObjectReference(presentation, "bobRoot", visualRoot.transform);
+        SetObjectReference(presentation, "pulseRoot", signalRing.transform);
+        SetObjectReference(presentation, "signalEffectRoot", signalRing);
+        SetRendererArray(presentation, "fadeRenderers", root.GetComponentsInChildren<Renderer>(true));
+        SetFloat(presentation, "fadeDuration", 0.35f);
+        SetFloat(presentation, "weakSignalVisibility", 0f);
+        SetFloat(presentation, "visibleRendererThreshold", 0.5f);
+        SetFloat(presentation, "bobHeight", 0.35f);
+        SetFloat(presentation, "bobSpeed", 2.4f);
+        SetFloat(presentation, "minimumPulseScale", 1.25f);
+        SetFloat(presentation, "maximumPulseScale", 5.5f);
+        SetFloat(presentation, "pulseSpeed", 4f);
+        SetFloat(presentation, "weakSignalPulseIntensity", 0.2f);
+        SetFloat(presentation, "encounterPulseBoost", 0.85f);
+
         GameObject savedPrefab =
-            PrefabUtility.SaveAsPrefabAsset(root, AquariaCreaturePrefabPath);
+            PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
         Object.DestroyImmediate(root);
         return savedPrefab;
     }
@@ -890,6 +952,26 @@ public static class ExplorationPrototypeSceneBuilder
             return;
         }
         property.enumValueIndex = value;
+        serializedObject.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static void SetRendererArray(Object target, string propertyName, Renderer[] renderers)
+    {
+        SerializedObject serializedObject = new SerializedObject(target);
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null || !property.isArray)
+        {
+            Debug.LogWarning($"Missing serialized renderer array {propertyName} on {target.name}");
+            return;
+        }
+
+        property.arraySize = renderers.Length;
+
+        for (int index = 0; index < renderers.Length; index++)
+        {
+            property.GetArrayElementAtIndex(index).objectReferenceValue = renderers[index];
+        }
+
         serializedObject.ApplyModifiedPropertiesWithoutUndo();
     }
 

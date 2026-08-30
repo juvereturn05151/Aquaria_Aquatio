@@ -60,6 +60,13 @@ public static class EncounterEntrySceneBuilder
         ExplorationEncounterEntry entry =
             systems.GetComponent<ExplorationEncounterEntry>() ??
             systems.AddComponent<ExplorationEncounterEntry>();
+        EncounterEntryVirtualController virtualController =
+            systems.GetComponent<EncounterEntryVirtualController>() ??
+            systems.AddComponent<EncounterEntryVirtualController>();
+        EditorKeyboardPositionSource editorPositionSource =
+            UnityEngine.Object.FindAnyObjectByType<EditorKeyboardPositionSource>();
+        DeviceHeadingController headingController =
+            UnityEngine.Object.FindAnyObjectByType<DeviceHeadingController>();
 
         SetObjectReference(entry, "proximitySystem", proximitySystem);
         SetObjectReference(entry, "encounterPrompt", encounterPrompt);
@@ -68,6 +75,9 @@ public static class EncounterEntrySceneBuilder
         SetObjectReference(entry, "promptBackground", promptBackground);
         SetObjectReference(entry, "promptRectTransform", promptRectTransform);
         SetString(entry, "encounterSceneName", "Encounter_01_ARSearch");
+
+        SetObjectReference(virtualController, "positionSource", editorPositionSource);
+        SetObjectReference(virtualController, "headingController", headingController);
 
         encounterButton.onClick.RemoveAllListeners();
 

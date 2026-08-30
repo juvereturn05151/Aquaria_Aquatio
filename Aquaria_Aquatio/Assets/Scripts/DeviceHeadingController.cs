@@ -1,3 +1,6 @@
+// Used by scenes: Assets/Scenes/Exploration_02_CreatureDetection.unity,
+// Assets/Scenes/Exploration_03_CreatureFeedback.unity, and
+// Assets/Scenes/Exploration_04_EncounterEntry.unity.
 using TMPro;
 using UnityEngine;
 
@@ -15,6 +18,9 @@ public class DeviceHeadingController : MonoBehaviour
     [Header("Editor Simulation")]
     [SerializeField] private bool editorSimulationEnabled = true;
     [SerializeField] private float simulationTurnSpeed = 90f;
+
+    [Header("Virtual Controller")]
+    [SerializeField] private float virtualTurnInput;
 
     [Header("Debug Runtime")]
     [SerializeField] private bool compassEnabled;
@@ -99,6 +105,9 @@ public class DeviceHeadingController : MonoBehaviour
             turnInput += 1f;
         }
 
+        turnInput += virtualTurnInput;
+        turnInput = Mathf.Clamp(turnInput, -1f, 1f);
+
         rawHeading = Mathf.Repeat(
             rawHeading + turnInput * simulationTurnSpeed * Time.deltaTime,
             360f
@@ -111,6 +120,11 @@ public class DeviceHeadingController : MonoBehaviour
     private bool IsPressed(KeyCode keyCode)
     {
         return Input.GetKey(keyCode);
+    }
+
+    public void SetVirtualTurnInput(float input)
+    {
+        virtualTurnInput = Mathf.Clamp(input, -1f, 1f);
     }
 
     private void SmoothHeading()
