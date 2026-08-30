@@ -11,6 +11,9 @@ public class CreatureProximitySystem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI creatureNearbyText;
     [SerializeField] private TextMeshProUGUI encounterStatusText;
 
+    [Header("Encounter Flow")]
+    [SerializeField] private bool useEncounterFlowFilter = true;
+
     [Header("Proximity Thresholds")]
     [SerializeField] private float detectionRange = 30f;
     [SerializeField] private float strongSignalRange = 12f;
@@ -74,6 +77,11 @@ public class CreatureProximitySystem : MonoBehaviour
                 continue;
             }
 
+            if (useEncounterFlowFilter && !EncounterSessionData.CanSearchFor(target.CreatureType))
+            {
+                continue;
+            }
+
             Vector3 targetPosition = target.LocalWorldPosition;
             float distance = Vector2.Distance(
                 playerPosition,
@@ -94,7 +102,9 @@ public class CreatureProximitySystem : MonoBehaviour
         {
             proximityState = CreatureProximityState.OutOfRange;
             signalStrength = 0f;
-            encounterState = "No creature target";
+            encounterState = EncounterSessionData.AquariaAquarioUnited
+                ? "Aquaria and Aquario United"
+                : $"Search for {EncounterSessionData.CurrentSignalCreature}";
             return;
         }
 
@@ -172,7 +182,7 @@ public class CreatureProximitySystem : MonoBehaviour
         {
             creatureNearbyText.text =
                 nearestCreature != null && proximityState != CreatureProximityState.OutOfRange
-                    ? "Creature Nearby"
+                    ? $"{nearestCreature.CreatureType} Signal Nearby"
                     : "No Creature Nearby";
         }
 
@@ -188,14 +198,16 @@ public class CreatureProximitySystem : MonoBehaviour
     {
         if (nearestCreature == null)
         {
-            return "Creature Signal: None";
+            return EncounterSessionData.AquariaAquarioUnited
+                ? "Aquaria and Aquario are united"
+                : $"Creature Signal: Search for {EncounterSessionData.CurrentSignalCreature}";
         }
 
         return proximityState switch
         {
             CreatureProximityState.EncounterReady => $"{nearestCreature.CreatureType} Encounter Ready",
-            CreatureProximityState.StrongSignal => "Creature Signal: Strong",
-            CreatureProximityState.WeakSignal => "Creature Signal: Weak",
+            CreatureProximityState.StrongSignal => $"{nearestCreature.CreatureType} Signal: Strong",
+            CreatureProximityState.WeakSignal => $"{nearestCreature.CreatureType} Signal: Weak",
             CreatureProximityState.OutOfRange => "Creature Signal: Out of Range",
             _ => "Creature Signal: None",
         };

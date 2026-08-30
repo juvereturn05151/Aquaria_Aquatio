@@ -21,6 +21,22 @@ public class CreatureExplorationTarget : MonoBehaviour
     public Vector2 LocalEastNorthMeters => localEastNorthMeters;
     public Vector3 LocalWorldPosition => transform.localPosition;
 
+    public void Configure(
+        CreatureType type,
+        bool useDebug,
+        float east,
+        float north,
+        float targetHeight
+    )
+    {
+        creatureType = type;
+        useDebugPosition = useDebug;
+        debugEast = east;
+        debugNorth = north;
+        height = targetHeight;
+        ApplyDebugPositionIfEnabled();
+    }
+
     private void Awake()
     {
         ApplyDebugPositionIfEnabled();

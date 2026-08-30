@@ -30,8 +30,7 @@ public static class ExplorationCreatureFeedbackSceneBuilder
             UnityEngine.Object.FindAnyObjectByType<CreatureProximitySystem>();
         CreatureExplorationTarget[] creatureTargets =
             UnityEngine.Object.FindObjectsByType<CreatureExplorationTarget>(
-                FindObjectsInactive.Include,
-                FindObjectsSortMode.None
+                FindObjectsInactive.Include
             );
 
         if (proximitySystem == null || creatureTargets.Length == 0)

@@ -75,6 +75,7 @@ public static class EncounterEntrySceneBuilder
         SetObjectReference(entry, "promptBackground", promptBackground);
         SetObjectReference(entry, "promptRectTransform", promptRectTransform);
         SetString(entry, "encounterSceneName", "Encounter_01_ARSearch");
+        SetInt(entry, "aquarioCountToCatch", 3);
 
         SetObjectReference(virtualController, "positionSource", editorPositionSource);
         SetObjectReference(virtualController, "headingController", headingController);
@@ -134,6 +135,7 @@ public static class EncounterEntrySceneBuilder
         ARCreatureVisibilityDetector visibilityDetector =
             systems.AddComponent<ARCreatureVisibilityDetector>();
         ARSearchUIController uiController = systems.AddComponent<ARSearchUIController>();
+        AquariaUnionAnimation unionAnimation = systems.AddComponent<AquariaUnionAnimation>();
 
         GameObject guidanceRoot = new GameObject("ARSearchGuidance");
         GameObject directionArrowObject = CreateDirectionArrow(
@@ -227,7 +229,9 @@ public static class EncounterEntrySceneBuilder
         SetObjectReference(searchController, "visibilityDetector", visibilityDetector);
         SetObjectReference(searchController, "directionArrow", directionArrow);
         SetObjectReference(searchController, "uiController", uiController);
+        SetObjectReference(searchController, "unionAnimation", unionAnimation);
         SetString(searchController, "returnSceneName", "Exploration_04_EncounterEntry");
+        SetFloat(searchController, "returnDelayAfterFound", 2.5f);
 
         SetObjectReference(editorCameraInput, "moveRoot", cameraOffset.transform);
         SetObjectReference(editorCameraInput, "yawRoot", cameraOffset.transform);
@@ -261,6 +265,7 @@ public static class EncounterEntrySceneBuilder
         SetObjectReference(uiController, "foundText", foundText);
         SetObjectReference(uiController, "debugPanel", debugPanel);
         SetObjectReference(uiController, "debugText", debugText);
+        SetObjectReference(unionAnimation, "canvas", canvas);
 
         returnButton.onClick.RemoveAllListeners();
         UnityEventTools.AddPersistentListener(returnButton.onClick, searchController.ReturnToPreviousScene);
@@ -576,6 +581,21 @@ public static class EncounterEntrySceneBuilder
         }
 
         property.stringValue = value;
+        serializedObject.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static void SetInt(UnityEngine.Object target, string propertyName, int value)
+    {
+        SerializedObject serializedObject = new SerializedObject(target);
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+
+        if (property == null)
+        {
+            Debug.LogWarning($"Missing serialized property {propertyName} on {target.name}");
+            return;
+        }
+
+        property.intValue = value;
         serializedObject.ApplyModifiedPropertiesWithoutUndo();
     }
 

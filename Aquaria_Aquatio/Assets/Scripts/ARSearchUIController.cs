@@ -20,6 +20,33 @@ public class ARSearchUIController : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool showDebugPanel = true;
 
+    public void SetCreatureContext(CreatureType creatureType)
+    {
+        searchingInstruction = $"Look around for {creatureType}";
+        visibleInstruction = $"Keep {creatureType} in view";
+        foundInstruction = $"{creatureType} Found!";
+
+        if (instructionText != null)
+        {
+            instructionText.text = searchingInstruction;
+        }
+    }
+
+    public void SetFoundMessage(string value)
+    {
+        foundInstruction = value;
+
+        if (instructionText != null)
+        {
+            instructionText.text = foundInstruction;
+        }
+
+        if (foundText != null)
+        {
+            foundText.text = foundInstruction;
+        }
+    }
+
     public void SetState(ARSearchState state)
     {
         if (instructionText != null)

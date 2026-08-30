@@ -15,6 +15,7 @@ public class ARCreatureSpawner : MonoBehaviour
     [SerializeField] private GameObject creaturePrefab;
     [SerializeField] private Transform creatureParent;
     [SerializeField] private string spawnedCreatureName = "ARLookAroundCreature";
+    [SerializeField] private CreatureType selectedCreatureType = CreatureType.Aquaria;
 
     [Header("Spawn Placement")]
     [SerializeField] private float minimumSpawnDistance = 18f;
@@ -39,6 +40,11 @@ public class ARCreatureSpawner : MonoBehaviour
     public float ResolvedSpawnAngle => resolvedSpawnAngle;
     public float ResolvedSpawnDistance => resolvedSpawnDistance;
     public string PlacementState => placementState;
+    public CreatureType SelectedCreatureType
+    {
+        get => selectedCreatureType;
+        set => selectedCreatureType = value;
+    }
 
     private void Reset()
     {
@@ -101,7 +107,7 @@ public class ARCreatureSpawner : MonoBehaviour
             creatureParent
         );
 
-        spawnedCreature.name = spawnedCreatureName;
+        spawnedCreature.name = $"{spawnedCreatureName}_{selectedCreatureType}";
         lastSpawnPosition = spawnPosition;
         OnCreatureSpawned.Invoke(spawnedCreature.transform);
         return spawnedCreature.transform;

@@ -15,14 +15,20 @@ public class ARCreatureSearchController : MonoBehaviour
     [SerializeField] private ARCreatureVisibilityDetector visibilityDetector;
     [SerializeField] private ARDirectionArrow directionArrow;
     [SerializeField] private ARSearchUIController uiController;
+    [SerializeField] private AquariaUnionAnimation unionAnimation;
 
     [Header("Scene")]
     [SerializeField] private string returnSceneName = "Exploration_04_EncounterEntry";
+
+    [Header("Encounter Flow")]
+    [SerializeField] private float returnDelayAfterFound = 2.5f;
 
     [Header("Debug Runtime")]
     [SerializeField] private ARSearchState searchState = ARSearchState.Initializing;
     [SerializeField] private Transform spawnedCreature;
     [SerializeField] private bool trackingReady;
+    [SerializeField] private CreatureType selectedCreatureType;
+    [SerializeField] private float returnTimer;
 
     public UnityEvent<Transform> OnCreatureSpawned = new();
     public UnityEvent<Transform> OnCreatureVisible = new();
@@ -41,14 +47,34 @@ public class ARCreatureSearchController : MonoBehaviour
         visibilityDetector = GetComponent<ARCreatureVisibilityDetector>();
         directionArrow = FindAnyObjectByType<ARDirectionArrow>();
         uiController = FindAnyObjectByType<ARSearchUIController>();
+        unionAnimation = FindAnyObjectByType<AquariaUnionAnimation>();
     }
 
     private void Awake()
     {
         searchState = ARSearchState.Initializing;
+        selectedCreatureType = EncounterSessionData.HasSelectedCreature
+            ? EncounterSessionData.SelectedCreatureType
+            : EncounterSessionData.CurrentSignalCreature;
+
+        if (unionAnimation == null)
+        {
+            unionAnimation = FindAnyObjectByType<AquariaUnionAnimation>();
+        }
+
+        if (unionAnimation == null)
+        {
+            unionAnimation = gameObject.AddComponent<AquariaUnionAnimation>();
+        }
+
+        if (creatureSpawner != null)
+        {
+            creatureSpawner.SelectedCreatureType = selectedCreatureType;
+        }
 
         if (uiController != null)
         {
+            uiController.SetCreatureContext(selectedCreatureType);
             uiController.SetState(searchState);
         }
 
@@ -72,6 +98,18 @@ public class ARCreatureSearchController : MonoBehaviour
         )
         {
             UpdateSearch();
+        }
+        else if (
+            searchState == ARSearchState.CreatureFound &&
+            !EncounterSessionData.AquariaAquarioUnited
+        )
+        {
+            returnTimer += Time.deltaTime;
+
+            if (returnTimer >= returnDelayAfterFound)
+            {
+                ReturnToPreviousScene();
+            }
         }
 
         UpdateDebugText();
@@ -125,11 +163,24 @@ public class ARCreatureSearchController : MonoBehaviour
         if (found)
         {
             SetState(ARSearchState.CreatureFound);
+            EncounterSessionData.RegisterCreatureFound(selectedCreatureType);
+            returnTimer = 0f;
+
+            if (uiController != null)
+            {
+                uiController.SetFoundMessage(EncounterSessionData.LastEncounterMessage);
+            }
+
             OnCreatureFound.Invoke(spawnedCreature);
 
             if (directionArrow != null)
             {
                 directionArrow.SetVisible(false);
+            }
+
+            if (EncounterSessionData.AquariaAquarioUnited && unionAnimation != null)
+            {
+                unionAnimation.Play();
             }
 
             return;
@@ -186,6 +237,10 @@ public class ARCreatureSearchController : MonoBehaviour
 
         uiController.SetDebugText(
             $"AR Search State: {searchState}\n" +
+            $"Selected Creature: {selectedCreatureType}\n" +
+            $"Aquaria Found: {EncounterSessionData.AquariaFound}\n" +
+            $"Aquario Count To Catch: {EncounterSessionData.AquarioCountToCatch}\n" +
+            $"United: {EncounterSessionData.AquariaAquarioUnited}\n" +
             $"AR tracking state: {ARSession.state}\n" +
             $"Tracking ready: {trackingReady}\n" +
             $"Creature Position: {creaturePosition:F2}\n" +

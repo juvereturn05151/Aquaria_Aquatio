@@ -23,9 +23,13 @@ public class ExplorationEncounterEntry : MonoBehaviour
     [Header("Scene")]
     [SerializeField] private string encounterSceneName = "Encounter_01_ARSearch";
 
+    [Header("Encounter Flow")]
+    [SerializeField] private int aquarioCountToCatch = 3;
+
     [Header("Debug Runtime")]
     [SerializeField] private bool encounterReady;
     [SerializeField] private CreatureType selectedCreatureType;
+    [SerializeField] private string encounterFlowMessage;
 
     public bool EncounterReady => encounterReady;
 
@@ -43,6 +47,8 @@ public class ExplorationEncounterEntry : MonoBehaviour
     {
         ResolveOptionalReferences();
         ApplyPromptStyle();
+        EncounterSessionData.EnsureProgressionStarted(aquarioCountToCatch);
+        selectedCreatureType = EncounterSessionData.CurrentSignalCreature;
 
         if (encounterButton != null)
         {
@@ -136,12 +142,19 @@ public class ExplorationEncounterEntry : MonoBehaviour
         encounterReady =
             proximitySystem != null &&
             nearestCreature != null &&
-            proximitySystem.ProximityState == CreatureProximityState.EncounterReady;
+            proximitySystem.ProximityState == CreatureProximityState.EncounterReady &&
+            EncounterSessionData.CanSearchFor(nearestCreature.CreatureType);
 
         if (encounterReady)
         {
             selectedCreatureType = nearestCreature.CreatureType;
         }
+        else
+        {
+            selectedCreatureType = EncounterSessionData.CurrentSignalCreature;
+        }
+
+        encounterFlowMessage = EncounterSessionData.LastEncounterMessage;
 
         UpdatePrompt(encounterReady);
     }
@@ -153,7 +166,14 @@ public class ExplorationEncounterEntry : MonoBehaviour
             return;
         }
 
-        EncounterSessionData.SetSelectedCreature(proximitySystem.NearestCreature.CreatureType);
+        CreatureType creatureType = proximitySystem.NearestCreature.CreatureType;
+
+        if (!EncounterSessionData.CanSearchFor(creatureType))
+        {
+            return;
+        }
+
+        EncounterSessionData.SetSelectedCreature(creatureType);
         SceneManager.LoadScene(encounterSceneName);
     }
 
@@ -175,7 +195,9 @@ public class ExplorationEncounterEntry : MonoBehaviour
         {
             promptText.text = visible
                 ? $"START AR ENCOUNTER - {selectedCreatureType}"
-                : "No Encounter";
+                : EncounterSessionData.AquariaAquarioUnited
+                    ? "Aquaria and Aquario United"
+                    : $"Find {EncounterSessionData.CurrentSignalCreature}'s signal";
         }
     }
 }
