@@ -779,6 +779,177 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 175222360}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &217533282
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 217533283}
+  - component: {fileID: 217533285}
+  - component: {fileID: 217533284}
+  m_Layer: 0
+  m_Name: Cesium World Terrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &217533283
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217533282}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 522090407}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &217533284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217533282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bca0907bd759be4e8b4d7ca5f84131c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: CesiumForUnity::CesiumForUnity.CesiumIonRasterOverlay
+  _materialKey: 0
+  _showCreditsOnScreen: 0
+  _maximumScreenSpaceError: 2
+  _maximumTextureSize: 2048
+  _maximumSimultaneousTileLoads: 20
+  _subTileCacheBytes: 16777216
+  _ionAssetID: 2
+  _ionAccessToken: 
+  _ionServer: {fileID: 11400000, guid: 2d4bf71c359aaa448b69d9491fc8ab3c, type: 2}
+  _assetOptions: 
+--- !u!114 &217533285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217533282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 844ac86b07dcfa3468f56da55d787510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: CesiumForUnity::CesiumForUnity.Cesium3DTileset
+  _showCreditsOnScreen: 0
+  _tilesetSource: 0
+  _url: 
+  _ionAssetID: 1
+  _ionAccessToken: 
+  _ionServer: {fileID: 11400000, guid: 2d4bf71c359aaa448b69d9491fc8ab3c, type: 2}
+  _maximumScreenSpaceError: 16
+  _preloadAncestors: 1
+  _preloadSiblings: 1
+  _forbidHoles: 0
+  _maximumSimultaneousTileLoads: 20
+  _maximumCachedBytes: 536870912
+  _loadingDescendantLimit: 20
+  _enableFrustumCulling: 1
+  _enableFogCulling: 1
+  _enforceCulledScreenSpaceError: 1
+  _culledScreenSpaceError: 64
+  _opaqueMaterial: {fileID: 0}
+  _generateSmoothNormals: 0
+  _ignoreKhrMaterialsUnlit: 0
+  _pointCloudShading:
+    _attenuation: 0
+    _geometricErrorScale: 1
+    _maximumAttenuation: 0
+    _baseResolution: 0
+  _suspendUpdate: 0
+  _showTilesInHierarchy: 0
+  _updateInEditor: 1
+  _logSelectionStats: 0
+  _createPhysicsMeshes: 1
+--- !u!1 &228845157
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 228845158}
+  - component: {fileID: 228845159}
+  m_Layer: 0
+  m_Name: Cesium OSM Buildings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &228845158
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 228845157}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 522090407}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &228845159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 228845157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 844ac86b07dcfa3468f56da55d787510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: CesiumForUnity::CesiumForUnity.Cesium3DTileset
+  _showCreditsOnScreen: 0
+  _tilesetSource: 0
+  _url: 
+  _ionAssetID: 96188
+  _ionAccessToken: 
+  _ionServer: {fileID: 11400000, guid: 2d4bf71c359aaa448b69d9491fc8ab3c, type: 2}
+  _maximumScreenSpaceError: 16
+  _preloadAncestors: 1
+  _preloadSiblings: 1
+  _forbidHoles: 0
+  _maximumSimultaneousTileLoads: 20
+  _maximumCachedBytes: 536870912
+  _loadingDescendantLimit: 20
+  _enableFrustumCulling: 1
+  _enableFogCulling: 1
+  _enforceCulledScreenSpaceError: 1
+  _culledScreenSpaceError: 64
+  _opaqueMaterial: {fileID: 0}
+  _generateSmoothNormals: 0
+  _ignoreKhrMaterialsUnlit: 0
+  _pointCloudShading:
+    _attenuation: 0
+    _geometricErrorScale: 1
+    _maximumAttenuation: 0
+    _baseResolution: 0
+  _suspendUpdate: 0
+  _showTilesInHierarchy: 0
+  _updateInEditor: 1
+  _logSelectionStats: 0
+  _createPhysicsMeshes: 1
 --- !u!1 &268786599
 GameObject:
   m_ObjectHideFlags: 0
@@ -1150,6 +1321,79 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &522090404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 522090407}
+  - component: {fileID: 522090406}
+  - component: {fileID: 522090405}
+  m_Layer: 0
+  m_Name: CesiumGeoreference
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &522090405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522090404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be1fb41cdd01d7649a082f1a8f2bd114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: CesiumForUnity::CesiumForUnity.CesiumCameraManager
+  _useMainCamera: 1
+  _useSceneViewCameraInEditor: 1
+  _additionalCameras: []
+--- !u!114 &522090406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522090404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1305e05d46db92498ce698a4c366a5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: CesiumForUnity::CesiumForUnity.CesiumGeoreference
+  _ellipsoidOverride: {fileID: 0}
+  _originPlacement: 1
+  _originAuthority: 0
+  _latitude: 39.736401
+  _longitude: -105.25737
+  _height: 2260.64990234375
+  _ecefX: -1292936.6502052457
+  _ecefY: -4740034.0053331535
+  _ecefZ: 4056966.9593570908
+  _scale: 1
+--- !u!4 &522090407
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522090404}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 217533283}
+  - {fileID: 228845158}
+  - {fileID: 1426551506}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &540276196
@@ -1573,6 +1817,7 @@ GameObject:
   m_Component:
   - component: {fileID: 586314235}
   - component: {fileID: 586314234}
+  - component: {fileID: 586314236}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1646,6 +1891,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &586314236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 586314233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &726487250
 GameObject:
   m_ObjectHideFlags: 0
@@ -2901,12 +3190,18 @@ MonoBehaviour:
   positionSource: {fileID: 2139008985}
   worldRoot: {fileID: 1145262372}
   playerMarker: {fileID: 1225007624}
+  followCamera: {fileID: 586314235}
   movementScale: 1
   smoothingSpeed: 3
-  keepPlayerMarkerCentered: 1
+  keepPlayerMarkerCentered: 0
+  movePlayerMarkerFromDisplacement: 1
+  followCameraOffset: {x: 0, y: 13, z: -10}
+  debugMovementLogging: 1
+  debugLogDistanceThreshold: 0.5
   gpsDisplacement: {x: 0, y: 0, z: 0}
   worldRootTargetPosition: {x: 0, y: 0, z: 0}
   worldRootCurrentPosition: {x: 0, y: 0, z: 0}
+  playerTargetPosition: {x: 0, y: 0, z: 0}
 --- !u!4 &1056224022
 Transform:
   m_ObjectHideFlags: 0
@@ -2969,7 +3264,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1145262372
 Transform:
   m_ObjectHideFlags: 0
@@ -3760,6 +4055,360 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1415915454}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &314159260
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 314159261}
+  - component: {fileID: 314159262}
+  m_Layer: 0
+  m_Name: CesiumIntegration
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &314159261
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314159260}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &314159262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314159260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4b74f1d52934f039949ff8d7415b064, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CesiumGPSOriginAdapter
+  gpsPositionSource: {fileID: 2139008986}
+  cesiumGeoreference: {fileID: 522090406}
+  originHeight: 0
+  debugLogging: 1
+  originInitialized: 0
+  initializedLatitude: 0
+  initializedLongitude: 0
+--- !u!1 &1426551505
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1426551506}
+  - component: {fileID: 1426551513}
+  - component: {fileID: 1426551512}
+  - component: {fileID: 1426551511}
+  - component: {fileID: 1426551510}
+  - component: {fileID: 1426551509}
+  - component: {fileID: 1426551508}
+  - component: {fileID: 1426551507}
+  m_Layer: 0
+  m_Name: DynamicCamera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1426551506
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426551505}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000076906176, y: 2.6958772e-18, z: -3.4117091e-18, w: 1}
+  m_LocalPosition: {x: -2.3283064e-10, y: 197.05005, z: -0.00010321848}
+  m_LocalScale: {x: 1, y: 1.0000004, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 522090407}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1426551507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426551505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
+--- !u!114 &1426551508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426551505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 275ecd2d59d942d41bf31252981978e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _flyToAltitudeProfileCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 4.76524
+      outSlope: 4.76524
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.061909087
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -4.821313
+      outSlope: -4.821313
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.0535717
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _flyToProgressCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _flyToMaximumAltitudeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.16666667
+      outSlope: 0.16666667
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 12000000
+      value: 2000000
+      inSlope: 0.16666667
+      outSlope: 0.16666667
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _flyToDuration: 5
+--- !u!114 &1426551509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426551505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bef32f31a547984f88be1ab98b65f04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _distance: 0
+--- !u!114 &1426551510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426551505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f14e1eb550b9a4fb6c0a2f0456845b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _adjustOrientationForGlobeWhenMoving: 1
+  _detectTransformChanges: 1
+  _localToGlobeFixedMatrix:
+    c0:
+      x: 0.9647534819407177
+      y: -0.2631553136139595
+      z: 0.000000000000000022070513865149115
+      w: 0
+    c1:
+      x: -0.2023645958921722
+      y: -0.7418886809745306
+      z: 0.6392577497591515
+      w: 0
+    c2:
+      x: 0.1682240134564282
+      y: 0.6167259193793534
+      z: 0.7689927318657199
+      w: 0
+    c3:
+      x: -1292976.5261669494
+      y: -4740180.194564033
+      z: 4057092.924980164
+      w: 1
+  _localToGlobeFixedMatrixIsValid: 1
+--- !u!114 &1426551511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426551505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b621ff6a9d4b8c4d85ac07de7f8b4b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableMovement: 1
+  _enableRotation: 1
+  _defaultMaximumSpeed: 100
+  _enableDynamicSpeed: 1
+  _dynamicSpeedMinHeight: 20
+  _enableDynamicClippingPlanes: 1
+  _dynamicClippingPlanesMinHeight: 10000
+--- !u!81 &1426551512
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426551505}
+  m_Enabled: 1
+--- !u!20 &1426551513
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426551505}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.5
+  far clip plane: 1000000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &1690252049
 GameObject:
   m_ObjectHideFlags: 0
@@ -4580,3 +5229,5 @@ SceneRoots:
   - {fileID: 1145262372}
   - {fileID: 796037855}
   - {fileID: 284769955}
+  - {fileID: 522090407}
+  - {fileID: 314159261}
