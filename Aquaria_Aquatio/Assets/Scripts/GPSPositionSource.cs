@@ -1,25 +1,92 @@
+/*
+GPSPositionSource.cs
+
+Purpose:
+Provides exploration movement data using real GPS coordinates.
+
+Responsibilities:
+
+Receive GPS data from GPSManager.
+Establish the first valid GPS position as the local exploration origin.
+Convert latitude/longitude changes into local East/North displacement in meters.
+Reject unreliable GPS samples using configurable filtering rules.
+Smooth accepted GPS movement before exposing it to gameplay systems.
+Track the latest GPS coordinates and accepted movement target.
+Update the shared ExplorationPositionSource state used by downstream gameplay systems.
+
+Filtering:
+A GPS sample may be rejected when:
+
+The coordinate is invalid.
+Horizontal accuracy is worse than the configured maximum.
+Movement is smaller than the minimum movement threshold.
+Movement is larger than the maximum accepted jump distance.
+
+Smoothing:
+Accepted GPS samples are stored as target positions.
+The displayed exploration position gradually moves toward the latest accepted target.
+
+When accuracy-weighted smoothing is enabled, poor GPS accuracy reduces the
+smoothing speed so noisy GPS samples have less immediate influence on movement.
+
+Coordinate Mapping:
+Latitude change -> North/South movement
+Longitude change -> East/West movement
+
+Local exploration coordinates are exposed as:
+East -> Unity X axis
+North -> Unity Z axis
+
+Architecture:
+GPSPositionSource inherits from ExplorationPositionSource and implements the
+real-device GPS version of the exploration position system.
+
+GPSManager is injected through SetGPSManager().
+GPSPositionSource does not start, stop, or request permissions for the device GPS;
+those responsibilities belong to GPSManager.
+
+Downstream gameplay systems should depend on ExplorationPositionSource rather
+than directly depending on GPSPositionSource. This allows the same gameplay
+systems to work with GPS, simulated, or other position-source implementations.
+
+Data Flow:
+Unity Location Service
+-> GPSManager
+-> GPSPositionSource
+-> ExplorationPositionSource
+-> Exploration movement / gameplay systems
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 
 public class GPSPositionSource : ExplorationPositionSource
 {
     [Header("GPS Filtering")]
-    [SerializeField] private float maximumHorizontalAccuracy = 20f;
-    [SerializeField] private float minimumMovementDistance = 2.5f;
-    [SerializeField] private float maximumAcceptedJumpDistance = 100f;
+    [SerializeField] 
+    private float maximumHorizontalAccuracy = 20f;
+    [SerializeField] 
+    private float minimumMovementDistance = 2.5f;
+    [SerializeField] 
+    private float maximumAcceptedJumpDistance = 100f;
 
     [Header("GPS Smoothing")]
-    [SerializeField] private float gpsSmoothingSpeed = 2f;
-    [SerializeField] private bool useAccuracyWeightedSmoothing = true;
-    [SerializeField] private float poorAccuracySmoothingMultiplier = 0.35f;
+    [SerializeField] 
+    private float gpsSmoothingSpeed = 2f;
+    [SerializeField] 
+    private bool useAccuracyWeightedSmoothing = true;
+    [SerializeField] 
+    private float poorAccuracySmoothingMultiplier = 0.35f;
 
     [Header("GPS Debug Runtime")]
-    [SerializeField] private bool hasOrigin;
-    [SerializeField] private double originLatitude;
-    [SerializeField] private double originLongitude;
-    [SerializeField] private double currentLatitude;
-    [SerializeField] private double currentLongitude;
-    [SerializeField] private Vector2 targetDisplacementMeters;
-    [SerializeField] private Vector2 smoothedDisplacementMeters;
+    private bool hasOrigin;
+    private double originLatitude;
+    private double originLongitude;
+    private double currentLatitude;
+    private double currentLongitude;
+    private Vector2 targetDisplacementMeters;
+    private Vector2 smoothedDisplacementMeters;
 
     private GPSManager gpsManager;
     private double previousAcceptedLatitude;
@@ -145,10 +212,7 @@ public class GPSPositionSource : ExplorationPositionSource
     {
         rejectionReason = string.Empty;
 
-        if (
-            maximumHorizontalAccuracy > 0f &&
-            gpsManager.CurrentHorizontalAccuracy > maximumHorizontalAccuracy
-        )
+        if (maximumHorizontalAccuracy > 0f && gpsManager.CurrentHorizontalAccuracy > maximumHorizontalAccuracy)
         {
             rejectionReason = "Rejected: horizontal accuracy too low";
             return false;
@@ -169,10 +233,7 @@ public class GPSPositionSource : ExplorationPositionSource
             return false;
         }
 
-        if (
-            maximumAcceptedJumpDistance > 0f &&
-            movementDistance > maximumAcceptedJumpDistance
-        )
+        if (maximumAcceptedJumpDistance > 0f && movementDistance > maximumAcceptedJumpDistance)
         {
             rejectionReason = "Rejected: GPS jump too large";
             return false;
@@ -181,20 +242,13 @@ public class GPSPositionSource : ExplorationPositionSource
         return true;
     }
 
-    private Vector2 CalculateDisplacementMeters(
-        double fromLatitude,
-        double fromLongitude,
-        double toLatitude,
-        double toLongitude
-    )
+    private Vector2 CalculateDisplacementMeters(double fromLatitude, double fromLongitude, double toLatitude,double toLongitude)
     {
         const double metersPerDegree = 111320.0;
 
         double originLatitudeRadians = originLatitude * Mathf.Deg2Rad;
         double north = (toLatitude - fromLatitude) * metersPerDegree;
-        double east = (toLongitude - fromLongitude) *
-            metersPerDegree *
-            System.Math.Cos(originLatitudeRadians);
+        double east = (toLongitude - fromLongitude) * metersPerDegree * System.Math.Cos(originLatitudeRadians);
 
         return new Vector2((float)east, (float)north);
     }

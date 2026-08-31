@@ -1,12 +1,40 @@
+/* 
+GPSManager.cs
+E-mail: juvereturn@gmail.com
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+
+Purpose:
+This component owns access to Unity's GPS/location service.
+
+Responsibilities:
+- Request Android location permission.
+- Start and stop Unity's LocationService.
+- Wait for GPS initialization to complete.
+- Read the latest GPS sample.
+- Expose latitude, longitude, accuracy, timestamp, and service status.
+- Provide itself to GPSPositionSource.
+
+Architecture Notes:
+GPSManager acts as the low-level GPS service layer.
+Other gameplay systems should avoid directly calling Input.location when possible.
+Instead, they should obtain location information through GPSManager or through
+higher-level abstractions such as GPSPositionSource.
+
+GPSPositionSource is required on the same GameObject because GPSManager
+injects itself into that component.
+*/
+
 using System.Collections;
 using UnityEngine;
 #if UNITY_ANDROID
 using UnityEngine.Android;
 #endif
 
+[RequireComponent(typeof(GPSPositionSource))]
 public class GPSManager : MonoBehaviour
 {
-    [SerializeField] private GPSPositionSource gpsPositionSource;
+    [SerializeField] 
+    private GPSPositionSource gpsPositionSource;
 
     public bool HasValidLocation { get; private set; }
     public double CurrentLatitude { get; private set; }
@@ -18,11 +46,6 @@ public class GPSManager : MonoBehaviour
     private void Awake()
     {
         InjectIntoMovement();
-    }
-
-    private void Reset()
-    {
-        gpsPositionSource = FindAnyObjectByType<GPSPositionSource>();
     }
 
     private IEnumerator Start()
@@ -50,10 +73,7 @@ public class GPSManager : MonoBehaviour
 
         int maxWait = 20;
 
-        while (
-            Input.location.status == LocationServiceStatus.Initializing &&
-            maxWait > 0
-        )
+        while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
         {
             yield return new WaitForSeconds(1);
             maxWait--;
