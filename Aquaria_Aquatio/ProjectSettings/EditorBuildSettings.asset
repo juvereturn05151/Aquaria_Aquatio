@@ -20,9 +20,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Exploration_04_EncounterEntry.unity
     guid: e7c5fe58d76134f4980f3776179e41c0
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Encounter_01_ARSearch.unity
     guid: 02890608d09fea448932314cbe155535
+  - enabled: 1
+    path: Assets/Scenes/Exploration_05_Cesium.unity
+    guid: 78ab6d9d44f4c7948b63ae2a7ce2b92c
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 6ee72d15cf39dd748a13eac57397b9af, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 0465d33c6aee55f44b0237db8b0e0259, type: 2}
