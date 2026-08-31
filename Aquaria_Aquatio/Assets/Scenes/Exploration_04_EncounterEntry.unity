@@ -335,7 +335,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -815,6 +815,7 @@ MonoBehaviour:
   headingSmoothingSpeed: 6
   editorSimulationEnabled: 1
   simulationTurnSpeed: 90
+  virtualTurnInput: 0
   compassEnabled: 0
   rawHeading: 0
   smoothedHeading: 0
@@ -1676,6 +1677,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CreatureSpawnManager
   targetsRoot: {fileID: 1142981675}
   collectTargetsOnAwake: 1
+  createMissingFlowTargets: 1
   targets:
   - {fileID: 1045024746}
 --- !u!4 &726487252
@@ -2676,6 +2678,7 @@ MonoBehaviour:
   signalText: {fileID: 844519089}
   creatureNearbyText: {fileID: 540276198}
   encounterStatusText: {fileID: 545035587}
+  useEncounterFlowFilter: 1
   detectionRange: 30
   strongSignalRange: 12
   encounterRange: 3
@@ -3189,9 +3192,18 @@ MonoBehaviour:
   encounterPrompt: {fileID: 1249512522}
   encounterButton: {fileID: 1249512521}
   promptText: {fileID: 93690105}
+  promptBackground: {fileID: 0}
+  promptRectTransform: {fileID: 0}
+  applyDefaultPromptStyle: 1
+  visibleAnchoredPosition: {x: 0, y: 140}
+  promptSize: {x: 620, y: 128}
+  readyBackgroundColor: {r: 0, g: 0.72, b: 0.9, a: 0.95}
+  readyTextColor: {r: 1, g: 1, b: 1, a: 1}
   encounterSceneName: Encounter_01_ARSearch
+  aquarioCountToCatch: 2
   encounterReady: 0
   selectedCreatureType: 0
+  encounterFlowMessage: 
 --- !u!114 &1249512521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3365,7 +3377,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4479,6 +4491,7 @@ MonoBehaviour:
   lastSampleResult: Waiting
   simulationEnabled: 1
   simulationSpeed: 3
+  virtualMoveInput: {x: 0, y: 0}
 --- !u!114 &2139008986
 MonoBehaviour:
   m_ObjectHideFlags: 0
