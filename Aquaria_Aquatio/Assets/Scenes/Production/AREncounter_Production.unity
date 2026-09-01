@@ -157,10 +157,14 @@ MonoBehaviour:
   visibilityDetector: {fileID: 12242036}
   directionArrow: {fileID: 542931513}
   uiController: {fileID: 12242035}
-  returnSceneName: Exploration_04_EncounterEntry
+  unionAnimation: {fileID: 0}
+  returnSceneName: Exploration_Production
+  returnDelayAfterFound: 2.5
   searchState: 0
   spawnedCreature: {fileID: 0}
   trackingReady: 0
+  selectedCreatureType: 0
+  returnTimer: 0
   OnCreatureSpawned:
     m_PersistentCalls:
       m_Calls: []
@@ -228,6 +232,7 @@ MonoBehaviour:
   creaturePrefab: {fileID: 100000, guid: 27c2c1b7196e45d4fa44e03ac3978178, type: 3}
   creatureParent: {fileID: 331991198}
   spawnedCreatureName: ARLookAroundCreature
+  selectedCreatureType: 0
   minimumSpawnDistance: 18
   maximumSpawnDistance: 30
   minimumSpawnAngleFromForward: 60

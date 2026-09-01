@@ -317,11 +317,6 @@ MonoBehaviour:
   editorSimulationEnabled: 1
   simulationTurnSpeed: 90
   virtualTurnInput: 0
-  compassEnabled: 0
-  rawHeading: 0
-  smoothedHeading: 0
-  headingAccuracy: 0
-  headingState: Waiting
 --- !u!1 &3176001813704349425
 GameObject:
   m_ObjectHideFlags: 0
@@ -465,7 +460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplorationEncounterFlow
   proximitySystem: {fileID: 365969528050615181}
-  encounterSceneName: Encounter_01_ARSearch
+  encounterSceneName: AREncounter_Production
   aquarioCountToCatch: 3
   encounterReady: 0
   selectedCreatureType: 0
