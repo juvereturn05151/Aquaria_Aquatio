@@ -1,16 +1,63 @@
-// Used by scenes: Assets/Scenes/Exploration_02_CreatureDetection.unity,
-// Assets/Scenes/Exploration_03_CreatureFeedback.unity, and
-// Assets/Scenes/Exploration_04_EncounterEntry.unity.
+/*
+EditorKeyboardPositionSource.cs
+
+Purpose:
+Provides simulated exploration movement for testing in the Unity Editor
+without requiring real GPS data.
+
+Responsibilities:
+
+* Read keyboard input using WASD.
+* Accept optional virtual movement input from another system.
+* Convert input into local East/North movement in meters.
+* Move the simulated exploration position at a configurable speed.
+* Expose simulated movement through the shared ExplorationPositionSource interface.
+* Mark the position source as ready even when the simulated player is stationary.
+
+Controls:
+W -> Move North
+S -> Move South
+D -> Move East
+A -> Move West
+
+Coordinate Mapping:
+East  -> Unity X axis
+North -> Unity Z axis
+
+Simulation:
+simulationSpeed represents movement speed in meters per second.
+
+Keyboard input and virtual input are combined, then clamped so diagonal
+movement does not become faster than movement along a single axis.
+
+Architecture:
+EditorKeyboardPositionSource inherits from ExplorationPositionSource and acts
+as a development/testing alternative to GPSPositionSource.
+
+Gameplay systems should depend on ExplorationPositionSource rather than
+directly depending on this class. This allows the same gameplay code to work
+with either real GPS movement or simulated Editor movement.
+
+Data Flow:
+Keyboard / Virtual Input
+-> EditorKeyboardPositionSource
+-> ExplorationPositionSource
+-> Exploration movement / gameplay systems
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 
 public class EditorKeyboardPositionSource : ExplorationPositionSource
 {
     [Header("Simulation")]
-    [SerializeField] private bool simulationEnabled = true;
-    [SerializeField] private float simulationSpeed = 3f;
+    [SerializeField] 
+    private bool simulationEnabled = true;
+    [SerializeField] 
+    private float simulationSpeed = 3f;
 
-    [Header("Virtual Controller")]
-    [SerializeField] private Vector2 virtualMoveInput;
+    private Vector2 virtualMoveInput;
 
     public bool SimulationEnabled
     {

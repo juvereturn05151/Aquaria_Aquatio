@@ -2,25 +2,22 @@ using UnityEngine;
 
 public class ExplorationPositionSourceSelector : MonoBehaviour
 {
-    [SerializeField] private bool useEditorSimulationInEditor = true;
-    [SerializeField] private GPSPositionSource gpsPositionSource;
-    [SerializeField] private EditorKeyboardPositionSource editorPositionSource;
-    [SerializeField] private ExplorationController explorationController;
-    [SerializeField] private CreatureProximitySystem proximitySystem;
+    [SerializeField] 
+    private bool useEditorSimulationInEditor = true;
+    [SerializeField] 
+    private GPSPositionSource gpsPositionSource;
+    [SerializeField] 
+    private EditorKeyboardPositionSource editorPositionSource;
+    [SerializeField] 
+    private ExplorationController explorationController;
+    [SerializeField] 
+    private CreatureProximitySystem proximitySystem;
 
     public ExplorationPositionSource ActivePositionSource { get; private set; }
 
     private void Awake()
     {
         SelectPositionSource();
-    }
-
-    private void Reset()
-    {
-        gpsPositionSource = FindAnyObjectByType<GPSPositionSource>();
-        editorPositionSource = FindAnyObjectByType<EditorKeyboardPositionSource>();
-        explorationController = FindAnyObjectByType<ExplorationController>();
-        proximitySystem = FindAnyObjectByType<CreatureProximitySystem>();
     }
 
     private void SelectPositionSource()

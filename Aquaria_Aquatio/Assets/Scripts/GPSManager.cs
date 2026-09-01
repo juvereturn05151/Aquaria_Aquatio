@@ -30,7 +30,6 @@ using UnityEngine;
 using UnityEngine.Android;
 #endif
 
-[RequireComponent(typeof(GPSPositionSource))]
 public class GPSManager : MonoBehaviour
 {
     [SerializeField] 
