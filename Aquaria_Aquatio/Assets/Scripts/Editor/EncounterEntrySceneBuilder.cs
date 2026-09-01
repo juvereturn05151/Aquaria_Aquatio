@@ -60,6 +60,9 @@ public static class EncounterEntrySceneBuilder
         ExplorationEncounterEntry entry =
             systems.GetComponent<ExplorationEncounterEntry>() ??
             systems.AddComponent<ExplorationEncounterEntry>();
+        ExplorationEncounterFlow encounterFlow =
+            systems.GetComponent<ExplorationEncounterFlow>() ??
+            systems.AddComponent<ExplorationEncounterFlow>();
         EncounterEntryVirtualController virtualController =
             systems.GetComponent<EncounterEntryVirtualController>() ??
             systems.AddComponent<EncounterEntryVirtualController>();
@@ -68,14 +71,16 @@ public static class EncounterEntrySceneBuilder
         DeviceHeadingController headingController =
             UnityEngine.Object.FindAnyObjectByType<DeviceHeadingController>();
 
-        SetObjectReference(entry, "proximitySystem", proximitySystem);
+        SetObjectReference(entry, "encounterFlow", encounterFlow);
         SetObjectReference(entry, "encounterPrompt", encounterPrompt);
         SetObjectReference(entry, "encounterButton", encounterButton);
         SetObjectReference(entry, "promptText", promptText);
         SetObjectReference(entry, "promptBackground", promptBackground);
         SetObjectReference(entry, "promptRectTransform", promptRectTransform);
-        SetString(entry, "encounterSceneName", "Encounter_01_ARSearch");
-        SetInt(entry, "aquarioCountToCatch", 3);
+
+        SetObjectReference(encounterFlow, "proximitySystem", proximitySystem);
+        SetString(encounterFlow, "encounterSceneName", "Encounter_01_ARSearch");
+        SetInt(encounterFlow, "aquarioCountToCatch", 3);
 
         SetObjectReference(virtualController, "positionSource", editorPositionSource);
         SetObjectReference(virtualController, "headingController", headingController);

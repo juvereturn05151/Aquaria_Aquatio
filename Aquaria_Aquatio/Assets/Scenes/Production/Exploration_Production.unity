@@ -1125,68 +1125,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &309822726
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 309822727}
-  - component: {fileID: 309822728}
-  m_Layer: 0
-  m_Name: ExplorationDebugPanel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &309822727
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 309822726}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2047575131}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &309822728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 309822726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 467c9e2284118a54cbfd740f465da3c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ExplorationDebugPanel
-  showDebug: 1
-  debugPanelRoot: {fileID: 1037618627}
-  debugText: {fileID: 551699831}
-  positionSourceSelector: {fileID: 1263434777}
-  positionSource: {fileID: 153744441}
-  explorationController: {fileID: 1056224021}
-  headingController: {fileID: 268786600}
-  proximitySystem: {fileID: 906633321}
-  gpsSimulationStatusText: {fileID: 733423631}
-  currentDisplacementText: {fileID: 2055008583}
-  eastDisplacementText: {fileID: 1690252051}
-  northDisplacementText: {fileID: 1349220026}
-  headingText: {fileID: 826016989}
-  nearestCreatureText: {fileID: 113443778}
-  nearestCreatureDistanceText: {fileID: 2010670877}
-  proximityStateText: {fileID: 1982001800}
-  signalStrengthText: {fileID: 850439950}
-  encounterStateText: {fileID: 158273714}
 --- !u!1 &314159260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,8 +1169,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4b74f1d52934f039949ff8d7415b064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CesiumGPSOriginAdapter
-  gpsPositionSource: {fileID: 153744441}
-  cesiumGeoreference: {fileID: 522090406}
   originHeight: 0
   debugLogging: 1
   originInitialized: 0
@@ -3091,8 +3027,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c9476a5004c8a418186a0e18e7e6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreatureProximitySystem
-  positionSource: {fileID: 153744441}
-  spawnManager: {fileID: 726487251}
   feedbackText: {fileID: 2978943}
   signalText: {fileID: 844519089}
   creatureNearbyText: {fileID: 540276198}
@@ -3132,6 +3066,7 @@ GameObject:
   - component: {fileID: 1037618628}
   - component: {fileID: 1037618630}
   - component: {fileID: 1037618629}
+  - component: {fileID: 1037618631}
   m_Layer: 0
   m_Name: DebugPanel
   m_TagString: Untagged
@@ -3207,6 +3142,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1037618627}
   m_CullTransparentMesh: 1
+--- !u!114 &1037618631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037618627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 467c9e2284118a54cbfd740f465da3c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExplorationDebugPanel
+  showDebug: 1
+  debugPanelRoot: {fileID: 1037618627}
+  debugText: {fileID: 551699831}
+  gpsSimulationStatusText: {fileID: 733423631}
+  currentDisplacementText: {fileID: 2055008583}
+  eastDisplacementText: {fileID: 1690252051}
+  northDisplacementText: {fileID: 1349220026}
+  headingText: {fileID: 826016989}
+  nearestCreatureText: {fileID: 113443778}
+  nearestCreatureDistanceText: {fileID: 2010670877}
+  proximityStateText: {fileID: 1982001800}
+  signalStrengthText: {fileID: 850439950}
+  encounterStateText: {fileID: 158273714}
 --- !u!1001 &1045024744
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3317,7 +3277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a9736fa676568f45a7bc07311c65925, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplorationController
-  positionSource: {fileID: 153744441}
   worldRoot: {fileID: 1145262372}
   playerMarker: {fileID: 1225007624}
   followCamera: {fileID: 586314235}
@@ -4027,8 +3986,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91f7f0342e0a4f6ca9d36cb915e7f074, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EncounterEntryVirtualController
-  positionSource: {fileID: 1949534598}
-  headingController: {fileID: 268786600}
   showController: 1
   buttonSize: 82
   buttonGap: 10
@@ -4818,7 +4775,6 @@ Transform:
   - {fileID: 1352201032}
   - {fileID: 726487252}
   - {fileID: 906633322}
-  - {fileID: 309822727}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2047575132
@@ -4844,7 +4800,7 @@ MonoBehaviour:
   creatureProximitySystem: {fileID: 906633321}
   cesiumGeoreference: {fileID: 522090406}
   cesiumGPSOriginAdapter: {fileID: 314159262}
-  explorationDebugPanel: {fileID: 309822728}
+  explorationDebugPanel: {fileID: 1037618631}
 --- !u!1 &2055008581
 GameObject:
   m_ObjectHideFlags: 0
@@ -5111,7 +5067,7 @@ SceneRoots:
   - {fileID: 586314235}
   - {fileID: 403757377}
   - {fileID: 2047575131}
+  - {fileID: 796037855}
   - {fileID: 1225007624}
   - {fileID: 1145262372}
-  - {fileID: 796037855}
   - {fileID: 284769955}

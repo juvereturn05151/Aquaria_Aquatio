@@ -1,12 +1,12 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(ExplorationEncounterFlow))]
 public class ExplorationEncounterEntry : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private CreatureProximitySystem proximitySystem;
+    [SerializeField] private ExplorationEncounterFlow encounterFlow;
     [SerializeField] private CanvasGroup encounterPrompt;
     [SerializeField] private Button encounterButton;
     [SerializeField] private TextMeshProUGUI promptText;
@@ -20,12 +20,6 @@ public class ExplorationEncounterEntry : MonoBehaviour
     [SerializeField] private Color readyBackgroundColor = new(0f, 0.72f, 0.9f, 0.95f);
     [SerializeField] private Color readyTextColor = Color.white;
 
-    [Header("Scene")]
-    [SerializeField] private string encounterSceneName = "Encounter_01_ARSearch";
-
-    [Header("Encounter Flow")]
-    [SerializeField] private int aquarioCountToCatch = 3;
-
     [Header("Debug Runtime")]
     [SerializeField] private bool encounterReady;
     [SerializeField] private CreatureType selectedCreatureType;
@@ -35,7 +29,7 @@ public class ExplorationEncounterEntry : MonoBehaviour
 
     private void Reset()
     {
-        proximitySystem = FindAnyObjectByType<CreatureProximitySystem>();
+        encounterFlow = GetComponent<ExplorationEncounterFlow>();
         encounterButton = GetComponentInChildren<Button>(true);
         encounterPrompt = GetComponentInChildren<CanvasGroup>(true);
         promptText = GetComponentInChildren<TextMeshProUGUI>(true);
@@ -47,8 +41,6 @@ public class ExplorationEncounterEntry : MonoBehaviour
     {
         ResolveOptionalReferences();
         ApplyPromptStyle();
-        EncounterSessionData.EnsureProgressionStarted(aquarioCountToCatch);
-        selectedCreatureType = EncounterSessionData.CurrentSignalCreature;
 
         if (encounterButton != null)
         {
@@ -68,6 +60,11 @@ public class ExplorationEncounterEntry : MonoBehaviour
 
     private void ResolveOptionalReferences()
     {
+        if (encounterFlow == null)
+        {
+            encounterFlow = EnsureEncounterFlow();
+        }
+
         if (encounterPrompt == null)
         {
             encounterPrompt = GetComponentInChildren<CanvasGroup>(true);
@@ -92,6 +89,12 @@ public class ExplorationEncounterEntry : MonoBehaviour
         {
             promptRectTransform = GetComponent<RectTransform>();
         }
+    }
+
+    private ExplorationEncounterFlow EnsureEncounterFlow()
+    {
+        return GetComponent<ExplorationEncounterFlow>() ??
+            gameObject.AddComponent<ExplorationEncounterFlow>();
     }
 
     private void ApplyPromptStyle()
@@ -136,45 +139,24 @@ public class ExplorationEncounterEntry : MonoBehaviour
 
     private void Update()
     {
-        CreatureExplorationTarget nearestCreature =
-            proximitySystem != null ? proximitySystem.NearestCreature : null;
-
-        encounterReady =
-            proximitySystem != null &&
-            nearestCreature != null &&
-            proximitySystem.ProximityState == CreatureProximityState.EncounterReady &&
-            EncounterSessionData.CanSearchFor(nearestCreature.CreatureType);
-
-        if (encounterReady)
+        if (encounterFlow != null)
         {
-            selectedCreatureType = nearestCreature.CreatureType;
+            encounterReady = encounterFlow.EncounterReady;
+            selectedCreatureType = encounterFlow.SelectedCreatureType;
+            encounterFlowMessage = encounterFlow.EncounterFlowMessage;
         }
-        else
-        {
-            selectedCreatureType = EncounterSessionData.CurrentSignalCreature;
-        }
-
-        encounterFlowMessage = EncounterSessionData.LastEncounterMessage;
 
         UpdatePrompt(encounterReady);
     }
 
     public void BeginEncounter()
     {
-        if (!encounterReady || proximitySystem == null || proximitySystem.NearestCreature == null)
+        if (encounterFlow == null)
         {
             return;
         }
 
-        CreatureType creatureType = proximitySystem.NearestCreature.CreatureType;
-
-        if (!EncounterSessionData.CanSearchFor(creatureType))
-        {
-            return;
-        }
-
-        EncounterSessionData.SetSelectedCreature(creatureType);
-        SceneManager.LoadScene(encounterSceneName);
+        encounterFlow.TryBeginEncounter();
     }
 
     private void UpdatePrompt(bool visible)
@@ -195,9 +177,9 @@ public class ExplorationEncounterEntry : MonoBehaviour
         {
             promptText.text = visible
                 ? $"START AR ENCOUNTER - {selectedCreatureType}"
-                : EncounterSessionData.AquariaAquarioUnited
+                : encounterFlow.AquariaAquarioUnited
                     ? "Aquaria and Aquario United"
-                    : $"Find {EncounterSessionData.CurrentSignalCreature}'s signal";
+                    : $"Find {encounterFlow.CurrentSignalCreature}'s signal";
         }
     }
 }
