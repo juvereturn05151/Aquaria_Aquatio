@@ -1,6 +1,33 @@
-// Used by scenes: Assets/Scenes/Exploration_02_CreatureDetection.unity,
-// Assets/Scenes/Exploration_03_CreatureFeedback.unity, and
-// Assets/Scenes/Exploration_04_EncounterEntry.unity.
+/*
+DeviceHeadingController.cs
+
+Purpose:
+Rotates the exploration player visual from compass heading or simulated turn
+input.
+
+Responsibilities:
+- Enable and read the device compass at runtime when configured.
+- Simulate heading changes in the Unity Editor.
+- Accept virtual turn input from on-screen controls.
+- Smooth heading changes and rotate the assigned player visual.
+- Write optional heading debug text.
+
+Architecture:
+Exploration orientation component used by prototype and exploration scenes. It
+keeps facing direction separate from East/North position movement.
+
+Dependencies:
+- Player visual Transform
+- TextMeshProUGUI
+- Unity compass and Input APIs
+
+Editor / Runtime:
+Uses editor simulation inside UNITY_EDITOR when enabled; otherwise reads
+Input.compass for device heading.
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using TMPro;
 using UnityEngine;
 

@@ -1,4 +1,43 @@
-// Used by scene: Assets/Scenes/Encounter_01_ARSearch.unity
+/*
+ARCreatureSearchController.cs
+
+Purpose:
+Coordinates the AR creature search encounter from scene startup through finding
+the selected creature and returning to exploration.
+
+Responsibilities:
+- Read the selected creature from EncounterSessionData.
+- Wait for AR tracking before spawning the encounter creature.
+- Drive the AR search state and UI feedback.
+- Tick creature visibility detection and direction arrow targeting.
+- Register found creatures and trigger the union animation when complete.
+- Load the configured return scene after the encounter result.
+
+Architecture:
+Scene-level AR encounter coordinator for Encounter_01_ARSearch. It connects AR
+tracking, creature spawning, visibility gameplay, UI, session state, and scene
+transition behavior.
+
+Dependencies:
+- ARSession
+- ARCreatureSpawner
+- ARCreatureVisibilityDetector
+- ARDirectionArrow
+- ARSearchUIController
+- AquariaUnionAnimation
+- EncounterSessionData
+- UnityEngine.SceneManagement.SceneManager
+
+Events / Data Flow:
+EncounterSessionData selected creature
+    -> ARCreatureSpawner
+    -> ARCreatureVisibilityDetector / ARDirectionArrow / ARSearchUIController
+    -> EncounterSessionData.RegisterCreatureFound()
+    -> Return scene load
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;

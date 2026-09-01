@@ -1,5 +1,40 @@
-// Used by Unity Editor menu items to build Assets/Scenes/Exploration_04_EncounterEntry.unity
-// and Assets/Scenes/Encounter_01_ARSearch.unity.
+/*
+EncounterEntrySceneBuilder.cs
+
+Purpose:
+Builds the encounter-entry exploration scene and the AR search scene from Unity
+Editor menu commands.
+
+Responsibilities:
+- Duplicate the creature-feedback exploration scene into the encounter-entry scene.
+- Add and wire ExplorationEncounterEntry, ExplorationEncounterFlow, and virtual controls.
+- Generate the AR search scene with AR session objects, creature spawning, UI, and return button.
+- Create required materials, UI objects, and AR helper objects.
+- Add generated scenes to Unity build settings.
+
+Architecture:
+Editor-only scene assembly utility. It writes scene setup and serialized
+references so runtime encounter scripts can operate without manual Inspector wiring.
+
+Dependencies:
+- UnityEditor and UnityEditor.SceneManagement
+- UnityEngine.UI and TextMeshProUGUI
+- XR Origin, ARSession, ARPlaneManager, and ARRaycastManager
+- ExplorationEncounterEntry and ExplorationEncounterFlow
+- ARCreatureSearchController and AR helper components
+
+Data Flow:
+Unity Editor menu item
+    -> Generated/updated exploration and AR scenes
+    -> Runtime encounter flow uses the serialized scene references
+
+Editor / Runtime:
+Located under Assets/Scripts/Editor and depends on UnityEditor APIs, so it is
+editor-only and not included in runtime builds.
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using System;
 using TMPro;
 using UnityEditor;

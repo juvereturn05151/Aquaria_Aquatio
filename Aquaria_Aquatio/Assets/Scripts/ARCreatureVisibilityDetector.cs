@@ -1,4 +1,33 @@
-// Used by scene: Assets/Scenes/Encounter_01_ARSearch.unity
+/*
+ARCreatureVisibilityDetector.cs
+
+Purpose:
+Determines whether the spawned AR creature has remained visible in the camera
+view long enough to count as found.
+
+Responsibilities:
+- Track the current target Transform.
+- Project the target into camera viewport space.
+- Accumulate visible time while the target is inside the configured viewport.
+- Reset visibility progress when no target is assigned or the target leaves view.
+
+Architecture:
+Small reusable AR gameplay rule component. ARCreatureSearchController polls it
+each frame through TickVisibility().
+
+Dependencies:
+- Camera
+- Target Transform assigned at runtime
+
+Data Flow:
+Spawned creature Transform
+    -> SetTarget()
+    -> TickVisibility()
+    -> ARCreatureSearchController found-state decision
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 
 public class ARCreatureVisibilityDetector : MonoBehaviour

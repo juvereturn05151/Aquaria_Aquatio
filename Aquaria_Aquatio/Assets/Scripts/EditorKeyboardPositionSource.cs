@@ -2,47 +2,32 @@
 EditorKeyboardPositionSource.cs
 
 Purpose:
-Provides simulated exploration movement for testing in the Unity Editor
-without requiring real GPS data.
+Provides simulated exploration position data from keyboard and virtual movement
+input.
 
 Responsibilities:
-
-* Read keyboard input using WASD.
-* Accept optional virtual movement input from another system.
-* Convert input into local East/North movement in meters.
-* Move the simulated exploration position at a configurable speed.
-* Expose simulated movement through the shared ExplorationPositionSource interface.
-* Mark the position source as ready even when the simulated player is stationary.
-
-Controls:
-W -> Move North
-S -> Move South
-D -> Move East
-A -> Move West
-
-Coordinate Mapping:
-East  -> Unity X axis
-North -> Unity Z axis
-
-Simulation:
-simulationSpeed represents movement speed in meters per second.
-
-Keyboard input and virtual input are combined, then clamped so diagonal
-movement does not become faster than movement along a single axis.
+- Read WASD input for local East/North movement.
+- Accept optional virtual movement input from EncounterEntryVirtualController.
+- Clamp combined movement so diagonal input is not faster.
+- Advance simulated displacement at the configured meters-per-second speed.
+- Mark the position source ready even before movement begins.
 
 Architecture:
-EditorKeyboardPositionSource inherits from ExplorationPositionSource and acts
-as a development/testing alternative to GPSPositionSource.
+Concrete ExplorationPositionSource implementation for development and editor
+testing. ExplorationPositionSourceSelector can choose it instead of GPS.
 
-Gameplay systems should depend on ExplorationPositionSource rather than
-directly depending on this class. This allows the same gameplay code to work
-with either real GPS movement or simulated Editor movement.
+Dependencies:
+- ExplorationPositionSource
+- UnityEngine.Input
 
 Data Flow:
-Keyboard / Virtual Input
--> EditorKeyboardPositionSource
--> ExplorationPositionSource
--> Exploration movement / gameplay systems
+Keyboard / virtual input
+    -> EditorKeyboardPositionSource
+    -> ExplorationController and CreatureProximitySystem
+
+Editor / Runtime:
+Intended for Unity Editor simulation, but the component itself can run in any
+scene where it is enabled.
 
 Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
 */

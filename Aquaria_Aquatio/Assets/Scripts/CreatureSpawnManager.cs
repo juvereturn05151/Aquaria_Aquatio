@@ -1,3 +1,35 @@
+/*
+CreatureSpawnManager.cs
+
+Purpose:
+Maintains the exploration creature target list and emits encounter-ready
+notifications for nearby creatures.
+
+Responsibilities:
+- Collect CreatureExplorationTarget components from the configured root.
+- Optionally create missing flow targets for Aquaria and Aquario.
+- Expose the target array used by CreatureProximitySystem.
+- Invoke OnCreatureEncounterReady when proximity logic reports readiness.
+
+Architecture:
+Exploration target registry and notification source. It does not perform
+distance checks; CreatureProximitySystem calls it when an encounter becomes ready.
+
+Dependencies:
+- CreatureExplorationTarget
+- CreatureType
+- Unity Resources materials for generated debug targets
+
+Events / Data Flow:
+Creature targets in scene
+    -> CollectTargets()
+    -> CreatureProximitySystem checks distances
+    -> NotifyEncounterReady()
+    -> OnCreatureEncounterReady event
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;

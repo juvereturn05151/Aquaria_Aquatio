@@ -2,59 +2,36 @@
 GPSPositionSource.cs
 
 Purpose:
-Provides exploration movement data using real GPS coordinates.
+Provides exploration position data by converting real GPS coordinates into local
+East/North displacement.
 
 Responsibilities:
-
-Receive GPS data from GPSManager.
-Establish the first valid GPS position as the local exploration origin.
-Convert latitude/longitude changes into local East/North displacement in meters.
-Reject unreliable GPS samples using configurable filtering rules.
-Smooth accepted GPS movement before exposing it to gameplay systems.
-Track the latest GPS coordinates and accepted movement target.
-Update the shared ExplorationPositionSource state used by downstream gameplay systems.
-
-Filtering:
-A GPS sample may be rejected when:
-
-The coordinate is invalid.
-Horizontal accuracy is worse than the configured maximum.
-Movement is smaller than the minimum movement threshold.
-Movement is larger than the maximum accepted jump distance.
-
-Smoothing:
-Accepted GPS samples are stored as target positions.
-The displayed exploration position gradually moves toward the latest accepted target.
-
-When accuracy-weighted smoothing is enabled, poor GPS accuracy reduces the
-smoothing speed so noisy GPS samples have less immediate influence on movement.
-
-Coordinate Mapping:
-Latitude change -> North/South movement
-Longitude change -> East/West movement
-
-Local exploration coordinates are exposed as:
-East -> Unity X axis
-North -> Unity Z axis
+- Receive GPSManager from ExplorationSystemInjector.
+- Establish the first valid GPS coordinate as the local origin.
+- Convert latitude/longitude changes into East/North meters.
+- Reject invalid, inaccurate, too-small, or too-large GPS movement samples.
+- Smooth accepted GPS targets before updating shared position state.
+- Expose current/origin GPS coordinates and horizontal accuracy.
 
 Architecture:
-GPSPositionSource inherits from ExplorationPositionSource and implements the
-real-device GPS version of the exploration position system.
+Real-device ExplorationPositionSource implementation. It reads GPS samples but
+leaves permission and LocationService lifetime management to GPSManager.
 
-GPSManager is injected through SetGPSManager().
-GPSPositionSource does not start, stop, or request permissions for the device GPS;
-those responsibilities belong to GPSManager.
-
-Downstream gameplay systems should depend on ExplorationPositionSource rather
-than directly depending on GPSPositionSource. This allows the same gameplay
-systems to work with GPS, simulated, or other position-source implementations.
+Dependencies:
+- ExplorationPositionSource
+- GPSManager
+- ExplorationSystemInjector
 
 Data Flow:
 Unity Location Service
--> GPSManager
--> GPSPositionSource
--> ExplorationPositionSource
--> Exploration movement / gameplay systems
+    -> GPSManager
+    -> GPSPositionSource.ProcessGpsSample()
+    -> ExplorationPositionSource displacement
+    -> Exploration movement, Cesium origin, and proximity systems
+
+Editor / Runtime:
+Intended for device GPS. ExplorationPositionSourceSelector may disable it in the
+Unity Editor when keyboard simulation is selected.
 
 Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
 */

@@ -1,3 +1,41 @@
+/*
+ExplorationCreatureFeedbackSceneBuilder.cs
+
+Purpose:
+Builds the creature-feedback exploration scene and configures creature visual
+feedback prefabs/components from a Unity Editor menu command.
+
+Responsibilities:
+- Update creature prefabs with CreaturePresentation settings.
+- Copy the creature-detection scene into the feedback scene.
+- Find creature targets and the proximity system in the copied scene.
+- Create or reuse the encounter prompt UI.
+- Wire CreaturePresentation references and tuning values.
+- Add the generated scene to Unity build settings.
+
+Architecture:
+Editor-only scene preparation utility for Exploration_03_CreatureFeedback. It
+configures runtime presentation components but does not run during gameplay.
+
+Dependencies:
+- UnityEditor and UnityEditor.SceneManagement
+- CreatureExplorationTarget
+- CreaturePresentation
+- CreatureProximitySystem
+- CanvasGroup and TextMeshProUGUI
+
+Data Flow:
+Unity Editor menu item
+    -> Prefab and scene serialized values
+    -> Runtime CreaturePresentation reads proximity state during play
+
+Editor / Runtime:
+Located under Assets/Scripts/Editor and depends on UnityEditor APIs, so it is
+editor-only and excluded from runtime builds.
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using System;
 using TMPro;
 using UnityEditor;

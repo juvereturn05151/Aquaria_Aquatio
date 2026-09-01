@@ -1,3 +1,34 @@
+/*
+EncounterSessionData.cs
+
+Purpose:
+Stores the selected AR encounter creature and simple two-creature progression
+state across scene loads.
+
+Responsibilities:
+- Remember which CreatureType should be searched for in the AR scene.
+- Track whether Aquaria has been found and how many Aquario encounters succeeded.
+- Determine which creature is currently searchable.
+- Record found creatures and union completion.
+- Reset or clear session/progression values for testing and replay.
+
+Architecture:
+Static runtime session store shared by exploration and AR scenes. It avoids
+scene object references and survives scene transitions through static fields.
+
+Dependencies:
+- CreatureType
+
+Data Flow:
+ExplorationEncounterFlow selects a creature
+    -> EncounterSessionData
+    -> ARCreatureSearchController reads selection
+    -> ARCreatureSearchController registers found result
+    -> Exploration proximity filtering uses progression state
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 public static class EncounterSessionData
 {
     private const int DefaultAquarioCatchCount = 3;

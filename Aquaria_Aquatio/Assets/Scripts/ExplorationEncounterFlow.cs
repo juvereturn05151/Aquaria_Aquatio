@@ -1,3 +1,36 @@
+/*
+ExplorationEncounterFlow.cs
+
+Purpose:
+Owns the exploration-side logic for deciding when an AR encounter can start and
+which creature should be passed to the AR scene.
+
+Responsibilities:
+- Read encounter readiness from CreatureProximitySystem.
+- Resolve the current signal creature from progression or nearest target data.
+- Start exploration progression when an encounter begins.
+- Store the selected creature in EncounterSessionData.
+- Load the configured AR encounter scene.
+
+Architecture:
+Gameplay flow component paired with ExplorationEncounterEntry. It keeps
+encounter rules and scene transition logic out of the UI component.
+
+Dependencies:
+- CreatureProximitySystem
+- EncounterSessionData
+- CreatureType
+- UnityEngine.SceneManagement.SceneManager
+
+Data Flow:
+CreatureProximitySystem encounter state
+    -> ExplorationEncounterFlow.TryBeginEncounter()
+    -> EncounterSessionData.SetSelected()
+    -> AR encounter scene load
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

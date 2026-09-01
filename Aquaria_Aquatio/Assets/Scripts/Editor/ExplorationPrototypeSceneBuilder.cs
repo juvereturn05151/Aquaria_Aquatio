@@ -1,3 +1,42 @@
+/*
+ExplorationPrototypeSceneBuilder.cs
+
+Purpose:
+Builds early exploration prototype and creature-detection scenes from Unity
+Editor menu commands.
+
+Responsibilities:
+- Create prototype scene cameras, lighting, ground, roads, landmarks, player marker, and UI.
+- Create or reuse creature target prefabs and materials.
+- Add GPS, simulated position, movement, heading, spawn, proximity, and debug systems.
+- Wire serialized references for the generated scene objects.
+- Configure tuning values for GPS filtering, movement, heading, and proximity.
+- Add generated scenes to Unity build settings.
+
+Architecture:
+Editor-only scene generation utility for exploration prototypes. It creates
+runtime scene objects and serialized references, but is not itself runtime code.
+
+Dependencies:
+- UnityEditor and UnityEditor.SceneManagement
+- TextMeshProUGUI and UnityEngine.UI
+- GPSManager and ExplorationPositionSource implementations
+- ExplorationController and DeviceHeadingController
+- CreatureSpawnManager and CreatureProximitySystem
+- ExplorationDebugPanel
+
+Data Flow:
+Unity Editor menu item
+    -> Generated prototype/detection scenes and prefabs
+    -> Runtime exploration systems run from serialized references
+
+Editor / Runtime:
+Located under Assets/Scripts/Editor and depends on UnityEditor APIs, so it is
+editor-only and excluded from runtime builds.
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;

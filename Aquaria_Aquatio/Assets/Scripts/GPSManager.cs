@@ -1,27 +1,35 @@
-/* 
+/*
 GPSManager.cs
-E-mail: juvereturn@gmail.com
-Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
 
 Purpose:
-This component owns access to Unity's GPS/location service.
+Owns access to Unity's device location service and exposes the latest GPS sample.
 
 Responsibilities:
-- Request Android location permission.
-- Start and stop Unity's LocationService.
-- Wait for GPS initialization to complete.
-- Read the latest GPS sample.
-- Expose latitude, longitude, accuracy, timestamp, and service status.
-- Provide itself to GPSPositionSource.
+- Request Android fine-location permission.
+- Start Unity LocationService and wait for initialization.
+- Copy the latest running location sample into public read-only properties.
+- Expose latitude, longitude, horizontal accuracy, timestamp, and service status.
+- Stop the Unity LocationService when destroyed.
 
-Architecture Notes:
-GPSManager acts as the low-level GPS service layer.
-Other gameplay systems should avoid directly calling Input.location when possible.
-Instead, they should obtain location information through GPSManager or through
-higher-level abstractions such as GPSPositionSource.
+Architecture:
+Low-level GPS service component. GPSPositionSource reads this component after it
+is supplied by ExplorationSystemInjector.
 
-GPSPositionSource is required on the same GameObject because GPSManager
-injects itself into that component.
+Dependencies:
+- UnityEngine.Input.location
+- UnityEngine.LocationService
+- UnityEngine.Android.Permission on Android builds
+
+Data Flow:
+Unity Location Service
+    -> GPSManager.Update()
+    -> GPSPositionSource
+
+Editor / Runtime:
+Android permission code is wrapped in UNITY_ANDROID. In the editor, GPS access
+depends on Unity's location service availability.
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
 */
 
 using System.Collections;

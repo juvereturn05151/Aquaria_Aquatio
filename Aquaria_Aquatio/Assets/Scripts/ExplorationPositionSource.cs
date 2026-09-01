@@ -2,34 +2,32 @@
 ExplorationPositionSource.cs
 
 Purpose:
-Defines a common base class for systems that provide the player's exploration position.
+Defines the shared position-source abstraction for exploration movement.
 
 Responsibilities:
-
-Store the player's local East/North displacement in meters.
-Track whether a valid position is available.
-Track accepted and rejected position samples.
-Store the latest sample result for debugging.
-Expose displacement data to other gameplay systems.
-Notify listeners when a new position sample is accepted.
+- Store local East/North displacement in meters.
+- Track readiness, accepted samples, rejected samples, and latest sample text.
+- Expose GPS-like coordinate properties for real and simulated sources.
+- Notify listeners when a new position sample is accepted.
 
 Architecture:
-This class does not determine where position data comes from.
+Base MonoBehaviour for real GPS and simulated exploration position providers.
+Downstream gameplay systems depend on this abstraction instead of a specific
+GPS or editor implementation.
 
-Concrete classes such as GPSPositionSource or simulated/editor position sources
-should inherit from this class and provide their own position data.
+Dependencies:
+- UnityEngine.LocationServiceStatus
+- UnityEngine.Vector3
 
-Gameplay systems should depend on ExplorationPositionSource rather than a
-specific implementation. This allows the same gameplay code to work with
-real GPS data, simulated GPS data, or other position sources.
+Events / Data Flow:
+Concrete source accepts or rejects samples
+    -> ExplorationPositionSource stores common state
+    -> PositionAccepted event and polling properties feed gameplay systems
 
 Position Mapping:
 East -> Unity X axis
 North -> Unity Z axis
 Up -> Unity Y axis
-
-Events:
-PositionAccepted is invoked whenever a new position sample is successfully accepted.
 
 Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
 */

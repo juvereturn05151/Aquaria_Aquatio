@@ -1,3 +1,34 @@
+/*
+CesiumGPSOriginAdapter.cs
+
+Purpose:
+Initializes the CesiumGeoreference origin from the first valid real GPS
+coordinate reported by the active GPS position source.
+
+Responsibilities:
+- Receive GPSPositionSource and CesiumGeoreference references from the injector.
+- Wait until GPSPositionSource is ready and has a valid coordinate.
+- Set Cesium longitude, latitude, and height once.
+- Optionally log the initialized Cesium origin.
+
+Architecture:
+Exploration scene adapter between gameplay GPS data and Cesium map rendering.
+It keeps Cesium origin setup separate from player movement and encounter rules.
+
+Dependencies:
+- GPSPositionSource
+- CesiumGeoreference
+- ExplorationSystemInjector
+
+Data Flow:
+GPSManager
+    -> GPSPositionSource
+    -> CesiumGPSOriginAdapter
+    -> CesiumGeoreference.SetOriginLongitudeLatitudeHeight()
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using CesiumForUnity;
 using UnityEngine;
 

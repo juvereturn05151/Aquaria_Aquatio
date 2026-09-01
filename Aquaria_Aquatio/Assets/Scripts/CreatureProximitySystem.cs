@@ -1,3 +1,38 @@
+/*
+CreatureProximitySystem.cs
+
+Purpose:
+Detects the nearest searchable exploration creature and determines whether an
+encounter is available.
+
+Responsibilities:
+- Receive the active ExplorationPositionSource and CreatureSpawnManager.
+- Compare player East/North displacement against creature target positions.
+- Filter targets using EncounterSessionData progression rules when enabled.
+- Compute nearest target, distance, signal strength, and proximity state.
+- Notify CreatureSpawnManager when a creature enters encounter range.
+- Update assigned exploration feedback text fields.
+
+Architecture:
+Exploration gameplay system that currently mixes proximity rules with simple UI
+text updates. ExplorationEncounterFlow reads its encounter state to start AR.
+
+Dependencies:
+- ExplorationPositionSource
+- CreatureSpawnManager
+- CreatureExplorationTarget
+- EncounterSessionData
+- TextMeshProUGUI
+
+Events / Data Flow:
+ExplorationPositionSource displacement
+    -> CreatureProximitySystem.Update()
+    -> CreatureSpawnManager.NotifyEncounterReady()
+    -> ExplorationEncounterFlow / UI / CreaturePresentation
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using TMPro;
 using UnityEngine;
 

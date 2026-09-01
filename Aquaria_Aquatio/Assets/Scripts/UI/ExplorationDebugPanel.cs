@@ -1,3 +1,38 @@
+/*
+ExplorationDebugPanel.cs
+
+Purpose:
+Displays live exploration diagnostics for GPS/simulation, movement, heading,
+and creature proximity.
+
+Responsibilities:
+- Receive debug data sources from ExplorationSystemInjector.
+- Toggle the debug panel root based on the showDebug flag.
+- Build a combined multiline debug readout.
+- Update individual TextMeshPro scene fields for GPS, displacement, heading,
+  nearest creature, signal strength, and encounter state.
+
+Architecture:
+Runtime debug UI component for exploration scenes. It reads existing systems
+through polling and does not drive gameplay state.
+
+Dependencies:
+- ExplorationSystemInjector
+- ExplorationPositionSourceSelector
+- ExplorationPositionSource
+- ExplorationController
+- DeviceHeadingController
+- CreatureProximitySystem
+- TextMeshProUGUI
+
+Data Flow:
+Exploration systems expose public state
+    -> ExplorationDebugPanel.Update()
+    -> Debug panel and scene text fields
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using TMPro;
 using UnityEngine;
 

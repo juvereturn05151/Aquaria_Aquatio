@@ -1,3 +1,36 @@
+/*
+ExplorationController.cs
+
+Purpose:
+Moves the exploration player marker or world root from East/North displacement
+reported by the active position source.
+
+Responsibilities:
+- Receive an ExplorationPositionSource from the source selector.
+- Convert East/North meters into Unity X/Z movement.
+- Smooth movement toward the latest displacement target.
+- Support either moving the player marker or keeping the player centered and
+  moving the world root.
+- Optionally make the camera follow the player marker.
+
+Architecture:
+Exploration movement adapter between GPS/simulated position data and scene
+Transforms. It does not own GPS sampling or creature encounter rules.
+
+Dependencies:
+- ExplorationPositionSource
+- World root Transform
+- Player marker Transform
+- Optional follow Camera
+
+Data Flow:
+ExplorationPositionSource.DisplacementMeters
+    -> ExplorationController.Update()
+    -> PlayerMarker or WorldRoot Transform movement
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 
 public class ExplorationController : MonoBehaviour

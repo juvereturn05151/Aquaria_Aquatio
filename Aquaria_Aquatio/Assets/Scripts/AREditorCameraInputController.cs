@@ -1,4 +1,31 @@
-// Used by scene: Assets/Scenes/Encounter_01_ARSearch.unity
+/*
+AREditorCameraInputController.cs
+
+Purpose:
+Provides keyboard and mouse camera controls for testing the AR encounter scene
+without walking around with a device.
+
+Responsibilities:
+- Move the camera root using WASD/QE input.
+- Rotate the camera with right-mouse drag.
+- Support sprint movement while Shift is held.
+- Manage cursor lock state during look input.
+
+Architecture:
+Development/testing input helper for the AR encounter scene. It is separate
+from AR tracking and only moves a regular Transform.
+
+Dependencies:
+- Camera or Camera.main
+- UnityEngine.Input
+
+Editor / Runtime:
+Useful mainly in the Unity Editor, but the component itself is not wrapped in
+editor-only compilation and can run wherever it is included in a scene.
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 
 public class AREditorCameraInputController : MonoBehaviour

@@ -1,3 +1,36 @@
+/*
+ExplorationEncounterEntry.cs
+
+Purpose:
+Controls the encounter-entry prompt UI shown during exploration.
+
+Responsibilities:
+- Ensure and reference the paired ExplorationEncounterFlow component.
+- Wire the encounter button to the flow's TryBeginEncounter() method.
+- Show, hide, and fade prompt UI based on flow state.
+- Update prompt, detail, and debug text from the current encounter target.
+- Apply optional runtime styling to the prompt panel.
+
+Architecture:
+UI-only companion to ExplorationEncounterFlow. Gameplay decisions and scene
+loading live in the flow component.
+
+Dependencies:
+- ExplorationEncounterFlow
+- TextMeshProUGUI
+- Button
+- CanvasGroup
+- Image
+- RectTransform
+
+Events / Data Flow:
+Button.onClick
+    -> ExplorationEncounterEntry.BeginEncounter()
+    -> ExplorationEncounterFlow.TryBeginEncounter()
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

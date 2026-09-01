@@ -1,3 +1,32 @@
+/*
+AquariaUnionAnimation.cs
+
+Purpose:
+Builds and plays the short union celebration overlay after the AR encounter flow
+has found both required creatures.
+
+Responsibilities:
+- Create the overlay UI at runtime when references are not assigned.
+- Animate marker positions, marker scale, and title visibility.
+- Hide the overlay when the animation duration completes.
+
+Architecture:
+Runtime UI effect used by ARCreatureSearchController as a presentation-only
+celebration step near the end of the AR search scene.
+
+Dependencies:
+- Canvas and CanvasGroup
+- TextMeshProUGUI
+- UnityEngine.UI.Image
+
+Data Flow:
+ARCreatureSearchController
+    -> AquariaUnionAnimation.Play()
+    -> Runtime overlay animation
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

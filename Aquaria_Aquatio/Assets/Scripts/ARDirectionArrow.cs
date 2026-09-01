@@ -1,4 +1,31 @@
-// Used by scene: Assets/Scenes/Encounter_01_ARSearch.unity
+/*
+ARDirectionArrow.cs
+
+Purpose:
+Positions and rotates an in-world arrow so the player can turn toward the
+spawned AR creature.
+
+Responsibilities:
+- Follow the AR camera at a configurable local offset.
+- Point toward the assigned target on the horizontal plane.
+- Hide or show the arrow object.
+- Expose distance and bearing data for debug UI.
+
+Architecture:
+AR encounter presentation helper updated in LateUpdate after camera movement.
+
+Dependencies:
+- Camera
+- Arrow Transform
+- Target Transform assigned at runtime
+
+Data Flow:
+ARCreatureSearchController assigns a target and visibility state
+    -> ARDirectionArrow updates world-space arrow orientation
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 
 public class ARDirectionArrow : MonoBehaviour

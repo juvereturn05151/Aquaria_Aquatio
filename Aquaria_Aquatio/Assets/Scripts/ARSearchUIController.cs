@@ -1,4 +1,33 @@
-// Used by scene: Assets/Scenes/Encounter_01_ARSearch.unity
+/*
+ARSearchUIController.cs
+
+Purpose:
+Updates the on-screen AR encounter instructions, found message, and optional
+debug text.
+
+Responsibilities:
+- Store creature-specific instruction text for the current encounter.
+- Show instructions for each ARSearchState.
+- Toggle the found panel when the creature is discovered.
+- Write optional debug text from the AR search controller.
+
+Architecture:
+Presentation component for Encounter_01_ARSearch. It does not decide gameplay
+state; it reflects state passed in by ARCreatureSearchController.
+
+Dependencies:
+- TextMeshProUGUI
+- Found panel GameObject
+- ARSearchState
+
+Data Flow:
+ARCreatureSearchController
+    -> SetCreatureContext() / SetState() / SetFoundMessage() / SetDebugText()
+    -> AR scene UI
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using TMPro;
 using UnityEngine;
 

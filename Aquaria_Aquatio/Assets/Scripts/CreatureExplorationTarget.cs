@@ -1,3 +1,32 @@
+/*
+CreatureExplorationTarget.cs
+
+Purpose:
+Marks a creature's exploration-world location and type for proximity checks.
+
+Responsibilities:
+- Store the creature type represented by this target.
+- Optionally apply a debug East/North/height position in edit or play mode.
+- Expose the target's local world position to proximity systems.
+- Allow builder scripts to configure the target data.
+
+Architecture:
+Lightweight data component placed on creature target GameObjects or prefabs.
+CreatureProximitySystem reads these targets through CreatureSpawnManager.
+
+Dependencies:
+- CreatureType
+- Transform
+
+Data Flow:
+Scene or editor builder configuration
+    -> CreatureExplorationTarget
+    -> CreatureSpawnManager target list
+    -> CreatureProximitySystem distance checks
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 
 public class CreatureExplorationTarget : MonoBehaviour

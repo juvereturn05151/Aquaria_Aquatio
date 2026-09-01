@@ -1,3 +1,34 @@
+/*
+CreaturePresentation.cs
+
+Purpose:
+Animates exploration creature feedback based on the player's current proximity
+to a creature target.
+
+Responsibilities:
+- Resolve visual roots and renderers when explicit references are missing.
+- Show signal-ring feedback for the nearest creature.
+- Fade creature renderers according to signal mode and proximity.
+- Animate bobbing, pulsing, and the encounter prompt.
+
+Architecture:
+Presentation component that polls CreatureProximitySystem and applies visual
+state to one CreatureExplorationTarget. It does not calculate proximity itself.
+
+Dependencies:
+- CreatureExplorationTarget
+- CreatureProximitySystem
+- Renderer
+- CanvasGroup
+
+Data Flow:
+CreatureProximitySystem nearest target/state/signal strength
+    -> CreaturePresentation.Update()
+    -> Creature visuals, signal effect, and prompt opacity
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 
 public class CreaturePresentation : MonoBehaviour

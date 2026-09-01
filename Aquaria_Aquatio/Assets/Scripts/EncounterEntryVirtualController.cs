@@ -1,4 +1,34 @@
-// Used by scene: Assets/Scenes/Exploration_04_EncounterEntry.unity
+/*
+EncounterEntryVirtualController.cs
+
+Purpose:
+Draws temporary on-screen movement and turn controls for the encounter-entry
+exploration scene.
+
+Responsibilities:
+- Receive simulated position and heading controllers from the injector.
+- Draw IMGUI movement and turn buttons.
+- Forward virtual movement to EditorKeyboardPositionSource.
+- Forward virtual turning to DeviceHeadingController.
+- Clear virtual inputs when the component is disabled.
+
+Architecture:
+Prototype/debug input bridge for Exploration_04_EncounterEntry. It uses OnGUI
+and feeds existing simulation systems rather than moving gameplay objects itself.
+
+Dependencies:
+- ExplorationSystemInjector
+- EditorKeyboardPositionSource
+- DeviceHeadingController
+- Unity IMGUI
+
+Editor / Runtime:
+Primarily supports editor and prototype testing; it is not compiled as an
+editor-only script.
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using UnityEngine;
 
 public class EncounterEntryVirtualController : MonoBehaviour

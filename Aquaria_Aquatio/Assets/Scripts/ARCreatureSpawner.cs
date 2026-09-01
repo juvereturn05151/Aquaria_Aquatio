@@ -1,4 +1,34 @@
-// Used by scene: Assets/Scenes/Encounter_01_ARSearch.unity
+/*
+ARCreatureSpawner.cs
+
+Purpose:
+Places the encounter creature into the AR scene once tracking is ready.
+
+Responsibilities:
+- Choose a spawn direction and distance relative to the AR camera.
+- Prefer detected AR plane height when plane placement is enabled.
+- Fall back to a horizontal camera-relative spawn position.
+- Instantiate the creature prefab and notify listeners.
+
+Architecture:
+Reusable AR scene helper owned by the encounter flow. It focuses only on spawn
+placement and prefab instantiation.
+
+Dependencies:
+- Camera
+- ARPlaneManager
+- ARRaycastManager
+- Creature prefab GameObject
+
+Events / Data Flow:
+ARCreatureSearchController
+    -> SpawnCreature()
+    -> OnCreatureSpawned event
+    -> Visibility and direction systems receive the spawned Transform
+
+Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
+*/
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
