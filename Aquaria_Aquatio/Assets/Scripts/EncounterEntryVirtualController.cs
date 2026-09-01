@@ -3,47 +3,46 @@ using UnityEngine;
 
 public class EncounterEntryVirtualController : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private EditorKeyboardPositionSource positionSource;
-    [SerializeField] private DeviceHeadingController headingController;
-
     [Header("Layout")]
-    [SerializeField] private bool showController = true;
-    [SerializeField] private float buttonSize = 82f;
-    [SerializeField] private float buttonGap = 10f;
-    [SerializeField] private float edgePadding = 28f;
+    [SerializeField] 
+    private bool showController = true;
+    [SerializeField] 
+    private float buttonSize = 82f;
+    [SerializeField] 
+    private float buttonGap = 10f;
+    [SerializeField] 
+    private float edgePadding = 28f;
 
     [Header("Labels")]
-    [SerializeField] private string forwardLabel = "Forward";
-    [SerializeField] private string backLabel = "Back";
-    [SerializeField] private string leftLabel = "Left";
-    [SerializeField] private string rightLabel = "Right";
-    [SerializeField] private string rotateLeftLabel = "Rotate Left";
-    [SerializeField] private string rotateRightLabel = "Rotate Right";
+    [SerializeField] 
+    private string forwardLabel = "Forward";
+    [SerializeField] 
+    private string backLabel = "Back";
+    [SerializeField] 
+    private string leftLabel = "Left";
+    [SerializeField] 
+    private string rightLabel = "Right";
+    [SerializeField] 
+    private string rotateLeftLabel = "Rotate Left";
+    [SerializeField] 
+    private string rotateRightLabel = "Rotate Right";
 
     [Header("Debug Runtime")]
-    [SerializeField] private Vector2 moveInput;
-    [SerializeField] private float turnInput;
+    [SerializeField] 
+    private Vector2 moveInput;
+    [SerializeField] 
+    private float turnInput;
+
+    [Header("References")]
+    private EditorKeyboardPositionSource positionSource;
+    private DeviceHeadingController headingController;
 
     private GUIStyle buttonStyle;
 
-    private void Reset()
+    public void Initialize(ExplorationSystemInjector explorationSystemInjector) 
     {
-        positionSource = FindAnyObjectByType<EditorKeyboardPositionSource>();
-        headingController = FindAnyObjectByType<DeviceHeadingController>();
-    }
-
-    private void Awake()
-    {
-        if (positionSource == null)
-        {
-            positionSource = FindAnyObjectByType<EditorKeyboardPositionSource>();
-        }
-
-        if (headingController == null)
-        {
-            headingController = FindAnyObjectByType<DeviceHeadingController>();
-        }
+        positionSource = explorationSystemInjector.EditorKeyboardPositionSource;
+        headingController = explorationSystemInjector.DeviceHeadingController;
     }
 
     private void Update()

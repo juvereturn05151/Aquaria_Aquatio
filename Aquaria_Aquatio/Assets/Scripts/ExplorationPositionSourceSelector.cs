@@ -4,25 +4,17 @@ public class ExplorationPositionSourceSelector : MonoBehaviour
 {
     [SerializeField] 
     private bool useEditorSimulationInEditor = true;
-    [SerializeField] 
-    private GPSPositionSource gpsPositionSource;
-    [SerializeField] 
-    private EditorKeyboardPositionSource editorPositionSource;
-    [SerializeField] 
-    private ExplorationController explorationController;
-    [SerializeField] 
-    private CreatureProximitySystem proximitySystem;
 
     public ExplorationPositionSource ActivePositionSource { get; private set; }
 
-    private void Awake()
-    {
-        SelectPositionSource();
-    }
-
-    private void SelectPositionSource()
+    public void Initialize(ExplorationSystemInjector explorationSystemInjector)
     {
 #if UNITY_EDITOR
+        EditorKeyboardPositionSource editorPositionSource = explorationSystemInjector.EditorKeyboardPositionSource;
+        GPSPositionSource gpsPositionSource = explorationSystemInjector.GPSPositionSource;
+        ExplorationController explorationController = explorationSystemInjector.ExplorationController;
+        CreatureProximitySystem proximitySystem = explorationSystemInjector.CreatureProximitySystem;
+
         ActivePositionSource = useEditorSimulationInEditor && editorPositionSource != null
             ? editorPositionSource
             : gpsPositionSource;

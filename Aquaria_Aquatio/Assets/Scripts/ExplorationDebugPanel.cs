@@ -3,24 +3,47 @@ using UnityEngine;
 
 public class ExplorationDebugPanel : MonoBehaviour
 {
-    [SerializeField] private bool showDebug = true;
-    [SerializeField] private GameObject debugPanelRoot;
-    [SerializeField] private TextMeshProUGUI debugText;
-    [SerializeField] private ExplorationPositionSourceSelector positionSourceSelector;
-    [SerializeField] private ExplorationPositionSource positionSource;
-    [SerializeField] private ExplorationController explorationController;
-    [SerializeField] private DeviceHeadingController headingController;
-    [SerializeField] private CreatureProximitySystem proximitySystem;
-    [SerializeField] private TextMeshProUGUI gpsSimulationStatusText;
-    [SerializeField] private TextMeshProUGUI currentDisplacementText;
-    [SerializeField] private TextMeshProUGUI eastDisplacementText;
-    [SerializeField] private TextMeshProUGUI northDisplacementText;
-    [SerializeField] private TextMeshProUGUI headingText;
-    [SerializeField] private TextMeshProUGUI nearestCreatureText;
-    [SerializeField] private TextMeshProUGUI nearestCreatureDistanceText;
-    [SerializeField] private TextMeshProUGUI proximityStateText;
-    [SerializeField] private TextMeshProUGUI signalStrengthText;
-    [SerializeField] private TextMeshProUGUI encounterStateText;
+    [SerializeField] 
+    private bool showDebug = true;
+    [SerializeField] 
+    private GameObject debugPanelRoot;
+    [SerializeField] 
+    private TextMeshProUGUI debugText;
+    [SerializeField] 
+    private TextMeshProUGUI gpsSimulationStatusText;
+    [SerializeField] 
+    private TextMeshProUGUI currentDisplacementText;
+    [SerializeField] 
+    private TextMeshProUGUI eastDisplacementText;
+    [SerializeField] 
+    private TextMeshProUGUI northDisplacementText;
+    [SerializeField] 
+    private TextMeshProUGUI headingText;
+    [SerializeField] 
+    private TextMeshProUGUI nearestCreatureText;
+    [SerializeField] 
+    private TextMeshProUGUI nearestCreatureDistanceText;
+    [SerializeField] 
+    private TextMeshProUGUI proximityStateText;
+    [SerializeField] 
+    private TextMeshProUGUI signalStrengthText;
+    [SerializeField] 
+    private TextMeshProUGUI encounterStateText;
+
+    private ExplorationPositionSourceSelector positionSourceSelector;
+    private ExplorationPositionSource positionSource;
+    private ExplorationController explorationController;
+    private DeviceHeadingController headingController;
+    private CreatureProximitySystem proximitySystem;
+
+    public void Initialize(ExplorationSystemInjector explorationSystemInjector) 
+    {
+        positionSourceSelector = explorationSystemInjector.ExplorationPositionSourceSelector;
+        positionSource = explorationSystemInjector.GPSPositionSource;
+        explorationController = explorationSystemInjector.ExplorationController;
+        headingController = explorationSystemInjector.DeviceHeadingController;
+        proximitySystem = explorationSystemInjector.CreatureProximitySystem;
+    }
 
     private void Update()
     {

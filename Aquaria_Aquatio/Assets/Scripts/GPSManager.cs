@@ -32,9 +32,6 @@ using UnityEngine.Android;
 
 public class GPSManager : MonoBehaviour
 {
-    [SerializeField] 
-    private GPSPositionSource gpsPositionSource;
-
     public bool HasValidLocation { get; private set; }
     public double CurrentLatitude { get; private set; }
     public double CurrentLongitude { get; private set; }
@@ -42,15 +39,8 @@ public class GPSManager : MonoBehaviour
     public double CurrentTimestamp { get; private set; }
     public LocationServiceStatus CurrentStatus => Input.location.status;
 
-    private void Awake()
-    {
-        InjectIntoMovement();
-    }
-
     private IEnumerator Start()
     {
-        InjectIntoMovement();
-
 #if UNITY_ANDROID
         if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
         {
@@ -103,14 +93,6 @@ public class GPSManager : MonoBehaviour
         CurrentHorizontalAccuracy = location.horizontalAccuracy;
         CurrentTimestamp = location.timestamp;
         HasValidLocation = true;
-    }
-
-    private void InjectIntoMovement()
-    {
-        if (gpsPositionSource != null)
-        {
-            gpsPositionSource.SetGPSManager(this);
-        }
     }
 
     private void OnDestroy()

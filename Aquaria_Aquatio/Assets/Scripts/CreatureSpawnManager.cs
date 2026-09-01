@@ -6,10 +6,14 @@ public class CreatureSpawnManager : MonoBehaviour
 {
     public event Action<CreatureExplorationTarget> OnCreatureEncounterReady;
 
-    [SerializeField] private Transform targetsRoot;
-    [SerializeField] private bool collectTargetsOnAwake = true;
-    [SerializeField] private bool createMissingFlowTargets = true;
-    [SerializeField] private List<CreatureExplorationTarget> targets = new();
+    [SerializeField] 
+    private Transform targetsRoot;
+    [SerializeField] 
+    private bool collectTargetsOnAwake = true;
+    [SerializeField] 
+    private bool createMissingFlowTargets = true;
+    [SerializeField] 
+    private List<CreatureExplorationTarget> targets = new();
 
     public IReadOnlyList<CreatureExplorationTarget> Targets => targets;
 

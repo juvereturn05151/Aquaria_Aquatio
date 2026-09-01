@@ -1198,7 +1198,7 @@ GameObject:
   - component: {fileID: 314159261}
   - component: {fileID: 314159262}
   m_Layer: 0
-  m_Name: CesiumIntegration
+  m_Name: CesiumOriginAdaptor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3770,10 +3770,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplorationPositionSourceSelector
   useEditorSimulationInEditor: 1
-  gpsPositionSource: {fileID: 153744441}
-  editorPositionSource: {fileID: 1949534598}
-  explorationController: {fileID: 1056224021}
-  proximitySystem: {fileID: 906633321}
 --- !u!1 &1296925592
 GameObject:
   m_ObjectHideFlags: 0
@@ -4815,10 +4811,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 522090407}
-  - {fileID: 314159261}
   - {fileID: 2139008989}
   - {fileID: 1263434776}
+  - {fileID: 522090407}
+  - {fileID: 314159261}
   - {fileID: 1352201032}
   - {fileID: 726487252}
   - {fileID: 906633322}
@@ -4840,12 +4836,14 @@ MonoBehaviour:
   gpsManager: {fileID: 2139008987}
   explorationPositionSourceSelector: {fileID: 1263434777}
   gpsPositionSource: {fileID: 153744441}
-  editorPositionSource: {fileID: 1949534598}
+  editorKeyboardPositionSource: {fileID: 1949534598}
   encounterEntryVirtualController: {fileID: 1348422433}
   explorationController: {fileID: 1056224021}
   deviceHeadingController: {fileID: 268786600}
   creatureSpawnManager: {fileID: 726487251}
   creatureProximitySystem: {fileID: 906633321}
+  cesiumGeoreference: {fileID: 522090406}
+  cesiumGPSOriginAdapter: {fileID: 314159262}
   explorationDebugPanel: {fileID: 309822728}
 --- !u!1 &2055008581
 GameObject:
@@ -5091,7 +5089,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2963d5de6c26140489bbee15346d427e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GPSManager
-  gpsPositionSource: {fileID: 153744441}
 --- !u!4 &2139008989
 Transform:
   m_ObjectHideFlags: 0

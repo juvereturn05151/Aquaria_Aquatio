@@ -105,9 +105,9 @@ public class GPSPositionSource : ExplorationPositionSource
         ? gpsManager.CurrentStatus
         : LocationServiceStatus.Stopped;
 
-    public void SetGPSManager(GPSManager manager)
+    public void Initialize(ExplorationSystemInjector explorationSystemInjector)
     {
-        gpsManager = manager;
+        gpsManager = explorationSystemInjector.GPSManager;
     }
 
     private void Update()

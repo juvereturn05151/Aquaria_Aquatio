@@ -4,29 +4,33 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class CesiumGPSOriginAdapter : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private GPSPositionSource gpsPositionSource;
-    [SerializeField] private CesiumGeoreference cesiumGeoreference;
-
     [Header("Origin")]
-    [SerializeField] private double originHeight;
+    [SerializeField] 
+    private double originHeight;
 
     [Header("Debug")]
-    [SerializeField] private bool debugLogging = true;
+    [SerializeField]
+    private bool debugLogging = true;
 
     [Header("Debug Runtime")]
-    [SerializeField] private bool originInitialized;
-    [SerializeField] private double initializedLatitude;
-    [SerializeField] private double initializedLongitude;
+    [SerializeField]
+    private bool originInitialized;
+    [SerializeField] 
+    private double initializedLatitude;
+    [SerializeField] 
+    private double initializedLongitude;
+
+    private GPSPositionSource gpsPositionSource;
+    private CesiumGeoreference cesiumGeoreference;
 
     public bool OriginInitialized => originInitialized;
     public double InitializedLatitude => initializedLatitude;
     public double InitializedLongitude => initializedLongitude;
 
-    private void Reset()
+    public void Initialize(ExplorationSystemInjector explorationSystemInjector) 
     {
-        gpsPositionSource = FindAnyObjectByType<GPSPositionSource>();
-        cesiumGeoreference = FindAnyObjectByType<CesiumGeoreference>();
+        gpsPositionSource = explorationSystemInjector.GPSPositionSource;
+        cesiumGeoreference = explorationSystemInjector.CesiumGeoreference;
     }
 
     private void Update()

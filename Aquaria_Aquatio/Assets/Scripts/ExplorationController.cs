@@ -3,29 +3,43 @@ using UnityEngine;
 public class ExplorationController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private ExplorationPositionSource positionSource;
-    [SerializeField] private Transform worldRoot;
-    [SerializeField] private Transform playerMarker;
-    [SerializeField] private Transform followCamera;
+    [SerializeField] 
+    private Transform worldRoot;
+    [SerializeField] 
+    private Transform playerMarker;
+    [SerializeField] 
+    private Transform followCamera;
 
     [Header("Movement")]
-    [SerializeField] private float movementScale = 1f;
-    [SerializeField] private float smoothingSpeed = 3f;
-    [SerializeField] private bool keepPlayerMarkerCentered = true;
-    [SerializeField] private bool movePlayerMarkerFromDisplacement;
-    [SerializeField] private Vector3 followCameraOffset = new Vector3(0f, 13f, -10f);
-    [SerializeField] private bool debugMovementLogging;
-    [SerializeField] private float debugLogDistanceThreshold = 0.5f;
+    [SerializeField] 
+    private float movementScale = 1f;
+    [SerializeField] 
+    private float smoothingSpeed = 3f;
+    [SerializeField] 
+    private bool keepPlayerMarkerCentered = true;
+    [SerializeField] 
+    private bool movePlayerMarkerFromDisplacement;
+    [SerializeField] 
+    private Vector3 followCameraOffset = new Vector3(0f, 13f, -10f);
+    [SerializeField] 
+    private bool debugMovementLogging;
+    [SerializeField] 
+    private float debugLogDistanceThreshold = 0.5f;
 
     [Header("Debug Runtime")]
-    [SerializeField] private Vector3 gpsDisplacement;
-    [SerializeField] private Vector3 worldRootTargetPosition;
-    [SerializeField] private Vector3 worldRootCurrentPosition;
-    [SerializeField] private Vector3 playerTargetPosition;
+    [SerializeField] 
+    private Vector3 gpsDisplacement;
+    [SerializeField] 
+    private Vector3 worldRootTargetPosition;
+    [SerializeField] 
+    private Vector3 worldRootCurrentPosition;
+    [SerializeField] 
+    private Vector3 playerTargetPosition;
 
     private Vector3 lastLoggedDisplacement;
     private bool hasLoggedMovement;
 
+    private ExplorationPositionSource positionSource;
     public ExplorationPositionSource PositionSource => positionSource;
     public Vector3 GPSDisplacement => gpsDisplacement;
     public Vector3 WorldRootTargetPosition => worldRootTargetPosition;
@@ -35,11 +49,6 @@ public class ExplorationController : MonoBehaviour
     public void SetPositionSource(ExplorationPositionSource source)
     {
         positionSource = source;
-    }
-
-    private void Reset()
-    {
-        positionSource = FindAnyObjectByType<ExplorationPositionSource>();
     }
 
     private void Update()

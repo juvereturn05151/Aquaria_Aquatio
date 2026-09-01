@@ -4,8 +4,6 @@ using UnityEngine;
 public class CreatureProximitySystem : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private ExplorationPositionSource positionSource;
-    [SerializeField] private CreatureSpawnManager spawnManager;
     [SerializeField] private TextMeshProUGUI feedbackText;
     [SerializeField] private TextMeshProUGUI signalText;
     [SerializeField] private TextMeshProUGUI creatureNearbyText;
@@ -27,6 +25,8 @@ public class CreatureProximitySystem : MonoBehaviour
     [SerializeField] private string encounterState = "None";
 
     private CreatureExplorationTarget lastEncounterReadyTarget;
+    private ExplorationPositionSource positionSource;
+    private CreatureSpawnManager spawnManager;
 
     public float DetectionRange => detectionRange;
     public float StrongSignalRange => strongSignalRange;
@@ -36,6 +36,11 @@ public class CreatureProximitySystem : MonoBehaviour
     public CreatureProximityState ProximityState => proximityState;
     public float SignalStrength => signalStrength;
     public string EncounterState => encounterState;
+
+    public void Initialize(ExplorationSystemInjector explorationSystemInjector)
+    {
+        spawnManager = explorationSystemInjector.CreatureSpawnManager;
+    }
 
     public void SetPositionSource(ExplorationPositionSource source)
     {
