@@ -34,27 +34,35 @@ using UnityEngine;
 public class DeviceHeadingController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform playerVisual;
-    [SerializeField] private TextMeshProUGUI debugText;
+    [SerializeField] 
+    private Transform playerVisual;
+    [SerializeField] 
+    private TextMeshProUGUI debugText;
 
     [Header("Heading")]
-    [SerializeField] private bool enableCompassOnStart = true;
-    [SerializeField] private bool preferTrueHeading = true;
-    [SerializeField] private float headingSmoothingSpeed = 6f;
+    [SerializeField] 
+    private bool enableCompassOnStart = true;
+    [SerializeField] 
+    private bool preferTrueHeading = true;
+    [SerializeField] 
+    private float headingSmoothingSpeed = 6f;
 
     [Header("Editor Simulation")]
-    [SerializeField] private bool editorSimulationEnabled = true;
-    [SerializeField] private float simulationTurnSpeed = 90f;
+    [SerializeField] 
+    private bool editorSimulationEnabled = true;
+    [SerializeField] 
+    private float simulationTurnSpeed = 90f;
 
     [Header("Virtual Controller")]
-    [SerializeField] private float virtualTurnInput;
+    [SerializeField] 
+    private float virtualTurnInput;
 
     [Header("Debug Runtime")]
-    [SerializeField] private bool compassEnabled;
-    [SerializeField] private float rawHeading;
-    [SerializeField] private float smoothedHeading;
-    [SerializeField] private float headingAccuracy;
-    [SerializeField] private string headingState = "Waiting";
+    private bool compassEnabled;
+    private float rawHeading;
+    private float smoothedHeading;
+    private float headingAccuracy;
+    private string headingState = "Waiting";
 
     public bool CompassEnabled => compassEnabled;
     public float RawHeading => rawHeading;
