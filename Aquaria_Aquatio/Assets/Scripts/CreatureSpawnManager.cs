@@ -21,7 +21,7 @@ while CreatureProximitySystem performs distance checks and reports encounter rea
 
 Dependencies:
 - CreatureExplorationTarget
-- CreaturePresentation
+- ExplorationCreatureSignalPresentation
 - CreatureType
 - Unity Resources materials for generated fallback targets
 
@@ -202,20 +202,32 @@ public class CreatureSpawnManager : MonoBehaviour
 
     private GameObject CreateGeneratedTargetObject(CreatureType creatureType, Transform parent)
     {
-        GameObject targetObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        GameObject targetObject = new GameObject($"{creatureType}_RuntimeTarget");
         targetObject.name = $"{creatureType}_RuntimeTarget";
         targetObject.transform.SetParent(parent);
-        targetObject.transform.localScale = Vector3.one * 1.2f;
+
+        GameObject signalVisual = new GameObject("SignalVisual");
+        signalVisual.transform.SetParent(targetObject.transform);
+        signalVisual.transform.localPosition = Vector3.zero;
+        signalVisual.transform.localRotation = Quaternion.identity;
+        signalVisual.transform.localScale = Vector3.one;
+
+        GameObject signalRing = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        signalRing.name = "SignalRing";
+        signalRing.transform.SetParent(signalVisual.transform);
+        signalRing.transform.localPosition = Vector3.zero;
+        signalRing.transform.localRotation = Quaternion.identity;
+        signalRing.transform.localScale = new Vector3(1.8f, 0.03f, 1.8f);
 
         Material material = Resources.Load<Material>($"{creatureType}_Target");
-        Renderer renderer = targetObject.GetComponent<Renderer>();
+        Renderer renderer = signalRing.GetComponent<Renderer>();
 
         if (renderer != null && material != null)
         {
             renderer.sharedMaterial = material;
         }
 
-        Collider collider = targetObject.GetComponent<Collider>();
+        Collider collider = signalRing.GetComponent<Collider>();
 
         if (collider != null)
         {
@@ -230,15 +242,28 @@ public class CreatureSpawnManager : MonoBehaviour
         CreatureProximitySystem proximitySystem
     )
     {
-        if (proximitySystem == null)
+        if (target == null)
         {
             return;
         }
 
-        foreach (CreaturePresentation presentation in
-            target.GetComponentsInChildren<CreaturePresentation>(true))
+        ExplorationCreatureSignalPresentation[] presentations =
+            target.GetComponentsInChildren<ExplorationCreatureSignalPresentation>(true);
+
+        if (presentations.Length == 0)
         {
-            presentation.SetProximitySystem(proximitySystem);
+            presentations = new[]
+            {
+                target.gameObject.AddComponent<ExplorationCreatureSignalPresentation>()
+            };
+        }
+
+        foreach (ExplorationCreatureSignalPresentation presentation in presentations)
+        {
+            if (presentation != null)
+            {
+                presentation.SetProximitySystem(proximitySystem);
+            }
         }
     }
 

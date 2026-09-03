@@ -29,7 +29,7 @@ ExplorationPositionSource displacement
     -> CreatureProximitySystem.Update()
     -> CreatureSpawnManager.SpawnTargetsNearPlayer()
     -> CreatureSpawnManager.NotifyEncounterReady()
-    -> ExplorationEncounterFlow / UI / CreaturePresentation
+    -> ExplorationEncounterFlow / UI / ExplorationCreatureSignalPresentation
 
 Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
 */

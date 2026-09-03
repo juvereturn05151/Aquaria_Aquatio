@@ -55,8 +55,10 @@ public static class EncounterEntrySceneBuilder
     private const string ARSearchScenePath = "Assets/Scenes/Encounter_01_ARSearch.unity";
     private const string ARLookAroundCreaturePrefabPath =
         "Assets/Prefabs/Creature/ARLookAroundCreature.prefab";
-    private const string AquariaCreaturePrefabPath = "Assets/Prefabs/Creature/AquariaCreature.prefab";
-    private const string AquarioCreaturePrefabPath = "Assets/Prefabs/Creature/AquarioCreature.prefab";
+    private const string AquariaCreaturePrefabPath =
+        "Assets/Prefabs/Creature/Encounter/AquariaCreature_Encounter.prefab";
+    private const string AquarioCreaturePrefabPath =
+        "Assets/Prefabs/Creature/Encounter/AquarioCreature_Encounter.prefab";
 
     [MenuItem("Aquaria/Build Exploration 04 Encounter Entry And AR Search")]
     public static void BuildScenes()

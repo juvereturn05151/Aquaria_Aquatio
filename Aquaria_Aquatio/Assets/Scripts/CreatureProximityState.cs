@@ -10,7 +10,7 @@ Responsibilities:
 - Provide shared state values for proximity UI and creature presentation.
 
 Architecture:
-Small gameplay enum shared by CreatureProximitySystem, CreaturePresentation,
+Small gameplay enum shared by CreatureProximitySystem, ExplorationCreatureSignalPresentation,
 and debug UI.
 
 Dependencies:

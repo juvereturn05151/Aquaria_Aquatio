@@ -226,8 +226,8 @@ MonoBehaviour:
   planeManager: {fileID: 617909944}
   raycastManager: {fileID: 617909943}
   creaturePrefab: {fileID: 100000, guid: 27c2c1b7196e45d4fa44e03ac3978178, type: 3}
-  aquariaCreaturePrefab: {fileID: 100000, guid: 41ecd1c2877759544a13509290110074, type: 3}
-  aquarioCreaturePrefab: {fileID: 100000, guid: 0d0e3aab8f704768b78dd884ff1e5e21, type: 3}
+  aquariaCreaturePrefab: {fileID: 526851805772522740, guid: 964937fb82acbda45939727ec8f716aa, type: 3}
+  aquarioCreaturePrefab: {fileID: 526851805772522740, guid: efa17e6bdd3b4d048a01f7608c642aaa, type: 3}
   creatureParent: {fileID: 331991198}
   spawnedCreatureName: AREncounterCreature
   minimumSpawnDistance: 18

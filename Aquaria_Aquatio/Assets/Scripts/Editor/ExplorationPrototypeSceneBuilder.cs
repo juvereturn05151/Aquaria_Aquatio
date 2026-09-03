@@ -49,8 +49,10 @@ public static class ExplorationPrototypeSceneBuilder
 {
     private const string ScenePath = "Assets/Scenes/ExplorationPrototype_Setup.unity";
     private const string CreatureDetectionScenePath = "Assets/Scenes/Exploration_02_CreatureDetection.unity";
-    private const string AquariaCreaturePrefabPath = "Assets/Prefabs/AquariaCreature.prefab";
-    private const string AquarioCreaturePrefabPath = "Assets/Prefabs/AquarioCreature.prefab";
+    private const string AquariaCreaturePrefabPath =
+        "Assets/Prefabs/Creature/Exploration/AquariaCreature_Exploration.prefab";
+    private const string AquarioCreaturePrefabPath =
+        "Assets/Prefabs/Creature/Exploration/AquarioCreature_Exploration.prefab";
 
     [MenuItem("Aquaria/Build Exploration Prototype Setup Scene")]
     public static void BuildScene()
@@ -803,18 +805,15 @@ public static class ExplorationPrototypeSceneBuilder
         SetMaterial(signalRing, material);
         Object.DestroyImmediate(signalRing.GetComponent<Collider>());
 
-        CreaturePresentation presentation = root.AddComponent<CreaturePresentation>();
+        ExplorationCreatureSignalPresentation presentation =
+            root.AddComponent<ExplorationCreatureSignalPresentation>();
         SetObjectReference(presentation, "target", target);
-        SetObjectReference(presentation, "visualRoot", visualRoot.transform);
-        SetObjectReference(presentation, "bobRoot", visualRoot.transform);
+        SetObjectReference(presentation, "signalVisualRoot", visualRoot.transform);
         SetObjectReference(presentation, "pulseRoot", signalRing.transform);
         SetObjectReference(presentation, "signalEffectRoot", signalRing);
-        SetRendererArray(presentation, "fadeRenderers", root.GetComponentsInChildren<Renderer>(true));
+        SetRendererArray(presentation, "signalRenderers", root.GetComponentsInChildren<Renderer>(true));
         SetFloat(presentation, "fadeDuration", 0.35f);
         SetFloat(presentation, "weakSignalVisibility", 0f);
-        SetFloat(presentation, "visibleRendererThreshold", 0.5f);
-        SetFloat(presentation, "bobHeight", 0.35f);
-        SetFloat(presentation, "bobSpeed", 2.4f);
         SetFloat(presentation, "minimumPulseScale", 1.25f);
         SetFloat(presentation, "maximumPulseScale", 5.5f);
         SetFloat(presentation, "pulseSpeed", 4f);

@@ -139,6 +139,13 @@ public class ARCreatureSpawner : MonoBehaviour
             lookAtCamera,
             creatureParent
         );
+        EncounterCreatureLookAtPlayer lookAtPlayer =
+            spawnedCreature.GetComponent<EncounterCreatureLookAtPlayer>();
+
+        if (lookAtPlayer != null)
+        {
+            lookAtPlayer.Target = arCamera.transform;
+        }
 
         spawnedCreature.name = string.IsNullOrWhiteSpace(spawnedCreatureName)
             ? selectedCreatureType.ToString()

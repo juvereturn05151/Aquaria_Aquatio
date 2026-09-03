@@ -6,11 +6,11 @@ Builds the creature-feedback exploration scene and configures creature visual
 feedback prefabs/components from a Unity Editor menu command.
 
 Responsibilities:
-- Update creature prefabs with CreaturePresentation settings.
+- Update exploration creature prefabs with signal presentation settings.
 - Copy the creature-detection scene into the feedback scene.
 - Find creature targets and the proximity system in the copied scene.
 - Create or reuse the encounter prompt UI.
-- Wire CreaturePresentation references and tuning values.
+- Wire ExplorationCreatureSignalPresentation references and tuning values.
 - Add the generated scene to Unity build settings.
 
 Architecture:
@@ -20,14 +20,14 @@ configures runtime presentation components but does not run during gameplay.
 Dependencies:
 - UnityEditor and UnityEditor.SceneManagement
 - CreatureExplorationTarget
-- CreaturePresentation
+- ExplorationCreatureSignalPresentation
 - CreatureProximitySystem
 - CanvasGroup and TextMeshProUGUI
 
 Data Flow:
 Unity Editor menu item
     -> Prefab and scene serialized values
-    -> Runtime CreaturePresentation reads proximity state during play
+    -> Runtime ExplorationCreatureSignalPresentation reads proximity state during play
 
 Editor / Runtime:
 Located under Assets/Scripts/Editor and depends on UnityEditor APIs, so it is
@@ -48,8 +48,10 @@ public static class ExplorationCreatureFeedbackSceneBuilder
 {
     private const string SourceScenePath = "Assets/Scenes/Exploration_02_CreatureDetection.unity";
     private const string FeedbackScenePath = "Assets/Scenes/Exploration_03_CreatureFeedback.unity";
-    private const string AquariaCreaturePrefabPath = "Assets/Prefabs/AquariaCreature.prefab";
-    private const string AquarioCreaturePrefabPath = "Assets/Prefabs/AquarioCreature.prefab";
+    private const string AquariaCreaturePrefabPath =
+        "Assets/Prefabs/Creature/Exploration/AquariaCreature_Exploration.prefab";
+    private const string AquarioCreaturePrefabPath =
+        "Assets/Prefabs/Creature/Exploration/AquarioCreature_Exploration.prefab";
 
     [MenuItem("Aquaria/Build Exploration 03 Creature Feedback Scene")]
     public static void BuildScene()
@@ -129,16 +131,15 @@ public static class ExplorationCreatureFeedbackSceneBuilder
         CanvasGroup encounterPrompt
     )
     {
-        CreaturePresentation presentation =
-            creatureTarget.GetComponent<CreaturePresentation>() ??
-            creatureTarget.gameObject.AddComponent<CreaturePresentation>();
-        Transform visualRoot = creatureTarget.transform.Find("VisualRoot");
-        Transform pulseRoot = creatureTarget.transform.Find("VisualRoot/SignalRing");
+        ExplorationCreatureSignalPresentation presentation =
+            creatureTarget.GetComponent<ExplorationCreatureSignalPresentation>() ??
+            creatureTarget.gameObject.AddComponent<ExplorationCreatureSignalPresentation>();
+        Transform signalRoot = creatureTarget.transform.Find("SignalVisual");
+        Transform pulseRoot = creatureTarget.transform.Find("SignalVisual/SignalRing");
 
         SetObjectReference(presentation, "target", creatureTarget);
         SetObjectReference(presentation, "proximitySystem", proximitySystem);
-        SetObjectReference(presentation, "visualRoot", visualRoot);
-        SetObjectReference(presentation, "bobRoot", visualRoot);
+        SetObjectReference(presentation, "signalVisualRoot", signalRoot);
         SetObjectReference(presentation, "pulseRoot", pulseRoot);
         SetObjectReference(
             presentation,
@@ -146,12 +147,9 @@ public static class ExplorationCreatureFeedbackSceneBuilder
             pulseRoot != null ? pulseRoot.gameObject : null
         );
         SetObjectReference(presentation, "encounterPrompt", encounterPrompt);
-        SetRendererArray(presentation, "fadeRenderers", creatureTarget.GetComponentsInChildren<Renderer>(true));
+        SetRendererArray(presentation, "signalRenderers", creatureTarget.GetComponentsInChildren<Renderer>(true));
         SetFloat(presentation, "fadeDuration", 0.35f);
         SetFloat(presentation, "weakSignalVisibility", 0f);
-        SetFloat(presentation, "visibleRendererThreshold", 0.5f);
-        SetFloat(presentation, "bobHeight", 0.35f);
-        SetFloat(presentation, "bobSpeed", 2.4f);
         SetFloat(presentation, "minimumPulseScale", 1.25f);
         SetFloat(presentation, "maximumPulseScale", 5.5f);
         SetFloat(presentation, "pulseSpeed", 4f);
