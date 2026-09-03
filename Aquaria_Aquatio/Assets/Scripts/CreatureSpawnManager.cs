@@ -8,8 +8,8 @@ and emits encounter-ready notifications.
 Responsibilities:
 - Collect existing CreatureExplorationTarget components so scene-placed debug
   targets can be disabled at runtime.
-- Spawn Aquaria and Aquario targets around the current player position when
-  exploration position is ready.
+- Spawn the current progression target around the player when exploration
+  position is ready.
 - Use assigned creature target prefabs when available, or generate primitive
   runtime targets as a fallback.
 - Expose the active runtime target array used by CreatureProximitySystem.
@@ -91,8 +91,7 @@ public class CreatureSpawnManager : MonoBehaviour
 
     private void EnsureFlowTargets()
     {
-        EnsureTarget(CreatureType.Aquaria);
-        EnsureTarget(CreatureType.Aquario);
+        EnsureTarget(EncounterSessionData.CurrentSignalCreature);
     }
 
     private void EnsureTarget(CreatureType creatureType)
@@ -130,17 +129,10 @@ public class CreatureSpawnManager : MonoBehaviour
         if (createMissingFlowTargets)
         {
             SpawnTargetNearPlayer(
-                CreatureType.Aquaria,
+                EncounterSessionData.CurrentSignalCreature,
                 playerPosition,
                 0,
-                2,
-                proximitySystem
-            );
-            SpawnTargetNearPlayer(
-                CreatureType.Aquario,
-                playerPosition,
                 1,
-                2,
                 proximitySystem
             );
         }
