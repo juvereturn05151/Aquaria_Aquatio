@@ -592,6 +592,37 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &598204952
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 598204953}
+  m_Layer: 0
+  m_Name: TargertRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &598204953
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598204952}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &793091663
 GameObject:
   m_ObjectHideFlags: 0
@@ -812,17 +843,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1966721279674015544, guid: 41ecd1c2877759544a13509290110074, type: 3}
   m_PrefabInstance: {fileID: 1045024744}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1045024746 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1628669845193677627, guid: 41ecd1c2877759544a13509290110074, type: 3}
-  m_PrefabInstance: {fileID: 1045024744}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a37f5478025f634db0716396d4c259e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CreatureExplorationTarget
 --- !u!1 &1142981674
 GameObject:
   m_ObjectHideFlags: 0
@@ -1269,11 +1289,7 @@ PrefabInstance:
     - target: {fileID: 9203533986811809626, guid: d244117172df2074b8ac055f7ebdeef7, type: 3}
       propertyPath: targetsRoot
       value: 
-      objectReference: {fileID: 1142981675}
-    - target: {fileID: 9203533986811809626, guid: d244117172df2074b8ac055f7ebdeef7, type: 3}
-      propertyPath: 'targets.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1045024746}
+      objectReference: {fileID: 598204953}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1402,3 +1418,4 @@ SceneRoots:
   - {fileID: 2974682178120318513}
   - {fileID: 1145262372}
   - {fileID: 284769955}
+  - {fileID: 598204953}

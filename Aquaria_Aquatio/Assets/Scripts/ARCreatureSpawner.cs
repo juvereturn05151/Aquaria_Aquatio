@@ -43,6 +43,8 @@ public class ARCreatureSpawner : MonoBehaviour
 
     [Header("Creature")]
     [SerializeField] private GameObject creaturePrefab;
+    [SerializeField] private GameObject aquariaCreaturePrefab;
+    [SerializeField] private GameObject aquarioCreaturePrefab;
     [SerializeField] private Transform creatureParent;
     [SerializeField] private string spawnedCreatureName = "ARLookAroundCreature";
     [SerializeField] private CreatureType selectedCreatureType = CreatureType.Aquaria;
@@ -84,9 +86,9 @@ public class ARCreatureSpawner : MonoBehaviour
 
     public bool CanSpawn(out string reason)
     {
-        if (creaturePrefab == null)
+        if (GetPrefabForSelectedCreature() == null)
         {
-            reason = "Missing creature prefab";
+            reason = $"Missing prefab for {selectedCreatureType}";
             return false;
         }
 
@@ -130,17 +132,34 @@ public class ARCreatureSpawner : MonoBehaviour
             arCamera.transform.position - spawnPosition,
             Vector3.up
         );
+        GameObject selectedPrefab = GetPrefabForSelectedCreature();
         GameObject spawnedCreature = Instantiate(
-            creaturePrefab,
+            selectedPrefab,
             spawnPosition,
             lookAtCamera,
             creatureParent
         );
 
-        spawnedCreature.name = $"{spawnedCreatureName}_{selectedCreatureType}";
+        spawnedCreature.name = string.IsNullOrWhiteSpace(spawnedCreatureName)
+            ? selectedCreatureType.ToString()
+            : $"{spawnedCreatureName}_{selectedCreatureType}";
         lastSpawnPosition = spawnPosition;
         OnCreatureSpawned.Invoke(spawnedCreature.transform);
         return spawnedCreature.transform;
+    }
+
+    private GameObject GetPrefabForSelectedCreature()
+    {
+        return selectedCreatureType switch
+        {
+            CreatureType.Aquaria => aquariaCreaturePrefab != null
+                ? aquariaCreaturePrefab
+                : creaturePrefab,
+            CreatureType.Aquario => aquarioCreaturePrefab != null
+                ? aquarioCreaturePrefab
+                : creaturePrefab,
+            _ => creaturePrefab,
+        };
     }
 
     private Vector3 CalculateSpawnPosition(Transform cameraTransform)

@@ -27,6 +27,7 @@ Dependencies:
 Events / Data Flow:
 ExplorationPositionSource displacement
     -> CreatureProximitySystem.Update()
+    -> CreatureSpawnManager.SpawnTargetsNearPlayer()
     -> CreatureSpawnManager.NotifyEncounterReady()
     -> ExplorationEncounterFlow / UI / CreaturePresentation
 
@@ -95,20 +96,25 @@ public class CreatureProximitySystem : MonoBehaviour
             return;
         }
 
-        UpdateNearestCreature();
+        Vector2 playerPosition = GetPlayerPosition();
+        spawnManager.SpawnTargetsNearPlayer(playerPosition, this);
+        UpdateNearestCreature(playerPosition);
         UpdateProximityState();
         UpdateFeedbackText();
     }
 
-    private void UpdateNearestCreature()
+    private Vector2 GetPlayerPosition()
     {
-        nearestCreature = null;
-        nearestCreatureDistance = float.PositiveInfinity;
-
-        Vector2 playerPosition = new Vector2(
+        return new Vector2(
             positionSource.EastMeters,
             positionSource.NorthMeters
         );
+    }
+
+    private void UpdateNearestCreature(Vector2 playerPosition)
+    {
+        nearestCreature = null;
+        nearestCreatureDistance = float.PositiveInfinity;
 
         foreach (CreatureExplorationTarget target in spawnManager.Targets)
         {

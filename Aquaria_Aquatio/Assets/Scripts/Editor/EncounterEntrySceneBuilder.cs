@@ -53,7 +53,10 @@ public static class EncounterEntrySceneBuilder
     private const string SourceExplorationScenePath = "Assets/Scenes/Exploration_03_CreatureFeedback.unity";
     private const string EncounterEntryScenePath = "Assets/Scenes/Exploration_04_EncounterEntry.unity";
     private const string ARSearchScenePath = "Assets/Scenes/Encounter_01_ARSearch.unity";
-    private const string ARLookAroundCreaturePrefabPath = "Assets/Prefabs/ARLookAroundCreature.prefab";
+    private const string ARLookAroundCreaturePrefabPath =
+        "Assets/Prefabs/Creature/ARLookAroundCreature.prefab";
+    private const string AquariaCreaturePrefabPath = "Assets/Prefabs/Creature/AquariaCreature.prefab";
+    private const string AquarioCreaturePrefabPath = "Assets/Prefabs/Creature/AquarioCreature.prefab";
 
     [MenuItem("Aquaria/Build Exploration 04 Encounter Entry And AR Search")]
     public static void BuildScenes()
@@ -262,6 +265,10 @@ public static class EncounterEntrySceneBuilder
 
         GameObject creaturePrefab =
             AssetDatabase.LoadAssetAtPath<GameObject>(ARLookAroundCreaturePrefabPath);
+        GameObject aquariaCreaturePrefab =
+            AssetDatabase.LoadAssetAtPath<GameObject>(AquariaCreaturePrefabPath);
+        GameObject aquarioCreaturePrefab =
+            AssetDatabase.LoadAssetAtPath<GameObject>(AquarioCreaturePrefabPath);
 
         SetObjectReference(searchController, "arSession", arSession);
         SetObjectReference(searchController, "arCamera", arCamera);
@@ -284,8 +291,10 @@ public static class EncounterEntrySceneBuilder
         SetObjectReference(creatureSpawner, "planeManager", planeManager);
         SetObjectReference(creatureSpawner, "raycastManager", raycastManager);
         SetObjectReference(creatureSpawner, "creaturePrefab", creaturePrefab);
+        SetObjectReference(creatureSpawner, "aquariaCreaturePrefab", aquariaCreaturePrefab);
+        SetObjectReference(creatureSpawner, "aquarioCreaturePrefab", aquarioCreaturePrefab);
         SetObjectReference(creatureSpawner, "creatureParent", creatureParent.transform);
-        SetString(creatureSpawner, "spawnedCreatureName", "ARLookAroundCreature");
+        SetString(creatureSpawner, "spawnedCreatureName", "AREncounterCreature");
         SetFloat(creatureSpawner, "minimumSpawnDistance", 18f);
         SetFloat(creatureSpawner, "maximumSpawnDistance", 30f);
         SetFloat(creatureSpawner, "minimumSpawnAngleFromForward", 60f);

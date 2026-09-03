@@ -73,16 +73,6 @@ public class CreaturePresentation : MonoBehaviour
         proximitySystem = system;
     }
 
-    private void Reset()
-    {
-        target = GetComponent<CreatureExplorationTarget>();
-        visualRoot = transform.Find("VisualRoot");
-        bobRoot = visualRoot;
-        pulseRoot = transform.Find("VisualRoot/SignalRing");
-        signalEffectRoot = pulseRoot != null ? pulseRoot.gameObject : null;
-        fadeRenderers = GetComponentsInChildren<Renderer>(true);
-    }
-
     private void Awake()
     {
         if (target == null)

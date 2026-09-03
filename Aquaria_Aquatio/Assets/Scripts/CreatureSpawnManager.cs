@@ -2,27 +2,32 @@
 CreatureSpawnManager.cs
 
 Purpose:
-Maintains the exploration creature target list and emits encounter-ready
-notifications for nearby creatures.
+Maintains the exploration creature target list, spawns targets near the player,
+and emits encounter-ready notifications.
 
 Responsibilities:
-- Collect CreatureExplorationTarget components from the configured root.
-- Optionally create missing flow targets for Aquaria and Aquario.
-- Expose the target array used by CreatureProximitySystem.
+- Collect existing CreatureExplorationTarget components so scene-placed debug
+  targets can be disabled at runtime.
+- Spawn Aquaria and Aquario targets around the current player position when
+  exploration position is ready.
+- Use assigned creature target prefabs when available, or generate primitive
+  runtime targets as a fallback.
+- Expose the active runtime target array used by CreatureProximitySystem.
 - Invoke OnCreatureEncounterReady when proximity logic reports readiness.
 
 Architecture:
-Exploration target registry and notification source. It does not perform
-distance checks; CreatureProximitySystem calls it when an encounter becomes ready.
+Exploration target registry and spawn source. It creates active runtime targets,
+while CreatureProximitySystem performs distance checks and reports encounter readiness.
 
 Dependencies:
 - CreatureExplorationTarget
+- CreaturePresentation
 - CreatureType
-- Unity Resources materials for generated debug targets
+- Unity Resources materials for generated fallback targets
 
 Events / Data Flow:
-Creature targets in scene
-    -> CollectTargets()
+First valid player position
+    -> SpawnTargetsNearPlayer()
     -> CreatureProximitySystem checks distances
     -> NotifyEncounterReady()
     -> OnCreatureEncounterReady event
@@ -38,16 +43,29 @@ public class CreatureSpawnManager : MonoBehaviour
 {
     public event Action<CreatureExplorationTarget> OnCreatureEncounterReady;
 
-    [SerializeField] 
+    [SerializeField]
     private Transform targetsRoot;
-    [SerializeField] 
+    [SerializeField]
     private bool collectTargetsOnAwake = true;
-    [SerializeField] 
+    [SerializeField]
     private bool createMissingFlowTargets = true;
-    [SerializeField] 
+    [SerializeField]
+    private bool spawnTargetsNearPlayerOnFirstPosition = true;
+    [SerializeField]
+    private CreatureExplorationTarget aquariaTargetPrefab;
+    [SerializeField]
+    private CreatureExplorationTarget aquarioTargetPrefab;
+    [SerializeField]
+    private float minimumSpawnDistance = 8f;
+    [SerializeField]
+    private float maximumSpawnDistance = 18f;
+    [SerializeField]
+    private float spawnHeight = 0.6f;
+    [SerializeField]
     private List<CreatureExplorationTarget> targets = new();
 
     public IReadOnlyList<CreatureExplorationTarget> Targets => targets;
+    public bool TargetsSpawnedNearPlayer { get; private set; }
 
     private void Awake()
     {
@@ -56,7 +74,7 @@ public class CreatureSpawnManager : MonoBehaviour
             CollectTargets();
         }
 
-        if (createMissingFlowTargets)
+        if (createMissingFlowTargets && !spawnTargetsNearPlayerOnFirstPosition)
         {
             EnsureFlowTargets();
         }
@@ -73,11 +91,11 @@ public class CreatureSpawnManager : MonoBehaviour
 
     private void EnsureFlowTargets()
     {
-        EnsureTarget(CreatureType.Aquaria, 0f, 12f);
-        EnsureTarget(CreatureType.Aquario, 18f, 0f);
+        EnsureTarget(CreatureType.Aquaria);
+        EnsureTarget(CreatureType.Aquario);
     }
 
-    private void EnsureTarget(CreatureType creatureType, float debugEast, float debugNorth)
+    private void EnsureTarget(CreatureType creatureType)
     {
         foreach (CreatureExplorationTarget target in targets)
         {
@@ -87,7 +105,111 @@ public class CreatureSpawnManager : MonoBehaviour
             }
         }
 
+        CreatureExplorationTarget createdTarget = CreateTargetInstance(
+            creatureType,
+            GetPrefabForCreature(creatureType),
+            Vector2.zero,
+            null
+        );
+        targets.Add(createdTarget);
+    }
+
+    public void SpawnTargetsNearPlayer(
+        Vector2 playerPosition,
+        CreatureProximitySystem proximitySystem
+    )
+    {
+        if (!spawnTargetsNearPlayerOnFirstPosition || TargetsSpawnedNearPlayer)
+        {
+            return;
+        }
+
+        DisableCollectedSceneTargets();
+        targets.Clear();
+
+        if (createMissingFlowTargets)
+        {
+            SpawnTargetNearPlayer(
+                CreatureType.Aquaria,
+                playerPosition,
+                0,
+                2,
+                proximitySystem
+            );
+            SpawnTargetNearPlayer(
+                CreatureType.Aquario,
+                playerPosition,
+                1,
+                2,
+                proximitySystem
+            );
+        }
+
+        TargetsSpawnedNearPlayer = true;
+    }
+
+    private void SpawnTargetNearPlayer(
+        CreatureType creatureType,
+        Vector2 playerPosition,
+        int targetIndex,
+        int targetCount,
+        CreatureProximitySystem proximitySystem
+    )
+    {
+        float safeMinimumDistance = Mathf.Max(0f, minimumSpawnDistance);
+        float safeMaximumDistance = Mathf.Max(safeMinimumDistance, maximumSpawnDistance);
+        Vector2 offset = CreateSpawnOffset(
+            targetIndex,
+            targetCount,
+            safeMinimumDistance,
+            safeMaximumDistance
+        );
+        Vector2 targetPosition = playerPosition + offset;
+        CreatureExplorationTarget spawnedTarget = CreateTargetInstance(
+            creatureType,
+            GetPrefabForCreature(creatureType),
+            targetPosition,
+            proximitySystem
+        );
+        targets.Add(spawnedTarget);
+    }
+
+    private CreatureExplorationTarget CreateTargetInstance(
+        CreatureType creatureType,
+        CreatureExplorationTarget targetPrefab,
+        Vector2 targetPosition,
+        CreatureProximitySystem proximitySystem
+    )
+    {
         Transform parent = targetsRoot != null ? targetsRoot : transform;
+        CreatureExplorationTarget target;
+
+        if (targetPrefab != null)
+        {
+            target = Instantiate(targetPrefab, parent);
+            target.name = $"{creatureType}_RuntimeTarget";
+        }
+        else
+        {
+            GameObject targetObject = CreateGeneratedTargetObject(creatureType, parent);
+            target = targetObject.AddComponent<CreatureExplorationTarget>();
+        }
+
+        target.Configure(creatureType, false, 0f, 0f, spawnHeight);
+        target.SetRuntimePosition(targetPosition.x, targetPosition.y, spawnHeight);
+        AssignProximitySystem(target, proximitySystem);
+        return target;
+    }
+
+    private CreatureExplorationTarget GetPrefabForCreature(CreatureType creatureType)
+    {
+        return creatureType == CreatureType.Aquaria
+            ? aquariaTargetPrefab
+            : aquarioTargetPrefab;
+    }
+
+    private GameObject CreateGeneratedTargetObject(CreatureType creatureType, Transform parent)
+    {
         GameObject targetObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         targetObject.name = $"{creatureType}_RuntimeTarget";
         targetObject.transform.SetParent(parent);
@@ -108,10 +230,53 @@ public class CreatureSpawnManager : MonoBehaviour
             Destroy(collider);
         }
 
-        CreatureExplorationTarget createdTarget =
-            targetObject.AddComponent<CreatureExplorationTarget>();
-        createdTarget.Configure(creatureType, true, debugEast, debugNorth, 0.6f);
-        targets.Add(createdTarget);
+        return targetObject;
+    }
+
+    private void AssignProximitySystem(
+        CreatureExplorationTarget target,
+        CreatureProximitySystem proximitySystem
+    )
+    {
+        if (proximitySystem == null)
+        {
+            return;
+        }
+
+        foreach (CreaturePresentation presentation in
+            target.GetComponentsInChildren<CreaturePresentation>(true))
+        {
+            presentation.SetProximitySystem(proximitySystem);
+        }
+    }
+
+    private void DisableCollectedSceneTargets()
+    {
+        foreach (CreatureExplorationTarget target in targets)
+        {
+            if (target != null)
+            {
+                target.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private Vector2 CreateSpawnOffset(
+        int targetIndex,
+        int targetCount,
+        float minimumDistance,
+        float maximumDistance
+    )
+    {
+        float angle = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
+
+        if (targetCount > 1)
+        {
+            angle += targetIndex * Mathf.PI * 2f / targetCount;
+        }
+
+        float distance = UnityEngine.Random.Range(minimumDistance, maximumDistance);
+        return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
     }
 
     public void NotifyEncounterReady(CreatureExplorationTarget target)

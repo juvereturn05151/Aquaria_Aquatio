@@ -7,6 +7,7 @@ Marks a creature's exploration-world location and type for proximity checks.
 Responsibilities:
 - Store the creature type represented by this target.
 - Optionally apply a debug East/North/height position in edit or play mode.
+- Accept runtime placement from CreatureSpawnManager.
 - Expose the target's local world position to proximity systems.
 - Allow builder scripts to configure the target data.
 
@@ -64,6 +65,14 @@ public class CreatureExplorationTarget : MonoBehaviour
         debugNorth = north;
         height = targetHeight;
         ApplyDebugPositionIfEnabled();
+    }
+
+    public void SetRuntimePosition(float east, float north, float targetHeight)
+    {
+        useDebugPosition = false;
+        height = targetHeight;
+        transform.localPosition = new Vector3(east, height, north);
+        localEastNorthMeters = new Vector2(east, north);
     }
 
     private void Awake()
