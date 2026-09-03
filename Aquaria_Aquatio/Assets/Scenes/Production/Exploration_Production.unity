@@ -1394,6 +1394,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4870751640408191175, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6439488499382889176, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
       propertyPath: encounterFlow
       value: 
