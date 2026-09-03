@@ -306,7 +306,10 @@ public static class EncounterEntrySceneBuilder
         SetBool(creatureSpawner, "allowFallbackPlacementWithoutPlane", true);
 
         SetObjectReference(visibilityDetector, "arCamera", arCamera);
+        SetObjectReference(visibilityDetector, "playerViewpoint", cameraObject.transform);
         SetFloat(visibilityDetector, "requiredVisibleTime", 0.75f);
+        SetFloat(visibilityDetector, "requiredDistance", 2f);
+        SetBool(visibilityDetector, "showDebugDistance", false);
 
         SetObjectReference(directionArrow, "arCamera", arCamera);
         SetObjectReference(directionArrow, "arrowTransform", directionArrowObject.transform);

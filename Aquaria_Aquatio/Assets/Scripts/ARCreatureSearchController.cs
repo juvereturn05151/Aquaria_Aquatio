@@ -133,6 +133,7 @@ public class ARCreatureSearchController : MonoBehaviour
         }
         else if (
             searchState == ARSearchState.Searching ||
+            searchState == ARSearchState.MoveCloser ||
             searchState == ARSearchState.CreatureVisible
         )
         {
@@ -176,6 +177,7 @@ public class ARCreatureSearchController : MonoBehaviour
         if (visibilityDetector != null)
         {
             visibilityDetector.ARCamera = arCamera;
+            visibilityDetector.PlayerViewpoint = arCamera.transform;
             visibilityDetector.CreatureVisibilityTarget = spawnedCreature;
         }
 
@@ -225,7 +227,21 @@ public class ARCreatureSearchController : MonoBehaviour
             return;
         }
 
-        if (visibilityDetector.CreatureInCameraView)
+        if (visibilityDetector.IsLookingAtCreature && !visibilityDetector.IsCloseEnough)
+        {
+            creatureVisibleEventSent = false;
+            SetState(ARSearchState.MoveCloser);
+
+            if (uiController != null)
+            {
+                uiController.SetMoveCloserInstruction(
+                    visibilityDetector.DistanceToCreature,
+                    visibilityDetector.RequiredDistance,
+                    visibilityDetector.ShowDebugDistance
+                );
+            }
+        }
+        else if (visibilityDetector.IsLookingAtCreature)
         {
             if (!creatureVisibleEventSent)
             {
@@ -268,6 +284,11 @@ public class ARCreatureSearchController : MonoBehaviour
         float distance = directionArrow != null ? directionArrow.DistanceToTarget : 0f;
         float angle = directionArrow != null ? directionArrow.HorizontalAngleToTarget : 0f;
         bool inView = visibilityDetector != null && visibilityDetector.CreatureInCameraView;
+        bool closeEnough = visibilityDetector != null && visibilityDetector.IsCloseEnough;
+        float detectionDistance =
+            visibilityDetector != null ? visibilityDetector.DistanceToCreature : 0f;
+        float requiredDistance =
+            visibilityDetector != null ? visibilityDetector.RequiredDistance : 0f;
         float visibleTimer = visibilityDetector != null ? visibilityDetector.VisibleTimer : 0f;
         Vector3 arrowDirection =
             directionArrow != null ? directionArrow.ArrowTargetDirection : Vector3.zero;
@@ -284,8 +305,11 @@ public class ARCreatureSearchController : MonoBehaviour
             $"Tracking ready: {trackingReady}\n" +
             $"Creature Position: {creaturePosition:F2}\n" +
             $"Distance To Creature: {distance:F2} m\n" +
+            $"Detection Distance: {detectionDistance:F2} m\n" +
+            $"Required Distance: {requiredDistance:F2} m\n" +
             $"Horizontal Angle To Creature: {angle:F1}\n" +
             $"Creature In Camera View: {inView}\n" +
+            $"Close Enough: {closeEnough}\n" +
             $"Visible Timer: {visibleTimer:F2}\n" +
             $"Arrow Target Direction: {arrowDirection:F2}\n" +
             $"Placement: {placementState}"

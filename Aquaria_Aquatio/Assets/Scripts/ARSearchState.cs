@@ -25,6 +25,7 @@ public enum ARSearchState
 {
     Initializing,
     Searching,
+    MoveCloser,
     CreatureVisible,
     CreatureFound
 }

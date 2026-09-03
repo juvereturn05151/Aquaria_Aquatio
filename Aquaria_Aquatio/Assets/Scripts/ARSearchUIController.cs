@@ -8,6 +8,7 @@ debug text.
 Responsibilities:
 - Store creature-specific instruction text for the current encounter.
 - Show instructions for each ARSearchState.
+- Optionally append distance feedback when the player can see the creature but is too far away.
 - Toggle the found panel when the creature is discovered.
 - Write optional debug text from the AR search controller.
 
@@ -43,6 +44,7 @@ public class ARSearchUIController : MonoBehaviour
     [Header("Text")]
     [SerializeField] private string initializingInstruction = "Move phone to scan the area";
     [SerializeField] private string searchingInstruction = "Find the creature";
+    [SerializeField] private string moveCloserInstruction = "Move closer";
     [SerializeField] private string visibleInstruction = "Keep the creature in view";
     [SerializeField] private string foundInstruction = "Creature Found!";
 
@@ -51,7 +53,6 @@ public class ARSearchUIController : MonoBehaviour
 
     public void SetCreatureContext(CreatureType creatureType)
     {
-        searchingInstruction = $"Look around for {creatureType}";
         visibleInstruction = $"Keep {creatureType} in view";
         foundInstruction = $"{creatureType} Found!";
 
@@ -84,6 +85,7 @@ public class ARSearchUIController : MonoBehaviour
             {
                 ARSearchState.Initializing => initializingInstruction,
                 ARSearchState.Searching => searchingInstruction,
+                ARSearchState.MoveCloser => moveCloserInstruction,
                 ARSearchState.CreatureVisible => visibleInstruction,
                 ARSearchState.CreatureFound => foundInstruction,
                 _ => searchingInstruction,
@@ -99,6 +101,18 @@ public class ARSearchUIController : MonoBehaviour
         {
             foundText.text = foundInstruction;
         }
+    }
+
+    public void SetMoveCloserInstruction(float distance, float requiredDistance, bool includeDebugDistance)
+    {
+        if (instructionText == null)
+        {
+            return;
+        }
+
+        instructionText.text = includeDebugDistance
+            ? $"{moveCloserInstruction}\nDistance: {distance:F1} m / {requiredDistance:F1} m"
+            : moveCloserInstruction;
     }
 
     public void SetDebugText(string value)

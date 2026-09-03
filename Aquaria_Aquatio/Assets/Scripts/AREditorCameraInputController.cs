@@ -10,6 +10,7 @@ Responsibilities:
 - Rotate the camera with right-mouse drag.
 - Support sprint movement while Shift is held.
 - Manage cursor lock state during look input.
+- Stay isolated from encounter detection, UI, spawning, GPS, and scene flow.
 
 Architecture:
 Development/testing input helper for the AR encounter scene. It is separate
@@ -20,8 +21,8 @@ Dependencies:
 - UnityEngine.Input
 
 Editor / Runtime:
-Useful mainly in the Unity Editor, but the component itself is not wrapped in
-editor-only compilation and can run wherever it is included in a scene.
+Editor simulation by default. Player builds do not run it unless enableInPlayer
+is explicitly enabled, and Android builds are always ignored.
 
 Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
 */
@@ -102,7 +103,11 @@ public class AREditorCameraInputController : MonoBehaviour
 
     private bool ShouldRun()
     {
+#if UNITY_ANDROID && !UNITY_EDITOR
+        return false;
+#else
         return Application.isEditor ? enableInEditor : enableInPlayer;
+#endif
     }
 
     private void UpdateMouseLook()

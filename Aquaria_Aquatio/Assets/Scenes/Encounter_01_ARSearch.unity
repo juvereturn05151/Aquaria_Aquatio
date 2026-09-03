@@ -189,6 +189,7 @@ MonoBehaviour:
   debugText: {fileID: 1041018215}
   initializingInstruction: Move phone to scan the area
   searchingInstruction: Find the creature
+  moveCloserInstruction: Move closer
   visibleInstruction: Keep the creature in view
   foundInstruction: Creature Found!
   showDebugPanel: 1
@@ -205,10 +206,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ARCreatureVisibilityDetector
   arCamera: {fileID: 442979367}
+  playerViewpoint: {fileID: 442979371}
   creatureVisibilityTarget: {fileID: 0}
   requiredVisibleTime: 0.75
   viewportPadding: {x: 0.05, y: 0.05}
+  requiredDistance: 2
+  showDebugDistance: 0
   creatureInCameraView: 0
+  closeEnough: 0
+  distanceToCreature: 0
   visibleTimer: 0
   lastViewportPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &12242037
