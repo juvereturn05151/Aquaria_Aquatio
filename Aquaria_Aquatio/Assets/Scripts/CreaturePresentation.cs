@@ -9,6 +9,7 @@ Responsibilities:
 - Resolve visual roots and renderers when explicit references are missing.
 - Show signal-ring feedback for the nearest creature.
 - Fade creature renderers according to signal mode and proximity.
+- Rotate creature visuals toward the player marker.
 - Animate bobbing, pulsing, and the encounter prompt.
 
 Architecture:
@@ -46,6 +47,13 @@ public class CreaturePresentation : MonoBehaviour
     [SerializeField] private GameObject signalEffectRoot;
     [SerializeField] private CanvasGroup encounterPrompt;
     [SerializeField] private Renderer[] fadeRenderers;
+
+    [Header("Look At Player")]
+    [SerializeField] private bool facePlayer = true;
+    [SerializeField] private Transform lookAtTarget;
+    [SerializeField] private string lookAtTargetName = "PlayerMarker";
+    [SerializeField] private bool rotateOnYAxisOnly = true;
+    [SerializeField] private float lookAtRotationSpeed = 12f;
 
     [Header("Fade")]
     [SerializeField] private float fadeDuration = 0.35f;
@@ -108,10 +116,8 @@ public class CreaturePresentation : MonoBehaviour
         visualBaseScale = visualRoot != null ? visualRoot.localScale : Vector3.one;
         bobBaseLocalPosition = bobRoot != null ? bobRoot.localPosition : Vector3.zero;
         pulseBaseScale = pulseRoot != null ? pulseRoot.localScale : Vector3.one;
-        if (proximitySystem != null)
-        {
-            ApplyCreatureVisibility(0f, true);
-        }
+        ResolveLookAtTarget();
+        ApplyCreatureVisibility(0f, true);
     }
 
     private void Update()
@@ -132,9 +138,62 @@ public class CreaturePresentation : MonoBehaviour
         );
 
         ApplyCreatureVisibility(currentVisibility, false);
+        UpdateLookAtPlayer();
         UpdateBob(state, signalStrength);
         UpdatePulse(state, signalStrength);
         UpdateEncounterPrompt(state);
+    }
+
+    private void ResolveLookAtTarget()
+    {
+        if (lookAtTarget != null || string.IsNullOrWhiteSpace(lookAtTargetName))
+        {
+            return;
+        }
+
+        GameObject targetObject = GameObject.Find(lookAtTargetName);
+
+        if (targetObject != null)
+        {
+            lookAtTarget = targetObject.transform;
+        }
+    }
+
+    private void UpdateLookAtPlayer()
+    {
+        if (!facePlayer || visualRoot == null)
+        {
+            return;
+        }
+
+        if (lookAtTarget == null)
+        {
+            ResolveLookAtTarget();
+        }
+
+        if (lookAtTarget == null)
+        {
+            return;
+        }
+
+        Vector3 direction = lookAtTarget.position - visualRoot.position;
+
+        if (rotateOnYAxisOnly)
+        {
+            direction.y = 0f;
+        }
+
+        if (direction.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
+        float rotationStep = Mathf.Max(0f, lookAtRotationSpeed) * Time.deltaTime;
+
+        visualRoot.rotation = rotationStep > 0f
+            ? Quaternion.Slerp(visualRoot.rotation, targetRotation, rotationStep)
+            : targetRotation;
     }
 
     private CreatureProximityState GetPresentationState(out float signalStrength)
@@ -167,8 +226,7 @@ public class CreaturePresentation : MonoBehaviour
 
     private void ApplyCreatureVisibility(float visibility, bool force)
     {
-        bool renderCreature =
-            !SignalOnlyMode && (visibility >= visibleRendererThreshold || force);
+        bool renderCreature = !SignalOnlyMode && (visibility >= visibleRendererThreshold || force);
 
         if (visualRoot != null)
         {
