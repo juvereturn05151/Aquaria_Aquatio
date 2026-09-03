@@ -669,7 +669,7 @@ MonoBehaviour:
   smoothingSpeed: 3
   keepPlayerMarkerCentered: 0
   movePlayerMarkerFromDisplacement: 1
-  followCameraOffset: {x: 0, y: 13, z: -10}
+  followCameraOffset: {x: 0, y: 6, z: -5}
   debugMovementLogging: 1
   debugLogDistanceThreshold: 0.5
   gpsDisplacement: {x: 0, y: 0, z: 0}
