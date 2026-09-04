@@ -45,11 +45,13 @@ public class ExplorationPositionSourceSelector : MonoBehaviour
 
     public void Initialize(ExplorationSystemInjector explorationSystemInjector)
     {
-#if UNITY_EDITOR
         EditorKeyboardPositionSource editorPositionSource = explorationSystemInjector.EditorKeyboardPositionSource;
         GPSPositionSource gpsPositionSource = explorationSystemInjector.GPSPositionSource;
         ExplorationController explorationController = explorationSystemInjector.ExplorationController;
         CreatureProximitySystem proximitySystem = explorationSystemInjector.CreatureProximitySystem;
+
+#if UNITY_EDITOR
+
 
         ActivePositionSource = useEditorSimulationInEditor && editorPositionSource != null
             ? editorPositionSource

@@ -91,10 +91,10 @@ public class ExplorationSystemInjector : MonoBehaviour
     private void Awake()
     {
         gpsPositionSource.Initialize(this);
-        explorationPositionSourceSelector.Initialize(this);
         encounterEntryVirtualController.Initialize(this);
         creatureProximitySystem.Initialize(this);
         cesiumGPSOriginAdapter.Initialize(this);
         explorationDebugPanel.Initialize(this);
+        explorationPositionSourceSelector.Initialize(this);
     }
 }

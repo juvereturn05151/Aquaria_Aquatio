@@ -219,7 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: CesiumForUnity::CesiumForUnity.CesiumCameraManager
   _useMainCamera: 1
-  _useSceneViewCameraInEditor: 1
+  _useSceneViewCameraInEditor: 0
   _additionalCameras: []
 --- !u!1 &635500236679250855
 GameObject:
@@ -327,6 +327,7 @@ GameObject:
   m_Component:
   - component: {fileID: 83488790117750763}
   - component: {fileID: 752252266082761042}
+  - component: {fileID: 8639317632398444116}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -381,6 +382,23 @@ MonoBehaviour:
   cesiumGeoreference: {fileID: 3456108017532694792}
   cesiumGPSOriginAdapter: {fileID: 5851145830487907884}
   explorationDebugPanel: {fileID: 0}
+--- !u!114 &8639317632398444116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3176001813704349425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 071a2ff6a9504f199308bca4a094ee43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CesiumRenderingDiagnostics
+  enableDiagnostics: 1
+  logOnStart: 1
+  logIntervalSeconds: 0
+  forceMainCameraOnlyForCesium: 1
+  disableGameplayCameraOcclusionCulling: 1
 --- !u!1 &4468636535512240974
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,9 +687,17 @@ MonoBehaviour:
   smoothingSpeed: 3
   keepPlayerMarkerCentered: 0
   movePlayerMarkerFromDisplacement: 1
-  followCameraOffset: {x: 0, y: 6, z: -5}
+  followCameraOffset: {x: 0, y: 7, z: -6}
   debugMovementLogging: 1
   debugLogDistanceThreshold: 0.5
+  enableSwipeCameraRotation: 1
+  swipeYawSensitivity: 0.18
+  swipePitchSensitivity: 0.12
+  minCameraPitch: 25
+  maxCameraPitch: 75
+  cameraLookAtHeight: 1.25
+  ignoreTouchesOverUI: 1
+  allowMouseSwipeInEditor: 1
   gpsDisplacement: {x: 0, y: 0, z: 0}
   worldRootTargetPosition: {x: 0, y: 0, z: 0}
   worldRootCurrentPosition: {x: 0, y: 0, z: 0}
