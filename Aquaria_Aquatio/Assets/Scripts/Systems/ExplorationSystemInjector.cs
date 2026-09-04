@@ -88,6 +88,11 @@ public class ExplorationSystemInjector : MonoBehaviour
     private ExplorationDebugPanel explorationDebugPanel;
     public ExplorationDebugPanel ExplorationDebugPanel => explorationDebugPanel;
 
+    [Header("Presentation")]
+    [SerializeField]
+    private AquariaExplorationUI aquariaExplorationUI;
+    public AquariaExplorationUI AquariaExplorationUI => aquariaExplorationUI;
+
     private void Awake()
     {
         gpsPositionSource.Initialize(this);
@@ -96,5 +101,10 @@ public class ExplorationSystemInjector : MonoBehaviour
         cesiumGPSOriginAdapter.Initialize(this);
         explorationDebugPanel.Initialize(this);
         explorationPositionSourceSelector.Initialize(this);
+
+        if (aquariaExplorationUI != null)
+        {
+            aquariaExplorationUI.Initialize(this);
+        }
     }
 }
