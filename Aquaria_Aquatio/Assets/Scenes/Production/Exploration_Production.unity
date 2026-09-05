@@ -1429,6 +1429,30 @@ PrefabInstance:
       propertyPath: encounterFlow
       value: 
       objectReference: {fileID: 3428713190132372992}
+    - target: {fileID: 4077656314020778108, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
+      propertyPath: useEditorSimulationInEditor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4229174714001960005, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
+      propertyPath: simulationEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7073568615261753028, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
+      propertyPath: showController
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 878592122246019792, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
+      propertyPath: editorSimulationEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4342649228248420866, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
+      propertyPath: enableSwipeCameraRotation
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4342649228248420866, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
+      propertyPath: allowMouseSwipeInEditor
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6439488499382889176, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
       propertyPath: encounterFlow
       value: 
