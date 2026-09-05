@@ -1257,6 +1257,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 215790706175756275, guid: d244117172df2074b8ac055f7ebdeef7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 365969528050615181, guid: d244117172df2074b8ac055f7ebdeef7, type: 3}
       propertyPath: signalText
       value: 
@@ -1265,6 +1269,10 @@ PrefabInstance:
       propertyPath: feedbackText
       value: 
       objectReference: {fileID: 2978943}
+    - target: {fileID: 365969528050615181, guid: d244117172df2074b8ac055f7ebdeef7, type: 3}
+      propertyPath: detectionRange
+      value: 45
+      objectReference: {fileID: 0}
     - target: {fileID: 365969528050615181, guid: d244117172df2074b8ac055f7ebdeef7, type: 3}
       propertyPath: creatureNearbyText
       value: 
@@ -1305,6 +1313,14 @@ PrefabInstance:
       propertyPath: targetsRoot
       value: 
       objectReference: {fileID: 598204953}
+    - target: {fileID: 9203533986811809626, guid: d244117172df2074b8ac055f7ebdeef7, type: 3}
+      propertyPath: maximumSpawnDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203533986811809626, guid: d244117172df2074b8ac055f7ebdeef7, type: 3}
+      propertyPath: minimumSpawnDistance
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1409,14 +1425,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3888321419788262741, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
-      propertyPath: aquariaIcon
-      value: 
-      objectReference: {fileID: 21300000, guid: 5a8659985bbeade43886cc00b115b249, type: 3}
-    - target: {fileID: 3888321419788262741, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
-      propertyPath: aquarioIcon
-      value: 
-      objectReference: {fileID: 21300000, guid: 46c14b27c3e297a4ca3c6197ef9e895c, type: 3}
     - target: {fileID: 3888321419788262741, guid: 198e8b3831c63614fa6c95f9650f3f61, type: 3}
       propertyPath: encounterFlow
       value: 

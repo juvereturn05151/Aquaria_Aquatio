@@ -3107,6 +3107,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100000002, guid: 310aac1d80e84865988b391e17ac52e7, type: 3}
+      propertyPath: aquariaIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 5a8659985bbeade43886cc00b115b249, type: 3}
+    - target: {fileID: 100000002, guid: 310aac1d80e84865988b391e17ac52e7, type: 3}
+      propertyPath: aquarioIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 46c14b27c3e297a4ca3c6197ef9e895c, type: 3}
     - target: {fileID: 100000021, guid: 310aac1d80e84865988b391e17ac52e7, type: 3}
       propertyPath: m_SizeDelta.y
       value: 156.9031

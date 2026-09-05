@@ -31,7 +31,7 @@ Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
 
 public static class EncounterSessionData
 {
-    private const int DefaultAquarioCatchCount = 3;
+    private const int DefaultAquarioCatchCount = 2;
 
     public static CreatureType SelectedCreatureType { get; private set; } = CreatureType.Aquaria;
     public static bool HasSelectedCreature { get; private set; }

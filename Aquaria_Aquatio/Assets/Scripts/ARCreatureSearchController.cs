@@ -103,12 +103,16 @@ public class ARCreatureSearchController : MonoBehaviour
 
         if (unionAnimation == null)
         {
-            unionAnimation = FindAnyObjectByType<AquariaUnionAnimation>();
+            unionAnimation = FindAnyObjectByType<AquariaUnionAnimation>(FindObjectsInactive.Include);
         }
 
         if (unionAnimation == null)
         {
-            unionAnimation = gameObject.AddComponent<AquariaUnionAnimation>();
+            Debug.LogWarning(
+                "ARCreatureSearchController has no AquariaUnionAnimation assigned. " +
+                "Add the union UI to the scene and assign it in the Inspector.",
+                this
+            );
         }
 
         if (creatureSpawner != null)
