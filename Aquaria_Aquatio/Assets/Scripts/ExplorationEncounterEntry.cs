@@ -170,7 +170,9 @@ public class ExplorationEncounterEntry : MonoBehaviour
         }
     }
 
-    private void Update()
+    // Render after input/proximity updates so relocation hides the old prompt
+    // in the same frame, regardless of the EventSystem's Update order.
+    private void LateUpdate()
     {
         if (encounterFlow != null)
         {

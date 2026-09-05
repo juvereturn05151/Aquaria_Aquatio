@@ -20,6 +20,10 @@ public class AquariaExplorationUI : MonoBehaviour
     [SerializeField] private CreatureProximitySystem proximitySystem;
     [SerializeField] private ExplorationEncounterFlow encounterFlow;
 
+    [Header("Target Controls")]
+    [SerializeField] private Button relocateTargetButton;
+    private CreatureSpawnManager spawnManager;
+
     [Header("Status")]
     [SerializeField] private TMP_Text explorationTitleText;
     [SerializeField] private TMP_Text locationStatusText;
@@ -77,6 +81,11 @@ public class AquariaExplorationUI : MonoBehaviour
 
     public void Initialize(ExplorationSystemInjector injector)
     {
+        if (spawnManager != null)
+        {
+            spawnManager.OnTargetRelocated -= RefreshTargetPresentation;
+        }
+        spawnManager = null;
         explorationSystemInjector = injector;
 
         if (injector == null)
@@ -88,6 +97,11 @@ public class AquariaExplorationUI : MonoBehaviour
         explorationController = injector.ExplorationController;
         headingController = injector.DeviceHeadingController;
         proximitySystem = injector.CreatureProximitySystem;
+        spawnManager = injector.CreatureSpawnManager;
+        if (spawnManager != null)
+        {
+            spawnManager.OnTargetRelocated += RefreshTargetPresentation;
+        }
         activePositionSource = positionSourceSelector != null
             ? positionSourceSelector.ActivePositionSource
             : injector.GPSPositionSource;
@@ -108,6 +122,33 @@ public class AquariaExplorationUI : MonoBehaviour
         onMenuPressed.Invoke();
     }
 
+    public void PressRelocateTarget()
+    {
+        if (spawnManager != null)
+        {
+            spawnManager.RelocateCurrentTarget();
+        }
+        RefreshTargetPresentation();
+    }
+
+    private void OnDestroy()
+    {
+        if (spawnManager != null)
+        {
+            spawnManager.OnTargetRelocated -= RefreshTargetPresentation;
+        }
+    }
+
+    private void RefreshTargetPresentation()
+    {
+        RefreshActivePositionSource();
+        if (encounterFlow != null)
+        {
+            encounterFlow.RefreshEncounterState();
+        }
+        Refresh();
+    }
+
     private void Update()
     {
         RefreshActivePositionSource();
@@ -124,6 +165,10 @@ public class AquariaExplorationUI : MonoBehaviour
 
     private void Refresh()
     {
+        if (relocateTargetButton != null)
+        {
+            relocateTargetButton.interactable = spawnManager != null && spawnManager.CanRelocateCurrentTarget;
+        }
         CreatureExplorationTarget nearestCreature = proximitySystem != null
             ? proximitySystem.NearestCreature
             : null;

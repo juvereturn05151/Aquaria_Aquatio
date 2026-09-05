@@ -95,6 +95,7 @@ public class ExplorationSystemInjector : MonoBehaviour
 
     private void Awake()
     {
+        creatureSpawnManager.Initialize(this);
         gpsPositionSource.Initialize(this);
         encounterEntryVirtualController.Initialize(this);
         creatureProximitySystem.Initialize(this);

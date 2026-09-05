@@ -111,6 +111,18 @@ public class CreatureProximitySystem : MonoBehaviour
         );
     }
 
+    public void RefreshAfterTargetRelocation()
+    {
+        lastEncounterReadyTarget = null;
+        if (positionSource == null || !positionSource.IsReady || spawnManager == null)
+        {
+            return;
+        }
+        UpdateNearestCreature(GetPlayerPosition());
+        UpdateProximityState();
+        UpdateFeedbackText();
+    }
+
     private void UpdateNearestCreature(Vector2 playerPosition)
     {
         nearestCreature = null;
@@ -118,7 +130,7 @@ public class CreatureProximitySystem : MonoBehaviour
 
         foreach (CreatureExplorationTarget target in spawnManager.Targets)
         {
-            if (target == null)
+            if (target == null || !target.isActiveAndEnabled)
             {
                 continue;
             }

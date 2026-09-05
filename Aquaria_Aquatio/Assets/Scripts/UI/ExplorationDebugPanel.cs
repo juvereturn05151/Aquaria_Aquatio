@@ -38,6 +38,8 @@ using UnityEngine;
 
 public class ExplorationDebugPanel : MonoBehaviour
 {
+    public bool ShowDebug => showDebug;
+
     [SerializeField] 
     private bool showDebug = true;
     [SerializeField] 

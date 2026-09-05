@@ -62,7 +62,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1011442170533984688
 Transform:
   m_ObjectHideFlags: 0
@@ -382,6 +382,7 @@ MonoBehaviour:
   cesiumGeoreference: {fileID: 3456108017532694792}
   cesiumGPSOriginAdapter: {fileID: 5851145830487907884}
   explorationDebugPanel: {fileID: 0}
+  aquariaExplorationUI: {fileID: 0}
 --- !u!114 &8639317632398444116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -577,14 +578,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3cccb972d1d2724d99fa35ef04d1cd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreatureSpawnManager
+  minimumRelocationDistance: 1
+  maximumRelocationDistance: 2
+  maximumRelocationAttempts: 10
+  relocationCooldown: 3
   targetsRoot: {fileID: 0}
   collectTargetsOnAwake: 1
   createMissingFlowTargets: 1
   spawnTargetsNearPlayerOnFirstPosition: 1
   aquariaTargetPrefab: {fileID: 1628669845193677627, guid: 41ecd1c2877759544a13509290110074, type: 3}
   aquarioTargetPrefab: {fileID: 1628669845193677627, guid: 0d0e3aab8f704768b78dd884ff1e5e21, type: 3}
-  minimumSpawnDistance: 8
-  maximumSpawnDistance: 18
+  minimumSpawnDistance: 1
+  maximumSpawnDistance: 2
   spawnHeight: 0.6
   targets: []
 --- !u!1 &5509953355567899265
@@ -848,7 +853,7 @@ MonoBehaviour:
   creatureNearbyText: {fileID: 0}
   encounterStatusText: {fileID: 0}
   useEncounterFlowFilter: 1
-  detectionRange: 30
+  detectionRange: 45
   strongSignalRange: 12
   encounterRange: 3
   nearestCreature: {fileID: 0}
