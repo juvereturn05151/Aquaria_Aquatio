@@ -41,6 +41,7 @@ Copyright (c) 2026 Ju-ve Chankasemporn. All rights reserved.
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Unity.XR.CoreUtils;
 using UnityEngine.XR.ARFoundation;
 
 public class ARCreatureSearchController : MonoBehaviour
@@ -71,6 +72,8 @@ public class ARCreatureSearchController : MonoBehaviour
     [SerializeField] private bool trackingReady;
     [SerializeField] private CreatureType selectedCreatureType;
     [SerializeField] private float returnTimer;
+    [SerializeField] private string activeCameraName;
+    [SerializeField] private string activeCameraParentName;
 
     public UnityEvent<Transform> OnCreatureSpawned = new();
     public UnityEvent<Transform> OnCreatureVisible = new();
@@ -96,6 +99,7 @@ public class ARCreatureSearchController : MonoBehaviour
     private void Awake()
     {
         caughtAnimatorParameterHash = Animator.StringToHash(caughtAnimatorParameter);
+        ResolveActiveARCamera();
         searchState = ARSearchState.Initializing;
         selectedCreatureType = EncounterSessionData.HasSelectedCreature
             ? EncounterSessionData.SelectedCreatureType
@@ -134,6 +138,7 @@ public class ARCreatureSearchController : MonoBehaviour
 
     private void Update()
     {
+        ResolveActiveARCamera();
         trackingReady = ARSession.state == ARSessionState.SessionTracking;
 
         if (searchState == ARSearchState.Initializing)
@@ -315,7 +320,14 @@ public class ARCreatureSearchController : MonoBehaviour
             $"United: {EncounterSessionData.AquariaAquarioUnited}\n" +
             $"AR tracking state: {ARSession.state}\n" +
             $"Tracking ready: {trackingReady}\n" +
+            $"Camera Transform Name: {activeCameraName}\n" +
+            $"Camera Parent Name: {activeCameraParentName}\n" +
+            $"Camera Position: {FormatVector(arCamera != null ? arCamera.transform.position : Vector3.zero)}\n" +
+            $"Camera Rotation: {FormatVector(arCamera != null ? arCamera.transform.eulerAngles : Vector3.zero)}\n" +
+            $"Camera Forward: {FormatVector(arCamera != null ? arCamera.transform.forward : Vector3.zero)}\n" +
             $"Creature Position: {creaturePosition:F2}\n" +
+            $"World Direction To Creature: {FormatVector(GetWorldDirectionToCreature())}\n" +
+            $"Camera-Local Direction To Creature: {FormatVector(GetCameraLocalDirectionToCreature())}\n" +
             $"Distance To Creature: {distance:F2} m\n" +
             $"Detection Distance: {detectionDistance:F2} m\n" +
             $"Required Distance: {requiredDistance:F2} m\n" +
@@ -326,6 +338,102 @@ public class ARCreatureSearchController : MonoBehaviour
             $"Arrow Target Direction: {arrowDirection:F2}\n" +
             $"Placement: {placementState}"
         );
+    }
+
+    private void ResolveActiveARCamera()
+    {
+        Camera resolvedCamera = GetXROriginCamera();
+
+        if (resolvedCamera == null)
+        {
+            resolvedCamera = GetARCameraManagerCamera();
+        }
+
+        if (resolvedCamera == null)
+        {
+            resolvedCamera = Camera.main;
+        }
+
+        if (resolvedCamera == null || arCamera == resolvedCamera)
+        {
+            UpdateActiveCameraDebugNames();
+            return;
+        }
+
+        arCamera = resolvedCamera;
+        UpdateRuntimeCameraReferences();
+        UpdateActiveCameraDebugNames();
+    }
+
+    private Camera GetXROriginCamera()
+    {
+        XROrigin xrOrigin = FindAnyObjectByType<XROrigin>();
+        return xrOrigin != null ? xrOrigin.Camera : null;
+    }
+
+    private static Camera GetARCameraManagerCamera()
+    {
+        ARCameraManager cameraManager = FindAnyObjectByType<ARCameraManager>();
+        return cameraManager != null ? cameraManager.GetComponent<Camera>() : null;
+    }
+
+    private void UpdateRuntimeCameraReferences()
+    {
+        if (arCamera == null)
+        {
+            return;
+        }
+
+        if (visibilityDetector != null)
+        {
+            visibilityDetector.ARCamera = arCamera;
+            visibilityDetector.PlayerViewpoint = arCamera.transform;
+        }
+
+        if (directionArrow != null)
+        {
+            directionArrow.ARCamera = arCamera;
+        }
+
+        if (spawnedCreature != null)
+        {
+            EncounterCreatureLookAtPlayer lookAtPlayer =
+                spawnedCreature.GetComponent<EncounterCreatureLookAtPlayer>();
+
+            if (lookAtPlayer != null)
+            {
+                lookAtPlayer.Target = arCamera.transform;
+            }
+        }
+    }
+
+    private void UpdateActiveCameraDebugNames()
+    {
+        Transform cameraTransform = arCamera != null ? arCamera.transform : null;
+        activeCameraName = cameraTransform != null ? cameraTransform.name : "None";
+        activeCameraParentName =
+            cameraTransform != null && cameraTransform.parent != null
+                ? cameraTransform.parent.name
+                : "None";
+    }
+
+    private Vector3 GetWorldDirectionToCreature()
+    {
+        return arCamera != null && spawnedCreature != null
+            ? spawnedCreature.position - arCamera.transform.position
+            : Vector3.zero;
+    }
+
+    private Vector3 GetCameraLocalDirectionToCreature()
+    {
+        return arCamera != null && spawnedCreature != null
+            ? arCamera.transform.InverseTransformDirection(GetWorldDirectionToCreature())
+            : Vector3.zero;
+    }
+
+    private static string FormatVector(Vector3 value)
+    {
+        return $"({value.x:F2}, {value.y:F2}, {value.z:F2})";
     }
 
     private void SetSpawnedCreatureCaught(bool caught)

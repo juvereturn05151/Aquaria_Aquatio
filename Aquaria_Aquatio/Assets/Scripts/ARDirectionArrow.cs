@@ -42,10 +42,12 @@ public class ARDirectionArrow : MonoBehaviour
 
     [Header("Debug Runtime")]
     [SerializeField] private Vector3 arrowTargetDirection;
+    [SerializeField] private Vector3 cameraLocalTargetDirection;
     [SerializeField] private float distanceToTarget;
     [SerializeField] private float horizontalAngleToTarget;
 
     public Vector3 ArrowTargetDirection => arrowTargetDirection;
+    public Vector3 CameraLocalTargetDirection => cameraLocalTargetDirection;
     public float DistanceToTarget => distanceToTarget;
     public float HorizontalAngleToTarget => horizontalAngleToTarget;
 
@@ -100,26 +102,26 @@ public class ARDirectionArrow : MonoBehaviour
         arrowTransform.position = arCamera.transform.TransformPoint(arrowCameraOffset);
         arrowTransform.localScale = arrowScale;
 
-        Vector3 directionToCreature = targetTransform.position - arCamera.transform.position;
-        directionToCreature.y = 0f;
-        distanceToTarget = directionToCreature.magnitude;
+        Vector3 worldDirectionToCreature =
+            targetTransform.position - arCamera.transform.position;
+        Vector3 planarDirectionToCreature = Vector3.ProjectOnPlane(
+            worldDirectionToCreature,
+            Vector3.up
+        );
+        distanceToTarget = planarDirectionToCreature.magnitude;
 
-        if (directionToCreature.sqrMagnitude <= 0.001f)
+        if (planarDirectionToCreature.sqrMagnitude <= 0.001f)
         {
             return;
         }
 
-        arrowTargetDirection = directionToCreature.normalized;
-        Vector3 flatForward = Vector3.ProjectOnPlane(arCamera.transform.forward, Vector3.up);
-
-        if (flatForward.sqrMagnitude > 0.001f)
-        {
-            horizontalAngleToTarget = Vector3.SignedAngle(
-                flatForward.normalized,
-                arrowTargetDirection,
-                Vector3.up
-            );
-        }
+        arrowTargetDirection = planarDirectionToCreature.normalized;
+        cameraLocalTargetDirection = arCamera.transform.InverseTransformDirection(
+            worldDirectionToCreature
+        );
+        horizontalAngleToTarget =
+            Mathf.Atan2(cameraLocalTargetDirection.x, cameraLocalTargetDirection.z)
+            * Mathf.Rad2Deg;
 
         Quaternion targetRotation = Quaternion.LookRotation(arrowTargetDirection, Vector3.up);
         arrowTransform.rotation = Quaternion.Slerp(

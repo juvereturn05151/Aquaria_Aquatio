@@ -345,7 +345,7 @@ MonoBehaviour:
   moveSpeed: 4
   sprintMultiplier: 3
   verticalMoveSpeed: 3
-  requireRightMouseButton: 1
+  requireRightMouseButton: 0
   mouseSensitivity: 2.5
   minimumPitch: -75
   maximumPitch: 75
@@ -366,6 +366,7 @@ GameObject:
   - component: {fileID: 442979369}
   - component: {fileID: 442979368}
   - component: {fileID: 442979372}
+  - component: {fileID: 442979373}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: MainCamera
@@ -438,6 +439,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.ARFoundation::UnityEngine.XR.ARFoundation.ARCameraBackground
   m_UseCustomMaterial: 0
   m_CustomMaterial: {fileID: 0}
+--- !u!114 &442979373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 442979366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6a71f3f7f8442d5b6df640ab0c8f1b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARCameraTrackedPoseDriverBootstrap
+  enableInEditorSimulation: 0
 --- !u!114 &442979369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2491,7 +2505,7 @@ MonoBehaviour:
   moveCloserInstruction: Move closer
   visibleInstruction: Keep the creature in view
   foundInstruction: Creature Found!
-  showDebugPanel: 0
+  showDebugPanel: 1
 --- !u!1 &1867669801
 GameObject:
   m_ObjectHideFlags: 0
@@ -2542,7 +2556,7 @@ MonoBehaviour:
   requiredVisibleTime: 0.75
   viewportPadding: {x: 0.05, y: 0.05}
   requiredDistance: 2
-  showDebugDistance: 0
+  showDebugDistance: 1
   creatureInCameraView: 0
   closeEnough: 0
   distanceToCreature: 0
@@ -2625,7 +2639,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2076062738
 MonoBehaviour:
   m_ObjectHideFlags: 0

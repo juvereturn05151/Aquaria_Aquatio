@@ -162,6 +162,7 @@ public static class EncounterEntrySceneBuilder
         cameraObject.AddComponent<AudioListener>();
         cameraObject.AddComponent<ARCameraManager>();
         cameraObject.AddComponent<ARCameraBackground>();
+        cameraObject.AddComponent<ARCameraTrackedPoseDriverBootstrap>();
 
         xrOrigin.Camera = arCamera;
         xrOrigin.CameraFloorOffsetObject = cameraOffset;

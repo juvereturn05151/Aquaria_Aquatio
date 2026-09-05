@@ -7,7 +7,7 @@ without walking around with a device.
 
 Responsibilities:
 - Move the camera root using WASD/QE input.
-- Rotate the camera with right-mouse drag.
+- Rotate the camera from mouse movement while the scene is active.
 - Support sprint movement while Shift is held.
 - Manage cursor lock state during look input.
 - Stay isolated from encounter detection, UI, spawning, GPS, and scene flow.
@@ -44,7 +44,7 @@ public class AREditorCameraInputController : MonoBehaviour
     [SerializeField] private float verticalMoveSpeed = 3f;
 
     [Header("Mouse Look")]
-    [SerializeField] private bool requireRightMouseButton = true;
+    [SerializeField] private bool requireRightMouseButton;
     [SerializeField] private float mouseSensitivity = 2.5f;
     [SerializeField] private float minimumPitch = -75f;
     [SerializeField] private float maximumPitch = 75f;
