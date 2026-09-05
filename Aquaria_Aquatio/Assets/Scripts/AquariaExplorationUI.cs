@@ -239,7 +239,7 @@ public class AquariaExplorationUI : MonoBehaviour
 
     private void UpdateRadar(CreatureExplorationTarget nearestCreature)
     {
-        float signedAngle = nearestCreature != null ? GetCreatureWorldBearing(nearestCreature) : 0f;
+        float signedAngle = nearestCreature != null ? GetCreatureRelativeBearing(nearestCreature) : 0f;
 
         if (radarPlayerArrow != null)
         {
@@ -257,11 +257,8 @@ public class AquariaExplorationUI : MonoBehaviour
             return;
         }
 
-        float detectionRange = proximitySystem != null
-            ? Mathf.Max(0.01f, proximitySystem.DetectionRange)
-            : Mathf.Max(0.01f, radarRadius);
-        float distance = proximitySystem != null ? proximitySystem.NearestCreatureDistance : 0f;
-        float markerDistance = Mathf.Clamp01(distance / detectionRange) * radarRadius;
+        float signal = GetSignalStrength();
+        float markerDistance = Mathf.Lerp(radarRadius, 16f, signal);
         float radians = signedAngle * Mathf.Deg2Rad;
         radarCreatureMarker.anchoredPosition = new Vector2(
             Mathf.Sin(radians) * markerDistance,
