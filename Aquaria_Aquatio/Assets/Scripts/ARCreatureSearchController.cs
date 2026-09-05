@@ -62,6 +62,9 @@ public class ARCreatureSearchController : MonoBehaviour
     [Header("Encounter Flow")]
     [SerializeField] private float returnDelayAfterFound = 2.5f;
 
+    [Header("Creature Animation")]
+    [SerializeField] private string caughtAnimatorParameter = "Caught";
+
     [Header("Debug Runtime")]
     [SerializeField] private ARSearchState searchState = ARSearchState.Initializing;
     [SerializeField] private Transform spawnedCreature;
@@ -77,6 +80,7 @@ public class ARCreatureSearchController : MonoBehaviour
     public Transform SpawnedCreature => spawnedCreature;
 
     private bool creatureVisibleEventSent;
+    private int caughtAnimatorParameterHash;
 
     private void Reset()
     {
@@ -91,6 +95,7 @@ public class ARCreatureSearchController : MonoBehaviour
 
     private void Awake()
     {
+        caughtAnimatorParameterHash = Animator.StringToHash(caughtAnimatorParameter);
         searchState = ARSearchState.Initializing;
         selectedCreatureType = EncounterSessionData.HasSelectedCreature
             ? EncounterSessionData.SelectedCreatureType
@@ -174,6 +179,8 @@ public class ARCreatureSearchController : MonoBehaviour
             return;
         }
 
+        SetSpawnedCreatureCaught(false);
+
         if (visibilityDetector != null)
         {
             visibilityDetector.ARCamera = arCamera;
@@ -204,6 +211,7 @@ public class ARCreatureSearchController : MonoBehaviour
         if (found)
         {
             SetState(ARSearchState.CreatureFound);
+            SetSpawnedCreatureCaught(true);
             EncounterSessionData.RegisterCreatureFound(selectedCreatureType);
             returnTimer = 0f;
 
@@ -314,5 +322,35 @@ public class ARCreatureSearchController : MonoBehaviour
             $"Arrow Target Direction: {arrowDirection:F2}\n" +
             $"Placement: {placementState}"
         );
+    }
+
+    private void SetSpawnedCreatureCaught(bool caught)
+    {
+        if (spawnedCreature == null || string.IsNullOrWhiteSpace(caughtAnimatorParameter))
+        {
+            return;
+        }
+
+        Animator animator = spawnedCreature.GetComponentInChildren<Animator>(true);
+
+        if (animator == null || !AnimatorHasBool(animator, caughtAnimatorParameterHash))
+        {
+            return;
+        }
+
+        animator.SetBool(caughtAnimatorParameterHash, caught);
+    }
+
+    private static bool AnimatorHasBool(Animator animator, int parameterHash)
+    {
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.nameHash == parameterHash && parameter.type == AnimatorControllerParameterType.Bool)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
